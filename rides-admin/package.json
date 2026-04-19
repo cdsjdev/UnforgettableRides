@@ -1,0 +1,34 @@
+{
+  "name": "rides-admin",
+  "version": "1.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test:e2e": "playwright test",
+    "test:e2e:full": "cross-env PW_FULL_MATRIX=1 playwright test",
+    "test:e2e:mobile": "cross-env PW_FULL_MATRIX=1 PW_INCLUDE_MOBILE=1 playwright test --project=mobile-chrome",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:install": "playwright install chromium",
+    "test:e2e:install:full": "playwright install chromium firefox webkit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.17.0",
+    "axios": "^1.7.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.22.0",
+    "recharts": "^2.12.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "cross-env": "^10.0.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.4.0"
+  }
+}

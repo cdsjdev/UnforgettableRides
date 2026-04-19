@@ -1,0 +1,245 @@
+[
+  {
+    "id": "safe_standard",
+    "name": "Safe Standard",
+    "description": "Gentle, safe default cycle for all dogs",
+    "parameters": {
+      "water_temp": "lukewarm",
+      "shampoo_type": "regular",
+      "wash_duration": "standard",
+      "rinse": "standard",
+      "conditioner": "none",
+      "dryer": "low",
+      "dryer_duration_min": 10
+    },
+    "prep_steps": [
+      "Quick brush to remove loose fur",
+      "Check ears - insert cotton balls if needed",
+      "Remove collar/harness"
+    ],
+    "suitable_for": ["all_dogs", "first_time_users"],
+    "cautions": [],
+    "why_this_cycle": [
+      "Safe and gentle for all dogs",
+      "Standard settings with no extreme temps",
+      "Good starting point for any dog"
+    ],
+    "is_custom": false,
+    "popularity_score": 80
+  },
+  {
+    "id": "double_coat_deshed",
+    "name": "Double Coat De-Shed",
+    "description": "Extended wash and rinse for heavy shedding double coats",
+    "parameters": {
+      "water_temp": "lukewarm",
+      "shampoo_type": "anti_shedding",
+      "wash_duration": "extended",
+      "rinse": "double",
+      "conditioner": "light",
+      "dryer": "medium",
+      "dryer_duration_min": 12
+    },
+    "prep_steps": [
+      "**CRITICAL: Brush thoroughly for 10-15 minutes**",
+      "Remove loose undercoat with de-shedding tool",
+      "Check for mats behind ears and hindquarters",
+      "Insert cotton balls in ears"
+    ],
+    "suitable_for": ["double_coat", "heavy_shedding"],
+    "cautions": [
+      "Do not use during peak shedding season without prior de-shedding",
+      "Avoid hot dryer - can damage undercoat"
+    ],
+    "why_this_cycle": [
+      "Extended rinse removes loose undercoat effectively",
+      "Anti-shedding shampoo helps release dead fur",
+      "Lukewarm water protects natural oils in double coat",
+      "Medium dry prevents overheating thick coat"
+    ],
+    "is_custom": false,
+    "popularity_score": 85
+  },
+  {
+    "id": "sensitive_skin",
+    "name": "Sensitive Skin Care",
+    "description": "Gentle hypoallergenic cycle with extra rinsing",
+    "parameters": {
+      "water_temp": "cool",
+      "shampoo_type": "hypoallergenic",
+      "wash_duration": "standard",
+      "rinse": "extra",
+      "conditioner": "none",
+      "dryer": "low",
+      "dryer_duration_min": 12
+    },
+    "prep_steps": [
+      "Check skin for hotspots or irritation",
+      "Gentle brush - avoid irritated areas",
+      "Insert cotton balls in ears"
+    ],
+    "suitable_for": ["sensitive_skin", "allergies", "puppies"],
+    "cautions": [
+      "If skin is very red or bleeding, consult vet before washing"
+    ],
+    "why_this_cycle": [
+      "Cool water reduces skin irritation",
+      "Hypoallergenic shampoo avoids allergens and fragrances",
+      "Extra rinse ensures no shampoo residue",
+      "Low heat prevents drying out sensitive skin"
+    ],
+    "is_custom": false,
+    "popularity_score": 75
+  },
+  {
+    "id": "curly_coat",
+    "name": "Curly Coat Care",
+    "description": "Prevents matting with conditioning and gentle drying",
+    "parameters": {
+      "water_temp": "lukewarm",
+      "shampoo_type": "regular",
+      "wash_duration": "standard",
+      "rinse": "extra",
+      "conditioner": "full",
+      "dryer": "low",
+      "dryer_duration_min": 15
+    },
+    "prep_steps": [
+      "**CRITICAL: Detangle completely before wash**",
+      "Use slicker brush and metal comb to check for mats",
+      "If mats present, carefully cut or work out first",
+      "Insert cotton balls in ears"
+    ],
+    "suitable_for": ["curly_coat", "high_mat_risk"],
+    "cautions": [
+      "Never wash a matted curly coat - mats will tighten"
+    ],
+    "why_this_cycle": [
+      "Conditioner prevents tangles and keeps curls soft",
+      "Extra rinse removes all product to prevent buildup",
+      "Low heat preserves curl structure",
+      "Extended dry time needed for thick curly fur"
+    ],
+    "is_custom": false,
+    "popularity_score": 78
+  },
+  {
+    "id": "heavy_dirt",
+    "name": "Heavy Dirt Removal",
+    "description": "Pre-rinse and extended wash for very dirty dogs",
+    "parameters": {
+      "water_temp": "warm",
+      "shampoo_type": "deodorizing",
+      "wash_duration": "extended",
+      "rinse": "double",
+      "conditioner": "light",
+      "dryer": "medium",
+      "dryer_duration_min": 10
+    },
+    "prep_steps": [
+      "Let mud dry, then brush off as much as possible",
+      "Pre-rinse with plain water if extremely muddy",
+      "Check paws for embedded debris"
+    ],
+    "suitable_for": ["heavy_dirt", "outdoor_dogs"],
+    "cautions": [
+      "Do not use warm water on brachycephalic breeds"
+    ],
+    "why_this_cycle": [
+      "Warm water helps break down oils and stubborn dirt",
+      "Extended wash ensures deep cleaning",
+      "Deodorizing shampoo removes outdoor smells",
+      "Double rinse removes all dirt particles"
+    ],
+    "is_custom": false,
+    "popularity_score": 70
+  },
+  {
+    "id": "short_smooth",
+    "name": "Short Smooth Coat",
+    "description": "Quick, efficient wash for easy-care coats",
+    "parameters": {
+      "water_temp": "lukewarm",
+      "shampoo_type": "regular",
+      "wash_duration": "short",
+      "rinse": "standard",
+      "conditioner": "none",
+      "dryer": "medium",
+      "dryer_duration_min": 6
+    },
+    "prep_steps": [
+      "Quick brush with rubber curry brush",
+      "Check ears"
+    ],
+    "suitable_for": ["short_coat", "smooth_coat"],
+    "cautions": [],
+    "why_this_cycle": [
+      "Short coat doesn't need extended washing",
+      "Dries quickly - minimal dryer time needed",
+      "No conditioner needed for smooth coat"
+    ],
+    "is_custom": false,
+    "popularity_score": 82
+  },
+  {
+    "id": "wire_coat",
+    "name": "Wire Coat Maintenance",
+    "description": "Maintains texture of wire coats",
+    "parameters": {
+      "water_temp": "lukewarm",
+      "shampoo_type": "regular",
+      "wash_duration": "standard",
+      "rinse": "standard",
+      "conditioner": "none",
+      "dryer": "medium",
+      "dryer_duration_min": 10
+    },
+    "prep_steps": [
+      "Hand-strip or brush before wash",
+      "Check ears"
+    ],
+    "suitable_for": ["wire_coat", "terriers"],
+    "cautions": [
+      "Heavy conditioning softens wire texture - avoid if showing dog"
+    ],
+    "why_this_cycle": [
+      "No conditioner preserves wire texture",
+      "Standard wash and rinse maintains coat health",
+      "Moderate dry without over-softening"
+    ],
+    "is_custom": false,
+    "popularity_score": 65
+  },
+  {
+    "id": "puppy_first",
+    "name": "Puppy First Wash",
+    "description": "Extra gentle introduction to washing",
+    "parameters": {
+      "water_temp": "lukewarm",
+      "shampoo_type": "puppy_gentle",
+      "wash_duration": "short",
+      "rinse": "extra",
+      "conditioner": "none",
+      "dryer": "low",
+      "dryer_duration_min": 8
+    },
+    "prep_steps": [
+      "Gentle brush to familiarize with grooming",
+      "Keep session calm and positive",
+      "Have treats ready for after"
+    ],
+    "suitable_for": ["puppies", "first_time"],
+    "cautions": [
+      "Keep noise low - puppies startle easily",
+      "Watch for stress signs (panting, trembling)"
+    ],
+    "why_this_cycle": [
+      "Gentle shampoo safe for developing skin",
+      "Short duration reduces stress",
+      "Extra rinse ensures no residue on delicate skin",
+      "Low heat and noise for comfort"
+    ],
+    "is_custom": false,
+    "popularity_score": 88
+  }
+]

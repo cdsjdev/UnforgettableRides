@@ -1,0 +1,90 @@
+# UnforgettableRides — Development / CPU-only deployment
+# Usage:
+#   cp .env.production .env   # then edit values
+#   docker compose up -d --build
+
+services:
+  # ── Express API ──────────────────────────────────────────────
+  rides-api:
+    build:
+      context: ./rides-api
+      dockerfile: Dockerfile
+    container_name: rides-api
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${API_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - api-data:/app/src/data
+      - api-db:/app/db
+      - api-uploads:/app/uploads
+    networks:
+      - rides-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+  # ── Admin Dashboard ──────────────────────────────────────────
+  rides-admin:
+    build:
+      context: .
+      dockerfile: rides-admin/Dockerfile
+    container_name: rides-admin
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      rides-api:
+        condition: service_healthy
+    networks:
+      - rides-network
+
+  # ── Customer Portal ──────────────────────────────────────────
+  rides-portal:
+    build:
+      context: .
+      dockerfile: rides-portal/Dockerfile
+    container_name: rides-portal
+    restart: unless-stopped
+    ports:
+      - "${PORTAL_PORT:-8082}:80"
+    depends_on:
+      rides-api:
+        condition: service_healthy
+    networks:
+      - rides-network
+
+  # ── Mobile App Web Build ─────────────────────────────────────
+  rides-app-web:
+    build:
+      context: .
+      dockerfile: rides-app/Dockerfile
+      args:
+        EXPO_PUBLIC_API_URL: /api/v1
+    container_name: rides-app-web
+    restart: unless-stopped
+    ports:
+      - "${APP_WEB_PORT:-8081}:80"
+    depends_on:
+      rides-api:
+        condition: service_healthy
+    networks:
+      - rides-network
+
+volumes:
+  api-data:
+    driver: local
+  api-db:
+    driver: local
+  api-uploads:
+    driver: local
+
+networks:
+  rides-network:
+    driver: bridge

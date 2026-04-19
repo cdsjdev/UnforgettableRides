@@ -1,0 +1,109 @@
+# Production deployment (CPU-only hosts)
+# Usage:
+#   cp .env.production .env
+#   docker compose -f docker-compose.production.cpu.yml up -d --build --remove-orphans
+
+services:
+  rides-api:
+    build:
+      context: ./rides-api
+      dockerfile: Dockerfile
+    container_name: rides-api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - ML_SERVICE_URL=http://ml-service:8000
+      - ANALYTICS_DB_PATH=/app/db/analytics.db
+      - BUILD_DATE=${BUILD_DATE:-unknown}
+      - GIT_SHA=${GIT_SHA:-unknown}
+    volumes:
+      - api-data:/app/src/data
+      - api-db:/app/db
+      - api-uploads:/app/uploads
+    networks:
+      - rides-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+  rides-admin:
+    build:
+      context: .
+      dockerfile: rides-admin/Dockerfile
+      args:
+        VITE_API_URL: /api
+        VITE_BUILD_DATE: ${BUILD_DATE:-unknown}
+        VITE_GIT_SHA: ${GIT_SHA:-unknown}
+    container_name: rides-admin
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      rides-api:
+        condition: service_healthy
+    networks:
+      - rides-network
+
+  rides-app-web:
+    build:
+      context: .
+      dockerfile: rides-app/Dockerfile
+      args:
+        EXPO_PUBLIC_API_URL: /api/v1
+        EXPO_PUBLIC_BUILD_DATE: ${BUILD_DATE:-unknown}
+        EXPO_PUBLIC_GIT_SHA: ${GIT_SHA:-unknown}
+    container_name: rides-app-web
+    restart: unless-stopped
+    ports:
+      - "${APP_WEB_PORT:-8081}:80"
+    depends_on:
+      rides-api:
+        condition: service_healthy
+    networks:
+      - rides-network
+
+  ml-service:
+    build:
+      context: ./ml-models
+      dockerfile: Dockerfile.cpu
+    container_name: rides-ml
+    restart: unless-stopped
+    environment:
+      - MODEL_PATH=/app/checkpoints/best_model.pth
+      - DEVICE=cpu
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+      - CAMERA_URL=${CAMERA_URL:-}
+      - API_CALLBACK_URL=${API_CALLBACK_URL:-http://rides-api:3000/api/v1/analytics/detection}
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY:-}
+      - ENABLE_TRACKING=${ENABLE_TRACKING:-1}
+      - DOOR_LINE_COORDS=${DOOR_LINE_COORDS:-}
+      - DOOR_LINE_DIRECTION=${DOOR_LINE_DIRECTION:-}
+    volumes:
+      - ./ml-models/checkpoints:/app/checkpoints:ro
+      - api-data:/app/breed_data:ro
+    networks:
+      - rides-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+volumes:
+  api-data:
+    driver: local
+  api-db:
+    driver: local
+  api-uploads:
+    driver: local
+
+networks:
+  rides-network:
+    driver: bridge

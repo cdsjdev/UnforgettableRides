@@ -1,0 +1,102 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.ipa
+*.apk
+
+# Metro
+.metro-health-check*
+
+# Debug
+*.log
+
+# macOS
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+images/*.jpg
+uploads/
+rides-api/uploads/
+rides-api/src/data/dogs.json
+rides-api/src/data/washes.json
+rides-api/src/data/care_events.json
+rides-api/src/data/chat_sessions.json
+rides-api/src/data/analytics.db
+rides-api/src/data/analytics.db-wal
+rides-api/src/data/analytics.db-shm
+rides-api/src/data/unforgettablerides.db
+rides-api/src/data/unforgettablerides.db-wal
+rides-api/src/data/unforgettablerides.db-shm
+rides-api/unforgettablerides.db
+rides-api/unforgettablerides.db-wal
+rides-api/unforgettablerides.db-shm
+
+# Windows artifacts
+nul
+
+# Ad-hoc debug / deploy artifacts
+*.tar
+check_scope.sh
+query_appts.js
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ML Models & Data (large files)
+*.pth
+*.pt
+*.onnx
+*.h5
+*.pkl
+*.joblib
+ml-models/data/raw/*
+ml-models/data/processed/*
+ml-models/checkpoints/*.pth
+ml-models/checkpoints/*.pt
+
+# Keep structure with .gitkeep
+!**/.gitkeep

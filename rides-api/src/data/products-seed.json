@@ -1,0 +1,641 @@
+[
+  {
+    "id": "prod-201",
+    "name": "Classic Red Collar",
+    "description": "Durable adjustable red collar with metal buckle. Includes classic style variants.",
+    "category": "accessories",
+    "price": 12.99,
+    "stock_quantity": 90,
+    "image_url": "/product-catalog/prod-201.jpg",
+    "image_urls": [
+      "/product-catalog/prod-224.jpg"
+    ]
+  },
+  {
+    "id": "prod-202",
+    "name": "No-Pull Mesh Harness (Color Variants)",
+    "description": "Breathable no-pull harness with comfort mesh, available in multiple color variants including black and orange.",
+    "category": "accessories",
+    "price": 24.99,
+    "stock_quantity": 80,
+    "image_url": "/product-catalog/prod-202.jpg",
+    "image_urls": [
+      "/product-catalog/prod-222.jpg"
+    ]
+  },
+  {
+    "id": "prod-203",
+    "name": "Tactical Body Harness",
+    "description": "Heavy-duty harness with top handle for outdoor training and walking.",
+    "category": "accessories",
+    "price": 34.99,
+    "stock_quantity": 60,
+    "image_url": "/product-catalog/prod-203.jpg"
+  },
+  {
+    "id": "prod-204",
+    "name": "Floral Comfort Harness",
+    "description": "Soft padded floral harness with bright color pattern and easy buckle.",
+    "category": "accessories",
+    "price": 22.99,
+    "stock_quantity": 70,
+    "image_url": "/product-catalog/prod-204.jpg"
+  },
+  {
+    "id": "prod-205",
+    "name": "Bow Tie Pet Collar Accessory",
+    "description": "Decorative bow tie add-on for collars and harnesses.",
+    "category": "accessories",
+    "price": 8.99,
+    "stock_quantity": 30,
+    "image_url": "/product-catalog/prod-205.jpg"
+  },
+  {
+    "id": "prod-206",
+    "name": "Retractable Leash (Pattern Variants)",
+    "description": "One-button brake retractable leash with ergonomic grip, available in multiple shell patterns.",
+    "category": "accessories",
+    "price": 28.99,
+    "stock_quantity": 70,
+    "image_url": "/product-catalog/prod-206.jpg",
+    "image_urls": [
+      "/product-catalog/prod-240.jpg"
+    ]
+  },
+  {
+    "id": "prod-207",
+    "name": "Hands-Free Leash Belt Set",
+    "description": "Waist-belt leash combo for jogging and hands-free walking.",
+    "category": "accessories",
+    "price": 39.99,
+    "stock_quantity": 50,
+    "image_url": "/product-catalog/prod-207.jpg"
+  },
+  {
+    "id": "prod-208",
+    "name": "Striped Dog Shirt",
+    "description": "Lightweight striped pet shirt for everyday wear.",
+    "category": "accessories",
+    "price": 16.99,
+    "stock_quantity": 60,
+    "image_url": "/product-catalog/prod-208.jpg"
+  },
+  {
+    "id": "prod-209",
+    "name": "Printed Chest Harness (Pattern Variants)",
+    "description": "Printed chest harness with secure fit for small to medium dogs, offered in multiple artwork variants.",
+    "category": "accessories",
+    "price": 23.99,
+    "stock_quantity": 100,
+    "image_url": "/product-catalog/prod-209.jpg",
+    "image_urls": [
+      "/product-catalog/prod-210.jpg"
+    ]
+  },
+  {
+    "id": "prod-211",
+    "name": "Multi-Color Harness Set",
+    "description": "Color assortment harness set suitable for daily rotation.",
+    "category": "accessories",
+    "price": 26.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-211.jpg"
+  },
+  {
+    "id": "prod-212",
+    "name": "Soft Dog Muzzle",
+    "description": "Breathable soft muzzle for safer grooming and vet visits.",
+    "category": "accessories",
+    "price": 14.99,
+    "stock_quantity": 50,
+    "image_url": "/product-catalog/prod-212.jpg"
+  },
+  {
+    "id": "prod-213",
+    "name": "Bungee Training Leash",
+    "description": "Shock-absorbing leash reduces pull impact during walks.",
+    "category": "accessories",
+    "price": 21.99,
+    "stock_quantity": 60,
+    "image_url": "/product-catalog/prod-213.jpg"
+  },
+  {
+    "id": "prod-214",
+    "name": "Dual-Handle Training Lead",
+    "description": "Training lead with dual handles for close control and distance walking.",
+    "category": "accessories",
+    "price": 18.99,
+    "stock_quantity": 70,
+    "image_url": "/product-catalog/prod-214.jpg"
+  },
+  {
+    "id": "prod-218",
+    "name": "Heavy-Duty Carabiner Clips (3-Pack)",
+    "description": "Strong alloy clips for leash repair, DIY gear, and replacement use.",
+    "category": "supplies",
+    "price": 12.49,
+    "stock_quantity": 60,
+    "image_url": "/product-catalog/prod-218.jpg"
+  },
+  {
+    "id": "prod-219",
+    "name": "Metal D-Ring Connectors (2-Pack)",
+    "description": "Durable D-ring connectors for collar and harness hardware replacement.",
+    "category": "supplies",
+    "price": 9.49,
+    "stock_quantity": 70,
+    "image_url": "/product-catalog/prod-219.jpg"
+  },
+  {
+    "id": "prod-220",
+    "name": "Cozy Pet Bed",
+    "description": "Plush supportive bed with raised edge for better rest and comfort.",
+    "category": "beds",
+    "price": 44.99,
+    "stock_quantity": 30,
+    "image_url": "/product-catalog/prod-220.jpg"
+  },
+  {
+    "id": "prod-223",
+    "name": "Pink Harness & Lead Set",
+    "description": "Matching harness and lead set with coordinated accessories.",
+    "category": "accessories",
+    "price": 27.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-223.jpg"
+  },
+  {
+    "id": "prod-225",
+    "name": "Multi-Color Lead Bundle",
+    "description": "Color lead assortment for training and daily use.",
+    "category": "accessories",
+    "price": 21.99,
+    "stock_quantity": 60,
+    "image_url": "/product-catalog/prod-225.jpg"
+  },
+  {
+    "id": "prod-228",
+    "name": "Reflective Tactical Harness",
+    "description": "Reinforced tactical harness with reflective trim.",
+    "category": "accessories",
+    "price": 36.99,
+    "stock_quantity": 30,
+    "image_url": "/product-catalog/prod-228.jpg"
+  },
+  {
+    "id": "prod-235",
+    "name": "Blue Bandana Set",
+    "description": "Bandana accessory set for dress-up and events.",
+    "category": "accessories",
+    "price": 9.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-235.jpg"
+  },
+  {
+    "id": "prod-236",
+    "name": "Floral Bow Accessory",
+    "description": "Floral bow clip accessory for collars or harnesses.",
+    "category": "accessories",
+    "price": 7.99,
+    "stock_quantity": 50,
+    "image_url": "/product-catalog/prod-236.jpg"
+  },
+  {
+    "id": "prod-237",
+    "name": "Pink Flower Bow Accessory",
+    "description": "Soft floral bow for lightweight decoration.",
+    "category": "accessories",
+    "price": 7.99,
+    "stock_quantity": 60,
+    "image_url": "/product-catalog/prod-237.jpg"
+  },
+  {
+    "id": "prod-238",
+    "name": "Dual-Tone Bow Tie",
+    "description": "Dual-tone bow tie accessory for photo moments.",
+    "category": "accessories",
+    "price": 8.99,
+    "stock_quantity": 70,
+    "image_url": "/product-catalog/prod-238.jpg"
+  },
+  {
+    "id": "prod-239",
+    "name": "Daisy Bow Tie",
+    "description": "Pattern bow tie clip designed for pet collars.",
+    "category": "accessories",
+    "price": 8.99,
+    "stock_quantity": 80,
+    "image_url": "/product-catalog/prod-239.jpg"
+  },
+  {
+    "id": "prod-241",
+    "name": "Crossbody Treat Bag",
+    "description": "Crossbody pouch for treats, bags, and accessories.",
+    "category": "supplies",
+    "price": 18.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-241.jpg"
+  },
+  {
+    "id": "prod-246",
+    "name": "Mesh Harness (Lime/Olive)",
+    "description": "Breathable mesh harness with balanced fit and ventilation, available in lime and olive colorways.",
+    "category": "accessories",
+    "price": 22.99,
+    "stock_quantity": 70,
+    "image_url": "/product-catalog/prod-246.jpg",
+    "image_urls": [
+      "/product-catalog/prod-247.jpg"
+    ]
+  },
+  {
+    "id": "prod-249",
+    "name": "Brass Trigger Hook (3-Pack)",
+    "description": "Brass trigger hooks for leash and harness hardware replacement.",
+    "category": "supplies",
+    "price": 14.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-249.jpg"
+  },
+  {
+    "id": "prod-250",
+    "name": "Brass Eye Bolt Clips (3-Pack)",
+    "description": "Compact brass eye clips for connector and strap repair.",
+    "category": "supplies",
+    "price": 13.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-250.jpg"
+  },
+  {
+    "id": "prod-251",
+    "name": "Brass Swivel Snap Hooks (3-Pack)",
+    "description": "Swivel snap hooks with smooth rotation and secure lock feel.",
+    "category": "supplies",
+    "price": 15.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-251.jpg"
+  },
+  {
+    "id": "prod-252",
+    "name": "Brass Lobster Hooks (3-Pack)",
+    "description": "Heavy brass lobster hooks for medium-load applications.",
+    "category": "supplies",
+    "price": 14.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-252.jpg"
+  },
+  {
+    "id": "prod-253",
+    "name": "Silver Barrel Connectors (2-Pack)",
+    "description": "Metal barrel connectors for collar and leash component repair.",
+    "category": "supplies",
+    "price": 10.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-253.jpg"
+  },
+  {
+    "id": "prod-254",
+    "name": "Brass O-Rings (2-Pack)",
+    "description": "Solid brass O-rings for collars, tags, and clip assemblies.",
+    "category": "supplies",
+    "price": 9.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-254.jpg"
+  },
+  {
+    "id": "prod-255",
+    "name": "Swivel Trigger Clasp (Pack Options)",
+    "description": "Swivel trigger clasp connectors with selectable pack size options.",
+    "category": "supplies",
+    "price": 8.99,
+    "stock_quantity": 80,
+    "image_url": "/product-catalog/prod-255.jpg",
+    "image_urls": [
+      "/product-catalog/prod-256.jpg"
+    ],
+    "pack_options": [
+      {
+        "id": "pack-1",
+        "label": "1-Pack",
+        "price": 8.99,
+        "stock_quantity": 40,
+        "image_url": "/product-catalog/prod-256.jpg"
+      },
+      {
+        "id": "pack-3",
+        "label": "3-Pack",
+        "price": 13.99,
+        "stock_quantity": 40,
+        "image_url": "/product-catalog/prod-255.jpg"
+      }
+    ]
+  },
+  {
+    "id": "prod-257",
+    "name": "Stainless Safety Pins (3-Pack)",
+    "description": "Stainless snap-pin style connectors for light-duty use.",
+    "category": "supplies",
+    "price": 7.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-257.jpg"
+  },
+  {
+    "id": "prod-258",
+    "name": "Triangle Swivel Connector",
+    "description": "Triangle swivel connector for harness and strap joints.",
+    "category": "supplies",
+    "price": 11.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-258.jpg"
+  },
+  {
+    "id": "prod-259",
+    "name": "Metal O-Ring Set",
+    "description": "Mixed-size metal O-rings for repair kits and custom rigs.",
+    "category": "supplies",
+    "price": 8.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-259.jpg"
+  },
+  {
+    "id": "prod-260",
+    "name": "Triangle Rings (2-Pack)",
+    "description": "Triangle rings for harness strap routing and reinforcements.",
+    "category": "supplies",
+    "price": 8.49,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-260.jpg"
+  },
+  {
+    "id": "prod-261",
+    "name": "Rectangular Buckle Loops (4-Pack)",
+    "description": "Rectangular loops for adjusting straps and webbing.",
+    "category": "supplies",
+    "price": 9.49,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-261.jpg"
+  },
+  {
+    "id": "prod-262",
+    "name": "Tri-Glide Buckle Set",
+    "description": "Tri-glide buckle set for strap management and size adjustment.",
+    "category": "supplies",
+    "price": 9.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-262.jpg"
+  },
+  {
+    "id": "prod-263",
+    "name": "Flat Link Connectors (2-Pack)",
+    "description": "Flat profile connectors for compact hardware assemblies.",
+    "category": "supplies",
+    "price": 7.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-263.jpg"
+  },
+  {
+    "id": "prod-264",
+    "name": "Rounded Strap Buckles (4-Pack)",
+    "description": "Rounded buckles for webbing straps and harness rebuilds.",
+    "category": "supplies",
+    "price": 9.49,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-264.jpg"
+  },
+  {
+    "id": "prod-265",
+    "name": "Drop Hook Connector",
+    "description": "Drop-shaped hook connector for leash and lanyard hardware.",
+    "category": "supplies",
+    "price": 9.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-265.jpg"
+  },
+  {
+    "id": "prod-266",
+    "name": "Heavy Swivel Clasp",
+    "description": "Heavy swivel clasp for stronger clip points.",
+    "category": "supplies",
+    "price": 10.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-266.jpg"
+  },
+  {
+    "id": "prod-267",
+    "name": "Mini Carabiner Clips (2-Pack)",
+    "description": "Lightweight mini carabiner clips for tags and small accessories.",
+    "category": "supplies",
+    "price": 8.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-267.jpg"
+  },
+  {
+    "id": "prod-268",
+    "name": "Premium Nylon Leash Set",
+    "description": "Comfort-grip nylon leash set with reinforced stitching and hardware.",
+    "category": "accessories",
+    "price": 24.99,
+    "stock_quantity": 28,
+    "image_url": "/product-catalog/prod-268.jpg",
+    "image_urls": [
+      "/product-catalog/prod-268-1.jpg",
+      "/product-catalog/prod-268-2.jpg"
+    ]
+  },
+  {
+    "id": "prod-269",
+    "name": "Reflective Walking Harness",
+    "description": "Breathable reflective harness designed for safer evening walks.",
+    "category": "accessories",
+    "price": 31.99,
+    "stock_quantity": 24,
+    "image_url": "/product-catalog/prod-269.jpg",
+    "image_urls": [
+      "/product-catalog/prod-269-1.jpg",
+      "/product-catalog/prod-269-2.jpg"
+    ]
+  },
+  {
+    "id": "prod-270",
+    "name": "Waterproof Dog Boots Set",
+    "description": "Water-resistant anti-slip dog boot set for rain and outdoor walks.",
+    "category": "accessories",
+    "price": 19.99,
+    "stock_quantity": 30,
+    "image_url": "/product-catalog/prod-270.jpg",
+    "image_urls": [
+      "/product-catalog/prod-270-1.jpg",
+      "/product-catalog/prod-270-2.jpg"
+    ]
+  },
+  {
+    "id": "prod-271",
+    "name": "Travel Pet Utility Pouch",
+    "description": "Compact travel pouch for treats, waste bags, and essentials.",
+    "category": "supplies",
+    "price": 17.99,
+    "stock_quantity": 36,
+    "image_url": "/product-catalog/prod-271.jpg",
+    "image_urls": [
+      "/product-catalog/prod-271-1.jpg",
+      "/product-catalog/prod-271-2.jpg"
+    ]
+  },
+  {
+    "id": "prod-272",
+    "name": "Everyday Collar Duo",
+    "description": "Comfort-fit collar duo for daily wear with rust-resistant hardware.",
+    "category": "accessories",
+    "price": 22.99,
+    "stock_quantity": 34,
+    "image_url": "/product-catalog/prod-272.jpg",
+    "image_urls": [
+      "/product-catalog/prod-272-1.jpg",
+      "/product-catalog/prod-272-2.jpg"
+    ]
+  },
+  {
+    "id": "prod-273",
+    "name": "Portable Pet Water Bottle",
+    "description": "Leak-resistant portable water bottle for walks and short trips.",
+    "category": "supplies",
+    "price": 18.99,
+    "stock_quantity": 22,
+    "image_url": "/product-catalog/prod-273.jpg",
+    "image_urls": [
+      "/product-catalog/prod-273-1.jpg"
+    ]
+  },
+  {
+    "id": "prod-274",
+    "name": "WoofWoof Smart Running Wheel",
+    "description": "Motor-assisted pet running wheel for indoor cardio and enrichment training.",
+    "category": "equipment",
+    "price": 2899,
+    "stock_quantity": 6,
+    "image_url": "/product-catalog/prod-274.jpg",
+    "image_urls": [
+      "/product-catalog/prod-274-1.jpg",
+      "/product-catalog/prod-274-2.jpg",
+      "/product-catalog/prod-274-3.jpg"
+    ]
+  },
+  {
+    "id": "prod-275",
+    "name": "Compact Pet Drying Box",
+    "description": "Space-saving enclosed pet drying unit with front access and control panel.",
+    "category": "equipment",
+    "price": 1299,
+    "stock_quantity": 8,
+    "image_url": "/product-catalog/prod-275.jpg"
+  },
+  {
+    "id": "prod-276",
+    "name": "WoofWoof Lux Portable Washer",
+    "description": "Portable foaming washer for quick spot cleaning and grooming prep.",
+    "category": "supplies",
+    "price": 149,
+    "stock_quantity": 24,
+    "image_url": "/product-catalog/prod-276.jpg",
+    "image_urls": [
+      "/product-catalog/prod-276-1.jpg"
+    ]
+  },
+  {
+    "id": "prod-277",
+    "name": "Braided Training Rope Leash",
+    "description": "Durable braided rope leash with reflective accents and sturdy clip.",
+    "category": "accessories",
+    "price": 24.99,
+    "stock_quantity": 40,
+    "image_url": "/product-catalog/prod-277.jpg"
+  },
+  {
+    "id": "prod-278",
+    "name": "Galaxy No-Pull Harness",
+    "description": "Printed no-pull chest harness with padded fit in multiple colorways.",
+    "category": "accessories",
+    "price": 39.99,
+    "stock_quantity": 30,
+    "image_url": "/product-catalog/prod-278.jpg",
+    "image_urls": [
+      "/product-catalog/prod-278-1.jpg",
+      "/product-catalog/prod-278-2.jpg"
+    ]
+  },
+  {
+    "id": "prod-279",
+    "name": "Patterned Utility Leash",
+    "description": "Nylon utility leash with patterned webbing and reinforced hardware.",
+    "category": "accessories",
+    "price": 32.99,
+    "stock_quantity": 28,
+    "image_url": "/product-catalog/prod-279.jpg"
+  },
+  {
+    "id": "prod-280",
+    "name": "Rose Mesh Comfort Harness",
+    "description": "Lightweight mesh harness with wide chest support and quick-release buckles.",
+    "category": "accessories",
+    "price": 34.99,
+    "stock_quantity": 32,
+    "image_url": "/product-catalog/prod-280.jpg"
+  },
+  {
+    "id": "prod-281",
+    "name": "WoofWoof Lux Travel Water Bottle",
+    "description": "Portable pet water bottle with integrated cup and leak-resistant lid.",
+    "category": "supplies",
+    "price": 29.99,
+    "stock_quantity": 36,
+    "image_url": "/product-catalog/prod-281.jpg",
+    "image_urls": []
+  },
+  {
+    "id": "prod-283",
+    "name": "Dog Wash Station",
+    "description": "High-end automatic dog washing machine with enclosed wash chamber, interior brush system, and touchscreen operation.",
+    "category": "equipment",
+    "price": 3399,
+    "stock_quantity": 4,
+    "image_url": "/product-catalog/prod-283.jpg",
+    "image_urls": [
+      "/product-catalog/prod-283.jpg",
+      "/product-catalog/prod-283-1.jpg"
+    ]
+  },
+  {
+    "id": "prod-284",
+    "name": "Replacement Brush",
+    "description": "Motorized brush tunnel module for efficient post-wash drying workflows.",
+    "category": "equipment",
+    "price": 1999,
+    "stock_quantity": 5,
+    "image_url": "/product-catalog/prod-284.jpg"
+  },
+  {
+    "id": "prod-285",
+    "name": "Pet Fitness Treadmill Pro",
+    "description": "Commercial-grade pet treadmill with side rails and app-connected monitoring.",
+    "category": "equipment",
+    "price": 499,
+    "stock_quantity": 11,
+    "image_url": "/product-catalog/prod-285.jpg",
+    "image_urls": [
+      "/product-catalog/prod-285-1.jpg",
+      "/product-catalog/prod-285-2.jpg",
+      "/product-catalog/prod-282.jpg",
+      "/product-catalog/prod-286.jpg"
+    ]
+  },
+  {
+    "id": "prod-286",
+    "name": "Replacement Brush",
+    "description": "Replacement running deck and panel assembly compatible with pet treadmill units.",
+    "category": "supplies",
+    "price": 299,
+    "stock_quantity": 12,
+    "image_url": "/product-catalog/prod-284.jpg",
+    "image_urls": []
+  }
+]

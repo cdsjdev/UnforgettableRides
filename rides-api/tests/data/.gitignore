@@ -1,0 +1,4 @@
+﻿# Ignore ephemeral sqlite test artifacts
+*.db
+*.db-shm
+*.db-wal

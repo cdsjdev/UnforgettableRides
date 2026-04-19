@@ -22,6 +22,13 @@ export default function LoginScreen({ navigation }: any) {
   const GENERIC_LOGIN_ERROR = 'Login failed. Please check your credentials and try again.';
   const GENERIC_VERIFY_ERROR = 'Verification failed. Please try again.';
 
+  const goToProfileMain = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'ProfileMain' }],
+    });
+  };
+
   const getDeviceId = async () => {
     const existing = await AsyncStorage.getItem(DEVICE_ID_KEY);
     if (existing) return existing;
@@ -43,7 +50,9 @@ export default function LoginScreen({ navigation }: any) {
         setChallengeId(result.challenge_id);
         setPasscode('');
         setError('Enter the 6-digit verification code sent to your email.');
+        return;
       }
+      goToProfileMain();
     } catch {
       setError(GENERIC_LOGIN_ERROR);
       if (Platform.OS !== 'web') Alert.alert('Sign In Failed', GENERIC_LOGIN_ERROR);
@@ -62,6 +71,7 @@ export default function LoginScreen({ navigation }: any) {
     try {
       const deviceId = await getDeviceId();
       await verifyDeviceLogin(challengeId, passcode.trim(), deviceId, 'Expo App');
+      goToProfileMain();
     } catch {
       setError(GENERIC_VERIFY_ERROR);
       if (Platform.OS !== 'web') Alert.alert('Verification Failed', GENERIC_VERIFY_ERROR);

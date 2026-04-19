@@ -6,7 +6,8 @@ import { authAPI, setAuthToken } from '../services/api';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{ challenge_required?: boolean; challenge_id?: string; message?: string } | void>;
+  verifyDeviceLogin: (challengeId: string, code: string, deviceId?: string, deviceName?: string) => Promise<void>;
   register: (name: string, email: string, password: string, role?: string) => Promise<void>;
   updateUserProfile: (updates: { name?: string; avatar_url?: string | null }) => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -48,22 +49,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })();
   }, []);
 
+  const setSession = async (token: string, sessionUser: User) => {
+    setAuthToken(token);
+    await AsyncStorage.setItem(TOKEN_KEY, token);
+    await AsyncStorage.setItem(USER_KEY, JSON.stringify(sessionUser));
+    setUser(sessionUser);
+  };
+
   const login = async (email: string, password: string) => {
     const result = await authAPI.login(email, password);
+    if (result.challenge_required && result.challenge_id) {
+      return {
+        challenge_required: true,
+        challenge_id: result.challenge_id,
+        message: result.message,
+      };
+    }
     if (!result.token || !result.user) throw new Error('Login failed');
-    setAuthToken(result.token);
-    await AsyncStorage.setItem(TOKEN_KEY, result.token);
-    await AsyncStorage.setItem(USER_KEY, JSON.stringify(result.user));
-    setUser(result.user);
+    await setSession(result.token, result.user);
+  };
+
+  const verifyDeviceLogin = async (challengeId: string, code: string, deviceId?: string, deviceName?: string) => {
+    const result = await authAPI.verifyDeviceLogin(challengeId, code, deviceId, deviceName);
+    if (!result.token || !result.user) throw new Error('Login failed');
+    await setSession(result.token, result.user);
   };
 
   const register = async (name: string, email: string, password: string, role?: string) => {
     const result = await authAPI.register(name, email, password, role);
     if (!result.token || !result.user) throw new Error('Registration failed');
-    setAuthToken(result.token);
-    await AsyncStorage.setItem(TOKEN_KEY, result.token);
-    await AsyncStorage.setItem(USER_KEY, JSON.stringify(result.user));
-    setUser(result.user);
+    await setSession(result.token, result.user);
   };
 
   const updateUserProfile = async (updates: { name?: string; avatar_url?: string | null }) => {
@@ -85,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, updateUserProfile, refreshUser, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, verifyDeviceLogin, register, updateUserProfile, refreshUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

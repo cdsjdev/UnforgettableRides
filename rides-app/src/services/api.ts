@@ -78,6 +78,22 @@ export const authAPI = {
     return response.data.data;
   },
 
+  verifyDeviceLogin: async (
+    challenge_id: string,
+    code: string,
+    device_id?: string,
+    device_name?: string
+  ): Promise<LoginResponse> => {
+    const response = await api.post<APIResponse<LoginResponse>>('/auth/login/verify-device', {
+      challenge_id,
+      code,
+      device_id,
+      device_name,
+    });
+    if (!response.data.data) throw new Error('Login verification failed');
+    return response.data.data;
+  },
+
   me: async (): Promise<User> => {
     const response = await api.get<APIResponse<User>>('/auth/me');
     if (!response.data.data) throw new Error('Failed to get user');

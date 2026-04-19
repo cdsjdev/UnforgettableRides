@@ -1,7 +1,7 @@
 import { useI18n } from '../i18n/I18nContext';
 import { useQuery } from '@tanstack/react-query';
 import { systemAPI } from '../services/api';
-import { WEB_APP_VERSION, WEB_BUILD_DATE, WEB_BUILD_SHA } from '../version';
+import { WEB_APP_VERSION, WEB_BUILD_NUMBER, WEB_BUILD_DATE, WEB_BUILD_SHA } from '../version';
 
 type Section = {
   title: string;
@@ -16,17 +16,25 @@ export default function HelpPage() {
     staleTime: Infinity,
   });
   const apiVersion = health?.version || 'unknown';
+  const apiBuildNumber = health?.build?.number || 'unknown';
   const apiBuildDate = health?.build?.date || 'unknown';
   const apiBuildSha = health?.build?.commit || 'unknown';
-  const webBuildInfo = WEB_BUILD_DATE !== 'unknown' || WEB_BUILD_SHA !== 'unknown'
-    ? lang === 'zh' ? `（构建 ${WEB_BUILD_DATE} ${WEB_BUILD_SHA}）` : ` (build ${WEB_BUILD_DATE} ${WEB_BUILD_SHA})`
+
+  const webBuildInfo = WEB_BUILD_NUMBER !== 'unknown' || WEB_BUILD_DATE !== 'unknown' || WEB_BUILD_SHA !== 'unknown'
+    ? lang === 'zh'
+      ? `(?? ${WEB_BUILD_NUMBER} ${WEB_BUILD_DATE} ${WEB_BUILD_SHA})`
+      : ` (build ${WEB_BUILD_NUMBER} ${WEB_BUILD_DATE} ${WEB_BUILD_SHA})`
     : '';
-  const apiBuildInfo = apiBuildDate !== 'unknown' || apiBuildSha !== 'unknown'
-    ? lang === 'zh' ? `（构建 ${apiBuildDate} ${apiBuildSha}）` : ` (build ${apiBuildDate} ${apiBuildSha})`
+
+  const apiBuildInfo = apiBuildNumber !== 'unknown' || apiBuildDate !== 'unknown' || apiBuildSha !== 'unknown'
+    ? lang === 'zh'
+      ? `(?? ${apiBuildNumber} ${apiBuildDate} ${apiBuildSha})`
+      : ` (build ${apiBuildNumber} ${apiBuildDate} ${apiBuildSha})`
     : '';
+
   const versionLabel = lang === 'zh'
-    ? `版本：Web v${WEB_APP_VERSION}${webBuildInfo} · API v${apiVersion}${apiBuildInfo}`
-    : `Version: Web v${WEB_APP_VERSION}${webBuildInfo} · API v${apiVersion}${apiBuildInfo}`;
+    ? `??:Web v${WEB_APP_VERSION}${webBuildInfo} � API v${apiVersion}${apiBuildInfo}`
+    : `Version: Web v${WEB_APP_VERSION}${webBuildInfo} � API v${apiVersion}${apiBuildInfo}`;
 
   const sections: Section[] = [
     {

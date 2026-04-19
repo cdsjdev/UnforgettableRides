@@ -18,6 +18,7 @@ import AboutPage from './pages/AboutPage';
 import OwnerDashboardPage from './pages/OwnerDashboardPage';
 import AddCarPage from './pages/AddCarPage';
 import EditCarPage from './pages/EditCarPage';
+import { WEB_APP_VERSION, WEB_BUILD_NUMBER, WEB_BUILD_DATE, WEB_BUILD_SHA } from './version';
 
 function NavBar() {
   const { user, logout } = useAuth();
@@ -60,6 +61,7 @@ function NavBar() {
 }
 
 function Footer() {
+  const buildInfo = `v${WEB_APP_VERSION} (${WEB_BUILD_NUMBER} | ${WEB_BUILD_DATE} | ${WEB_BUILD_SHA})`;
   return (
     <footer className="footer">
       <div className="container">
@@ -75,7 +77,8 @@ function Footer() {
             <Link to="/register">List Your Car</Link>
           </div>
         </div>
-        <p className="footer-copy">© {new Date().getFullYear()} UnforgettableRides. All rights reserved.</p>
+        <p className="footer-copy">(c) {new Date().getFullYear()} UnforgettableRides. All rights reserved.</p>
+        <p className="footer-copy" style={{ opacity: 0.68, marginTop: 8 }}>Build {buildInfo}</p>
       </div>
     </footer>
   );

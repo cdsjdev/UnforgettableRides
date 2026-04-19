@@ -45,6 +45,7 @@ if (!fs.existsSync(uploadsDir)) {
 }
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const API_BUILD_NUMBER = process.env.BUILD_NUMBER || process.env.RELEASE_NUMBER || process.env.RELEASE_VERSION || API_VERSION;
 const API_BUILD_DATE = process.env.BUILD_DATE || process.env.RELEASE_DATE || 'unknown';
 const rawApiBuildSha = process.env.GIT_SHA || process.env.COMMIT_SHA || 'unknown';
 const API_BUILD_SHA = rawApiBuildSha === 'unknown' ? rawApiBuildSha : rawApiBuildSha.slice(0, 7);
@@ -4239,6 +4240,7 @@ app.get('/api/v1/health', (req, res) => {
     version: API_VERSION,
     timestamp: new Date().toISOString(),
     build: {
+      number: API_BUILD_NUMBER,
       date: API_BUILD_DATE,
       commit: API_BUILD_SHA,
     },

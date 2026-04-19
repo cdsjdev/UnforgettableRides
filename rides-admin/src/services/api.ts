@@ -330,7 +330,7 @@ export const socialModerationAPI = {
 };
 
 export const systemAPI = {
-  health: async (): Promise<{ status: string; version: string; timestamp?: string; build?: { date?: string; commit?: string } }> => {
+  health: async (): Promise<{ status: string; version: string; timestamp?: string; build?: { number?: string; date?: string; commit?: string } }> => {
     const { data } = await api.get('/health');
     return data;
   },

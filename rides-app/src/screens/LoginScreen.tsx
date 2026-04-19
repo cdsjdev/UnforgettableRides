@@ -15,6 +15,7 @@ export default function LoginScreen({ navigation }: any) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const GENERIC_LOGIN_ERROR = 'Login failed. Please check your credentials and try again.';
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -25,10 +26,9 @@ export default function LoginScreen({ navigation }: any) {
     setLoading(true);
     try {
       await login(email.trim(), password);
-    } catch (err: any) {
-      const msg = err?.response?.data?.error?.message || err?.message || 'Sign in failed. Please try again.';
-      setError(msg);
-      if (Platform.OS !== 'web') Alert.alert('Sign In Failed', msg);
+    } catch {
+      setError(GENERIC_LOGIN_ERROR);
+      if (Platform.OS !== 'web') Alert.alert('Sign In Failed', GENERIC_LOGIN_ERROR);
     } finally {
       setLoading(false);
     }

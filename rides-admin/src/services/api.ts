@@ -94,8 +94,11 @@ export const authAPI = {
 
 export const carsAdminAPI = {
   getAll: async (params?: { owner_id?: string; is_active?: boolean; available_for_hire?: boolean }): Promise<ClassicCar[]> => {
-    const { data } = await api.get<APIResponse<ClassicCar[]>>('/cars', { params });
-    return data.data || [];
+    const { data } = await api.get<APIResponse<any>>('/cars', { params });
+    const payload = data.data;
+    if (Array.isArray(payload)) return payload;
+    if (Array.isArray(payload?.items)) return payload.items;
+    return [];
   },
 
   getById: async (id: string): Promise<ClassicCar> => {

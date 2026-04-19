@@ -1,4 +1,4 @@
-export type Language = 'en' | 'zh';
+﻿export type Language = 'en' | 'zh';
 
 type Dict = Record<string, string>;
 
@@ -23,7 +23,7 @@ export const translations: Record<Language, Dict> = {
     'common.actionFailed': 'Operation failed. Please try again.',
     'common.allStores': 'All Stores',
 
-    'app.brand': 'PetCare Store',
+    'app.brand': 'UnforgettableRides',
     'app.section.operations': 'Operations',
     'app.section.members': 'Members',
     'app.section.analysis': 'Analysis',
@@ -156,7 +156,7 @@ export const translations: Record<Language, Dict> = {
     'help.rag.scope': 'Safety: manager/staff only see data in their store scope.',
     'help.rag.limit': 'Current quality: keyword match (good for clear SOP/FAQ text). Embeddings can be added later.',
 
-    'login.title': 'PetCare Store',
+    'login.title': 'UnforgettableRides',
     'login.subtitle': 'Sign in to the management dashboard',
     'login.email': 'Email',
     'login.password': 'Password',
@@ -193,7 +193,7 @@ export const translations: Record<Language, Dict> = {
     'auth.backToLogin': 'Back to Sign In',
 
     'overview.title': 'Store Overview',
-    'overview.subtitle': "Today's snapshot for your PetCare retail store",
+    'overview.subtitle': "Today's snapshot for your UnforgettableRides retail store",
     'overview.dogsNow': 'Dogs In Store Now',
     'overview.entriesToday': 'Entries Today',
     'overview.appointmentsToday': 'Appointments Today',
@@ -647,8 +647,8 @@ export const translations: Record<Language, Dict> = {
     'stores.requireVerifiedForSensitive': 'Require verified email for sensitive actions',
     'stores.requireVerifiedForSensitiveHint': 'When disabled, users can checkout/save appointments without email verification (temporary mode).',
     'stores.publicAppBaseUrl': 'Public App Base URL',
-    'stores.publicAppBaseUrlHint': 'Used for email verification links and redirect target (for example https://app.petcare.com).',
-    'stores.publicAppBaseUrlPlaceholder': 'https://app.petcare.com',
+    'stores.publicAppBaseUrlHint': 'Used for email verification links and redirect target (for example https://app.unforgettablerides.com).',
+    'stores.publicAppBaseUrlPlaceholder': 'https://app.unforgettablerides.com',
     'stores.emailDeliveryMode': 'Email Delivery Mode',
     'stores.emailModeAuto': 'Auto (Webhook -> SMTP)',
     'stores.emailModeSmtp': 'SMTP Only',
@@ -944,7 +944,7 @@ export const translations: Record<Language, Dict> = {
     'common.actionFailed': '操作失败，请重试。',
     'common.allStores': '全部门店',
 
-    'app.brand': 'PetCare 门店',
+    'app.brand': 'UnforgettableRides 门店',
     'app.section.operations': '运营',
     'app.section.members': '成员',
     'app.section.analysis': '分析',
@@ -1077,7 +1077,7 @@ export const translations: Record<Language, Dict> = {
     'help.rag.scope': '安全隔离：manager/staff 只能看到自己门店范围的数据。',
     'help.rag.limit': '当前效果：关键词匹配（适合清晰 SOP/FAQ 文本），后续可升级 embeddings。',
 
-    'login.title': 'PetCare 门店',
+    'login.title': 'UnforgettableRides 门店',
     'login.subtitle': '登录管理后台',
     'login.email': '邮箱',
     'login.password': '密码',
@@ -1114,7 +1114,7 @@ export const translations: Record<Language, Dict> = {
     'auth.backToLogin': '返回登录',
 
     'overview.title': '门店总览',
-    'overview.subtitle': '今日 PetCare 门店运营快照',
+    'overview.subtitle': '今日 UnforgettableRides 门店运营快照',
     'overview.dogsNow': '在店犬只数',
     'overview.entriesToday': '今日进店次数',
     'overview.appointmentsToday': '今日预约',
@@ -1843,3 +1843,4 @@ export const translations: Record<Language, Dict> = {
     'moat.k4.target': 'NT$ 18k+',
   },
 };
+

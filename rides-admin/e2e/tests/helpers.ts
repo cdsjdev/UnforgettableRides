@@ -1,6 +1,6 @@
-import { expect, Page, request as playwrightRequest } from '@playwright/test';
+﻿import { expect, Page, request as playwrightRequest } from '@playwright/test';
 
-export const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || process.env.ADMIN_EMAIL || 'admin@petcare.com';
+export const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || process.env.ADMIN_EMAIL || 'admin@unforgettablerides.com';
 export const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD || 'admin123';
 
 const rawApiBase = (process.env.PW_API_BASE_URL || 'http://127.0.0.1:3000/api/v1/').trim();
@@ -26,8 +26,8 @@ export async function loginAsAdmin(page: Page) {
       { email: process.env.E2E_ADMIN_EMAIL || '', password: process.env.E2E_ADMIN_PASSWORD || '' },
       { email: process.env.ADMIN_EMAIL || '', password: process.env.ADMIN_PASSWORD || '' },
       { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
-      { email: 'petcare.verify@gmail.com', password: 'petcare123!' },
-      { email: 'admin@petcare.com', password: 'admin123' },
+      { email: 'verify@unforgettablerides.com', password: 'rides123!' },
+      { email: 'admin@unforgettablerides.com', password: 'admin123' },
     ].filter((c) => c.email && c.password);
 
     const req = await playwrightRequest.newContext({ baseURL: API_BASE });
@@ -51,8 +51,8 @@ export async function loginAsAdmin(page: Page) {
 }
 
 export async function getAuthToken(page: Page): Promise<string> {
-  await page.waitForFunction(() => !!localStorage.getItem('petcare_token'));
-  const token = await page.evaluate(() => localStorage.getItem('petcare_token'));
+  await page.waitForFunction(() => !!localStorage.getItem('rides_token'));
+  const token = await page.evaluate(() => localStorage.getItem('rides_token'));
   if (!token) {
     throw new Error('No auth token found in localStorage after login');
   }
@@ -105,7 +105,7 @@ export async function createRoleUserViaApi(
     const storesJson = await storesResp.json();
     resolvedStoreId = storesJson?.data?.[0]?.id || null;
   }
-  const email = `e2e-${role}-${suffix}@petcare.test`;
+  const email = `e2e-${role}-${suffix}@unforgettablerides.test`;
   const password = 'Test123!';
   const registerResp = await req.post('auth/register', {
     data: {
@@ -130,8 +130,8 @@ export async function loginApi(email: string, password: string) {
     { email, password },
     { email: process.env.E2E_ADMIN_EMAIL || '', password: process.env.E2E_ADMIN_PASSWORD || '' },
     { email: process.env.ADMIN_EMAIL || '', password: process.env.ADMIN_PASSWORD || '' },
-    { email: 'petcare.verify@gmail.com', password: 'petcare123!' },
-    { email: 'admin@petcare.com', password: 'admin123' },
+    { email: 'verify@unforgettablerides.com', password: 'rides123!' },
+    { email: 'admin@unforgettablerides.com', password: 'admin123' },
   ].filter((c) => c.email && c.password);
 
   let lastJson: any = null;
@@ -150,3 +150,4 @@ export async function loginApi(email: string, password: string) {
   await req.dispose();
   throw new Error(`login api failed: ${JSON.stringify(lastJson)}`);
 }
+

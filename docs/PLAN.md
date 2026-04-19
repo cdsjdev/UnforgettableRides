@@ -1,4 +1,4 @@
-# UnforgettableRides — Implementation Plan & Progress Tracker
+﻿# UnforgettableRides — Implementation Plan & Progress Tracker
 
 > **Last updated:** 2026-04-19 — Phase 1 + Phase 2 + Phase 3 complete
 > **Status legend:** ✅ Done · 🔄 In Progress · ⬜ Not Started
@@ -7,7 +7,7 @@
 
 ## Context
 
-Transform the PetCare codebase into **UnforgettableRides** — a premium marketplace where classic car owners list their vehicles for hire at weddings, photo shoots, and special events. Customers browse, message owners, request quotes, and book. Admins manage listings, bookings, moderation, and payouts.
+Transform the UnforgettableRides codebase into **UnforgettableRides** — a premium marketplace where classic car owners list their vehicles for hire at weddings, photo shoots, and special events. Customers browse, message owners, request quotes, and book. Admins manage listings, bookings, moderation, and payouts.
 
 The existing codebase is reused as structural foundation (auth, payments, messaging, booking patterns, admin dashboard, portal). All dog/pet/wash/ML-vision code is removed. The public portal gets a full premium redesign: dark charcoal + gold, classic/heritage aesthetic.
 
@@ -17,10 +17,10 @@ The existing codebase is reused as structural foundation (auth, payments, messag
 
 | Current | New | Status |
 |---|---|---|
-| `petcare-api/` | `rides-api/` | ✅ Done |
-| `petcare-app/` | `rides-app/` | ✅ Done |
-| `petcare-web/` | `rides-admin/` | ✅ Done |
-| `petcare-portal/` | `rides-portal/` | ✅ Done |
+| `rides-api/` | `rides-api/` | ✅ Done |
+| `rides-app/` | `rides-app/` | ✅ Done |
+| `rides-admin/` | `rides-admin/` | ✅ Done |
+| `rides-portal/` | `rides-portal/` | ✅ Done |
 | `ml-models/` | *(deleted)* | ✅ Done |
 | `shared/types.ts` | `shared/types.ts` | ✅ Done |
 
@@ -31,7 +31,7 @@ The existing codebase is reused as structural foundation (auth, payments, messag
 | Task | Status |
 |---|---|
 | 0.1 Remove git remote (`git remote remove origin`) | ✅ Done |
-| 0.2 Rename folders (`petcare-*` → `rides-*`, delete `ml-models`) | ✅ Done |
+| 0.2 Rename folders (`legacy-*` → `rides-*`, delete `ml-models`) | ✅ Done |
 | 0.3 Update `"name"` in all `package.json` files | ✅ Done |
 | 0.4 Update `rides-app/app.json` (slug, bundle ID, permissions) | ✅ Done |
 | 0.5 Update `docker-compose.yml` / `docker-compose.production.yml` | ✅ Done |
@@ -124,4 +124,5 @@ The existing codebase is reused as structural foundation (auth, payments, messag
 - [x] `cd rides-admin && npm run build` — builds clean (0 TS errors, Vite build succeeds)
 - [ ] `cd rides-admin && npm run dev` — admin dashboard, new sidebar nav visual check
 - [ ] `cd rides-app && npx expo start --web` — 4-tab app loads
-- [ ] No "PetCare", "dog", "wash", "breed" strings remain in any UI
+- [ ] No "UnforgettableRides", "dog", "wash", "breed" strings remain in any UI
+

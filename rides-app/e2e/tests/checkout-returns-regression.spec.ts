@@ -63,10 +63,10 @@ test.describe('Checkout + returns regression', () => {
 
     // Force zh locale through persisted storage to avoid flaky language-toggle click matching.
     await page.addInitScript(() => {
-      window.localStorage.setItem('@petcare_lang', 'zh');
+      window.localStorage.setItem('@rides_lang', 'zh');
     });
     await page.evaluate(() => {
-      window.localStorage.setItem('@petcare_lang', 'zh');
+      window.localStorage.setItem('@rides_lang', 'zh');
     });
 
     await page.goto('/shop/orders');
@@ -78,3 +78,4 @@ test.describe('Checkout + returns regression', () => {
     await expect(page.getByText('Choose return reason')).toHaveCount(0);
   });
 });
+

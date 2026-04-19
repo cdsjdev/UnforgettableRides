@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Test helpers - create users and obtain JWT tokens for each role.
  *
  * Tests run against an isolated SQLite DB (analytics.test.db), never the
@@ -12,7 +12,7 @@ const path = require('path');
 
 // Force isolated test runtime before loading the app module.
 process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = process.env.JWT_SECRET || 'petcare-jest-jwt-secret';
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'rides-jest-jwt-secret';
 process.env.AUTH_DEVICE_CHALLENGE_ENABLED = process.env.AUTH_DEVICE_CHALLENGE_ENABLED || 'false';
 process.env.AUTH_REQUIRE_VERIFIED_FOR_SENSITIVE = process.env.AUTH_REQUIRE_VERIFIED_FOR_SENSITIVE || 'false';
 const TEST_DB_DIR = path.join(__dirname, 'data');
@@ -35,7 +35,7 @@ const appModule = require('../src/index');
 const { app, db } = appModule;
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'petcare-dev-secret-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'rides-dev-secret-change-in-production';
 
 // Unique email per test run to avoid collisions
 const RUN_ID = Date.now().toString(36);
@@ -48,7 +48,7 @@ const _originalDogs = JSON.parse(JSON.stringify(appModule._dogs));
  */
 function createTestUser(role, overrides = {}) {
   const id = uuidv4();
-  const email = overrides.email || `test-${role}-${RUN_ID}@petcare.test`;
+  const email = overrides.email || `test-${role}-${RUN_ID}@unforgettablerides.test`;
   const password = overrides.password || 'Test123!';
   const name = overrides.name || `Test ${role}`;
   const hash = bcrypt.hashSync(password, 4); // low rounds for speed
@@ -74,7 +74,7 @@ function createAllRoles() {
 
 /** Clean up test users created in this run. */
 function cleanupTestUsers() {
-  db.prepare("DELETE FROM users WHERE email LIKE '%@petcare.test'").run();
+  db.prepare("DELETE FROM users WHERE email LIKE '%@unforgettablerides.test'").run();
 }
 
 /** Restore dogs array and file to pre-test state (prevents test artifacts in dogs.json). */
@@ -86,3 +86,4 @@ function restoreDogs() {
 }
 
 module.exports = { app, db, request, createTestUser, createAllRoles, cleanupTestUsers, restoreDogs };
+

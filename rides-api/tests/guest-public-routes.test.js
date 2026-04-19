@@ -1,4 +1,4 @@
-const { app, db, request, createTestUser } = require('./helpers');
+﻿const { app, db, request, createTestUser } = require('./helpers');
 
 function auth(token) {
   return { Authorization: `Bearer ${token}` };
@@ -69,7 +69,7 @@ describe('Guest public route regression', () => {
   });
 
   test('GET /api/v1/social/public/feed returns public posts for guest', async () => {
-    const author = createTestUser('customer', { email: `${prefix}feed-author@petcare.test` });
+    const author = createTestUser('customer', { email: `${prefix}feed-author@unforgettablerides.test` });
     const postRes = await request(app)
       .post('/api/v1/social/posts')
       .set(auth(author.token))
@@ -86,7 +86,7 @@ describe('Guest public route regression', () => {
   });
 
   test('GET /api/v1/social/public/posts/:id and comments are readable by guest', async () => {
-    const author = createTestUser('customer', { email: `${prefix}post-detail-author@petcare.test` });
+    const author = createTestUser('customer', { email: `${prefix}post-detail-author@unforgettablerides.test` });
     const postRes = await request(app)
       .post('/api/v1/social/posts')
       .set(auth(author.token))
@@ -108,7 +108,7 @@ describe('Guest public route regression', () => {
   });
 
   test('GET /api/v1/social/public/meetups returns public meetups for guest', async () => {
-    const host = createTestUser('customer', { email: `${prefix}meetup-host@petcare.test` });
+    const host = createTestUser('customer', { email: `${prefix}meetup-host@unforgettablerides.test` });
     const startAt = new Date(Date.now() + 4 * 60 * 60 * 1000);
     const endAt = new Date(startAt.getTime() + 60 * 60 * 1000);
     const createRes = await request(app)
@@ -143,13 +143,14 @@ describe('Guest public route regression', () => {
       .send({
         customer_name: 'Guest Buyer',
         customer_phone: '555-1000',
-        customer_email: 'guest-buyer@petcare.test',
+        customer_email: 'guest-buyer@unforgettablerides.test',
         payment_method: 'in_store',
         items: [{ product_id: productId, quantity: 1 }],
       });
 
     expect(createOrderRes.status).toBe(201);
     expect(createOrderRes.body?.data?.user_id || null).toBeNull();
-    expect(createOrderRes.body?.data?.customer_email).toBe('guest-buyer@petcare.test');
+    expect(createOrderRes.body?.data?.customer_email).toBe('guest-buyer@unforgettablerides.test');
   });
 });
+

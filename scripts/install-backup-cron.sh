@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 set -euo pipefail
 
-# Install a daily Docker backup cron job for PetCare.
+# Install a daily Docker backup cron job for UnforgettableRides.
 #
 # Usage:
 #   ./scripts/install-backup-cron.sh
@@ -38,12 +38,12 @@ if [[ ! -x "${ROOT_DIR}/scripts/backup.sh" ]]; then
   chmod +x "${ROOT_DIR}/scripts/backup.sh"
 fi
 
-JOB_TAG="# petcare-daily-backup"
+JOB_TAG="# unforgettablerides-daily-backup"
 JOB_CMD="cd ${ROOT_DIR} && TZ=${TIMEZONE} BACKUP_ROOT=${BACKUP_ROOT} KEEP_LAST=${KEEP_LAST} ./scripts/backup.sh --docker >> ${ROOT_DIR}/logs/backup-cron.log 2>&1"
 JOB_LINE="${BACKUP_MINUTE} ${BACKUP_HOUR} * * * ${JOB_CMD} ${JOB_TAG}"
 
 CURRENT_CRON="$(crontab -l 2>/dev/null || true)"
-FILTERED_CRON="$(printf '%s\n' "${CURRENT_CRON}" | sed '/petcare-daily-backup/d')"
+FILTERED_CRON="$(printf '%s\n' "${CURRENT_CRON}" | sed '/unforgettablerides-daily-backup/d')"
 
 {
   printf '%s\n' "${FILTERED_CRON}"
@@ -55,4 +55,5 @@ echo "  ${JOB_LINE}"
 echo
 echo "Current crontab:"
 crontab -l
+
 

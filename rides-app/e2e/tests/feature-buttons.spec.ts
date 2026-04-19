@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+﻿import { expect, test } from '@playwright/test';
 import { registerFreshUser } from './helpers';
 
 test.describe('App feature buttons regression', () => {
@@ -27,10 +27,11 @@ test.describe('App feature buttons regression', () => {
     if (await noProvider.isVisible()) {
       await expect(noProvider).toBeVisible();
     } else {
-      const input = page.getByPlaceholder(/ask me anything about pet care/i);
+      const input = page.getByPlaceholder(/ask me anything about classic car/i);
       await expect(input).toBeVisible();
       await input.fill('How often should I groom a short-haired dog?');
       await expect(input).toHaveValue(/How often/i);
     }
   });
 });
+

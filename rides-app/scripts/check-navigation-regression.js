@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 const appRoot = path.resolve(__dirname, '..');
@@ -121,7 +121,7 @@ function main() {
   );
   assertIncludes(
     activityBadgeSettings,
-    "ACTIVITY_BADGE_SETTINGS_KEY = '@petcare_activity_badge_settings'",
+    "ACTIVITY_BADGE_SETTINGS_KEY = '@rides_activity_badge_settings'",
     'Navigation regression: activity badge settings storage key missing'
   );
 
@@ -134,3 +134,4 @@ try {
   process.stderr.write(`${error.message}\n`);
   process.exit(1);
 }
+

@@ -1,4 +1,4 @@
-﻿# PetCare 开发路线图
+﻿# UnforgettableRides 开发路线图
 
 > 最后更新: 2026-04-04 (新增正式上线前 P0 清单：支付/公司验证邮箱/价格库存/电话服务/域名绑定)
 
@@ -240,7 +240,7 @@
   - `staff`：可访问分配给他的门店（默认可先保持单门店绑定）；
   - 当前系统状态：仍是单 `store_id` 绑定，需要后续升级到 `user_store_links` 才能支持 manager 多门店。
 - 兼容旧数据：对历史 store_id IS NULL 记录保留过渡可见性，避免单店存量数据回归。
-- API 测试通过：petcare-api 74/74。
+- API 测试通过：rides-api 74/74。
 
 ### 下一步
 - 实现 `user_store_links`（用户-门店多对多）并将 manager 切换器限制为“仅已分配门店”。
@@ -266,21 +266,21 @@
 ### 已完成
 
 **Track C — 生产部署基础设施:**
-- `petcare-api/Dockerfile` — 多阶段构建，Node 20 Alpine，非 root 用户，health check。
-- `petcare-web/Dockerfile` — 多阶段构建（repo root context），Vite build + nginx SPA fallback + API 反向代理。
+- `rides-api/Dockerfile` — 多阶段构建，Node 20 Alpine，非 root 用户，health check。
+- `rides-admin/Dockerfile` — 多阶段构建（repo root context），Vite build + nginx SPA fallback + API 反向代理。
 - `docker-compose.yml` — CPU-only 部署（API + Web Dashboard + ML Service），命名卷持久化数据。
 - `docker-compose.production.yml` — GPU 生产部署变体。
 - `.env.production` — 完整环境变量模板，涵盖 JWT、HMAC、Admin bootstrap、ML、AI Advisor、Camera 等全部配置。
 - `scripts/backup.sh` — SQLite 安全备份（`.backup` 命令）+ JSON 数据备份 + 自动轮替 + Docker 卷备份 + 还原模式。
 - `ecosystem.config.js` — PM2 进程管理配置（单实例 fork 模式，适配 SQLite 单写）。
-- `.dockerignore` — petcare-api 和 petcare-web 均已添加。
+- `.dockerignore` — rides-api 和 rides-admin 均已添加。
 
 **Track A — 多门店最小基础铺垫:**
 - 新增 `stores` 表（id, name, slug, address, phone, email, timezone, is_active, settings_json）。
 - 现有表迁移：appointments、orders、products 新增 `store_id` 列（nullable，不影响现有逻辑）。
 - 68 个集成测试通过，零行为变更。
 
-**Track B — 顾客 Web 端 (petcare-portal):**
+**Track B — 顾客 Web 端 (rides-portal):**
 - Scaffold：Vite + React 18 + TypeScript + React Router + React Query + Axios（端口 5174）。
 - 共享类型：复用 `@shared/types` 别名。
 - AuthContext：登入/注册/登出，localStorage token 管理，auto-logout on 401。
@@ -376,7 +376,7 @@
 
 ## 项目概览
 
-PetCare 是一个宠物护理零售店管理平台,包含:
+UnforgettableRides 是一个宠物护理零售店管理平台,包含:
 
 ### 前端(3个入口)
 
@@ -388,7 +388,7 @@ PetCare 是一个宠物护理零售店管理平台,包含:
 
 > **注意**:Web 顾客端和 Web 管理后台是**两个不同的应用**,面向不同用户群体。
 
-> 当前 `petcare-web` 是管理后台,Web 顾客端待建设。
+> 当前 `rides-admin` 是管理后台,Web 顾客端待建设。
 
 ### 后端
 - **API 服务**(Express.js + SQLite)— 核心业务逻辑,同时服务 App、Web C端、Web B端
@@ -435,7 +435,7 @@ PetCare 是一个宠物护理零售店管理平台,包含:
 | 浏览器导航 | Web 端浏览器前进/后退支持(React Navigation Linking) | ✅ | — | — |
 | 响应式布局 | 移动端 App Web 版按钮/底栏宽度限制 | ✅ | — | — |
 
-> **Web 顾客端已完成 MVP** — `petcare-portal` 已上线商品浏览、预约、购物车结帐、订单查询功能（2026-03-17）。
+> **Web 顾客端已完成 MVP** — `rides-portal` 已上线商品浏览、预约、购物车结帐、订单查询功能（2026-03-17）。
 
 ---
 
@@ -515,12 +515,12 @@ PUT  /api/v1/auth/password    — 修改密码
 
 | 文件 | 改动 |
 |------|------|
-| `petcare-api/src/index.js` | 新增 users 表、auth 路由、中间件 |
+| `rides-api/src/index.js` | 新增 users 表、auth 路由、中间件 |
 | `shared/types.ts` | 新增 User、LoginRequest、LoginResponse 类型 |
-| `petcare-web/src/services/api.ts` | 新增 authAPI、axios 拦截器 |
-| `petcare-web/src/pages/LoginPage.tsx` | **新建** |
-| `petcare-web/src/App.tsx` | 添加登录路由、路由守卫 |
-| `petcare-web/src/contexts/AuthContext.tsx` | **新建** — 认证状态管理 |
+| `rides-admin/src/services/api.ts` | 新增 authAPI、axios 拦截器 |
+| `rides-admin/src/pages/LoginPage.tsx` | **新建** |
+| `rides-admin/src/App.tsx` | 添加登录路由、路由守卫 |
+| `rides-admin/src/contexts/AuthContext.tsx` | **新建** — 认证状态管理 |
 
 ---
 
@@ -557,10 +557,10 @@ PUT  /api/v1/auth/password    — 修改密码
 
 | 文件 | 改动 |
 |------|------|
-| `petcare-api/src/index.js` | 所有路由加 roleGuard 中间件 |
-| `petcare-web/src/pages/UsersPage.tsx` | **新建** — admin 用户管理 |
-| `petcare-web/src/App.tsx` | 侧边栏按角色渲染 |
-| `petcare-web/src/contexts/AuthContext.tsx` | 暴露用户角色信息 |
+| `rides-api/src/index.js` | 所有路由加 roleGuard 中间件 |
+| `rides-admin/src/pages/UsersPage.tsx` | **新建** — admin 用户管理 |
+| `rides-admin/src/App.tsx` | 侧边栏按角色渲染 |
+| `rides-admin/src/contexts/AuthContext.tsx` | 暴露用户角色信息 |
 
 ---
 
@@ -599,7 +599,7 @@ CREATE TABLE stores (
 
   id TEXT PRIMARY KEY,
 
-  name TEXT NOT NULL,             -- 门店名称,如 "PetCare 奥斯汀店"
+  name TEXT NOT NULL,             -- 门店名称,如 "UnforgettableRides 奥斯汀店"
 
   code TEXT UNIQUE NOT NULL,      -- 门店编号,如 "ATX-001"
 
@@ -673,11 +673,11 @@ DELETE /api/v1/stores/:id       — 停用门店
 
 | 文件 | 改动 |
 |------|------|
-| `petcare-api/src/index.js` | stores 表、store CRUD、storeScope 中间件、所有查询加 store_id |
+| `rides-api/src/index.js` | stores 表、store CRUD、storeScope 中间件、所有查询加 store_id |
 | `shared/types.ts` | 新增 Store 类型 |
-| `petcare-web/src/pages/StoresPage.tsx` | **新建** — admin 门店管理 |
-| `petcare-web/src/App.tsx` | 新增门店管理路由 |
-| `petcare-web/src/components/StoreSelector.tsx` | **新建** — admin 切换门店视角 |
+| `rides-admin/src/pages/StoresPage.tsx` | **新建** — admin 门店管理 |
+| `rides-admin/src/App.tsx` | 新增门店管理路由 |
+| `rides-admin/src/components/StoreSelector.tsx` | **新建** — admin 切换门店视角 |
 
 ---
 
@@ -743,12 +743,12 @@ PUT /api/v1/inventory/:id   — 更新门店库存/定价
 
 | 文件 | 改动 |
 |------|------|
-| `petcare-api/src/index.js` | store_products 表、库存逻辑改为门店级别 |
+| `rides-api/src/index.js` | store_products 表、库存逻辑改为门店级别 |
 | `shared/types.ts` | 新增 StoreProduct 类型 |
-| `petcare-web/src/pages/InventoryPage.tsx` | **新建** — 门店库存管理 |
-| `petcare-web/src/pages/ProductsPage.tsx` | 改为全局产品模板管理(admin) |
-| `petcare-app/src/services/api.ts` | 产品请求带门店上下文 |
-| `petcare-app/src/screens/ProductListScreen.tsx` | 显示门店价格/库存 |
+| `rides-admin/src/pages/InventoryPage.tsx` | **新建** — 门店库存管理 |
+| `rides-admin/src/pages/ProductsPage.tsx` | 改为全局产品模板管理(admin) |
+| `rides-app/src/services/api.ts` | 产品请求带门店上下文 |
+| `rides-app/src/screens/ProductListScreen.tsx` | 显示门店价格/库存 |
 
 ---
 
@@ -1111,9 +1111,9 @@ POST   /api/v1/appointments → 服务完成后自动给会员加积分
 
 | 文件 | 改动 |
 |------|------|
-| `petcare-api/src/index.js` | 新增报表聚合 API |
-| `petcare-web/src/pages/ReportsPage.tsx` | **新建** — 跨店报表 |
-| `petcare-web/src/App.tsx` | 新增报表路由(仅 admin 可见) |
+| `rides-api/src/index.js` | 新增报表聚合 API |
+| `rides-admin/src/pages/ReportsPage.tsx` | **新建** — 跨店报表 |
+| `rides-admin/src/App.tsx` | 新增报表路由(仅 admin 可见) |
 
 ---
 
@@ -1131,11 +1131,11 @@ POST   /api/v1/appointments → 服务完成后自动给会员加积分
 
 当前项目结构:
 
-├── petcare-app/     — 移动端 App(C端)
+├── rides-app/     — 移动端 App(C端)
 
-├── petcare-web/     — Web 管理后台(B端)  ← 已有
+├── rides-admin/     — Web 管理后台(B端)  ← 已有
 
-└── petcare-portal/  — Web 顾客端(C端)    ← 新建
+└── rides-portal/  — Web 顾客端(C端)    ← 新建
 
 ```
 
@@ -1162,7 +1162,7 @@ Web 顾客端是**独立项目**,不和管理后台混在一起:
 - Vite + React + TypeScript(和管理后台相同技术栈)
 - 移动端优先响应式设计(顾客多用手机浏览器访问)
 - 复用 `shared/types` 和 API 接口
-- 可部署为独立站点或子域名(如 `shop.petcare.com` vs `admin.petcare.com`)
+- 可部署为独立站点或子域名(如 `shop.unforgettablerides.com` vs `admin.unforgettablerides.com`)
 
 ---
 
@@ -1282,10 +1282,10 @@ CREATE TABLE condition_scores (
 
 | 文件 | 改动 |
 |------|------|
-| `petcare-api/src/index.js` | 新增 `service_photos`、`condition_scores` 表 + CRUD API |
+| `rides-api/src/index.js` | 新增 `service_photos`、`condition_scores` 表 + CRUD API |
 | `shared/types.ts` | 新增 `ServicePhoto`、`ConditionScore` 类型 |
-| `petcare-web/src/pages/AppointmentsPage.tsx` | 服务详情中嵌入拍照 + 评分表单 |
-| `petcare-app/src/screens/` | 店员端拍照 + 评分 UI |
+| `rides-admin/src/pages/AppointmentsPage.tsx` | 服务详情中嵌入拍照 + 评分表单 |
+| `rides-app/src/screens/` | 店员端拍照 + 评分 UI |
 | `ml-models/training/` | **新建** — 数据导出 + 训练脚本（阶段 2 启用） |
 
 #### 关键指标
@@ -1338,7 +1338,7 @@ CREATE TABLE condition_scores (
   ├── Pre-launch 安全加固 ✅（HMAC签名、71个集成测试、所有权隔离）
   ├── 生产部署基础设施 ✅（Docker、.env模板、备份脚本、PM2）
   ├── 多门店基础铺垫 ✅（stores表、store_id列迁移）
-  ├── Web 顾客端 MVP ✅（petcare-portal：商品、预约、购物车、订单）
+  ├── Web 顾客端 MVP ✅（rides-portal：商品、预约、购物车、订单）
   └── Portal i18n 中英双语 🔄（codex 进行中）
 
 ═══ Soft Opening 冲刺（3/18 → 4/1）══════════════════════
@@ -1351,7 +1351,7 @@ CREATE TABLE condition_scores (
 
   正式上线前补充 P0（必须完成）:
   ├── [ ] 设置好支付账户（生产可用，含 webhook 与回调验收）
-  ├── [ ] 设置公司验证邮箱（用于注册/登录验证；替换 demo 邮箱 `petcare.verify@gmail.com`）
+  ├── [ ] 设置公司验证邮箱（用于注册/登录验证；替换 demo 邮箱 `verify@unforgettablerides.com`）
   ├── [ ] 复核各门店会员收费与优惠价格（含生效时间/适用范围/叠加规则）
   ├── [ ] 上线真实商城产品、价格与库存（完成一次盘点与下单扣减回归）
   ├── [ ] 如启用电话预约：接入第三方电话服务 API 与生产账户（号码/配额/计费）
@@ -1551,7 +1551,7 @@ CREATE TABLE condition_scores (
 ## 2026-03-17 Admin-only Strategy Module (Moat / Growth Design)
 
 ### 已完成
-- 在 `petcare-web` 新增 admin-only 页面：`/moat`
+- 在 `rides-admin` 新增 admin-only 页面：`/moat`
 - 侧边栏 Strategy 导航仅 `admin` 可见
 - `store_manager` 与 `staff` 无入口
 - 路由权限已生效：非 admin 访问 `/moat` 自动重定向至 `Overview`
@@ -1572,9 +1572,9 @@ CREATE TABLE condition_scores (
 - 非 2C 对外内容：不面向顾客展示经营策略与内部指标
 
 ### 涉及文件
-- `petcare-web/src/pages/MoatStrategyPage.tsx`
-- `petcare-web/src/App.tsx`
-- `petcare-web/src/index.css`
+- `rides-admin/src/pages/MoatStrategyPage.tsx`
+- `rides-admin/src/App.tsx`
+- `rides-admin/src/index.css`
 
 ---
 
@@ -1625,14 +1625,14 @@ CREATE TABLE condition_scores (
   - `store_manager` 与 `staff` 无审核入口
 
 ### 下一步（V1 UI）
-- `petcare-web`：
+- `rides-admin`：
   - [x] Business Member Application Review 页（admin）
   - [x] Business Membership 管理页（admin）
   - [x] Service Price 配置页（manager+）
   - [x] Appointment Charge 操作入口（staff+）
   - [x] Appointment Charge 记录页（staff+）
   - [x] Business Member Dashboard（business_member）：指标、关联顾客、顾客活动摘要、积分流水、解绑
-- `petcare-portal`：
+- `rides-portal`：
   - [x] “成为 Business Member”申请页（customer）
   - [x] 顾客输入邀请码并绑定入口（Cart）
   - [x] 结算页展示折扣明细（下单成功卡片）
@@ -1727,7 +1727,7 @@ Also confirm membership scope before Step 2:
 ---
 
 ### Step 2 — Database Tables
-**File:** `petcare-api/src/index.js`
+**File:** `rides-api/src/index.js`
 
 Add SQLite table creation in the DB init block:
 
@@ -1750,7 +1750,7 @@ Seed one example store with:
 ---
 
 ### Step 3 — API Endpoints (Read)
-**File:** `petcare-api/src/index.js`
+**File:** `rides-api/src/index.js`
 
 Public/customer read endpoints (auth required):
 
@@ -1767,7 +1767,7 @@ GET  /api/v1/coupons/me                   → user's claimed coupons
 ---
 
 ### Step 4 — API Endpoints (Write)
-**File:** `petcare-api/src/index.js`
+**File:** `rides-api/src/index.js`
 
 ```
 POST /api/v1/memberships/join             → body: { plan_id, store_id }
@@ -1796,7 +1796,7 @@ DELETE /api/v1/stores/:id/promotions/:pid
 Enforce store-scope on all write endpoints using existing role/store guards (admin all-store, manager scoped).
 
 ### Step 4.5 — API Tests (Pre-UI Gate)
-**Files:** `petcare-api/tests/*` (new/updated)
+**Files:** `rides-api/tests/*` (new/updated)
 
 Add API tests immediately after Step 4:
 - membership join/cancel happy path
@@ -1811,7 +1811,7 @@ Add API tests immediately after Step 4:
 ---
 
 ### Step 5 — Booking Screen: Service Catalog + Price Summary
-**File:** `petcare-app/src/screens/BookAppointmentScreen.tsx`
+**File:** `rides-app/src/screens/BookAppointmentScreen.tsx`
 
 Replace hardcoded service type buttons with dynamic list loaded from `GET /api/v1/stores/:id/services`.
 
@@ -1834,7 +1834,7 @@ Also update translations (EN + ZH) for any new UI strings.
 ---
 
 ### Step 6 — Offers Screen (new screen)
-**File:** `petcare-app/src/screens/OffersScreen.tsx` (new)
+**File:** `rides-app/src/screens/OffersScreen.tsx` (new)
 
 Three sections:
 
@@ -1863,8 +1863,8 @@ Also add translations (EN + ZH) for all strings.
 
 ### Step 7 — Navigation & Home Banner
 **Files:**
-- `petcare-app/src/navigation/AppNavigator.tsx` — add Offers screen to Care tab stack
-- `petcare-app/src/screens/HomeScreen.tsx` — add promo banner if active promotions exist
+- `rides-app/src/navigation/AppNavigator.tsx` — add Offers screen to Care tab stack
+- `rides-app/src/screens/HomeScreen.tsx` — add promo banner if active promotions exist
 
 Home banner logic: on mount, fetch active promotions for the user's preferred/last store. If any exist, show a dismissible banner card ("Deals available this week →") that navigates to Offers.
 
@@ -1873,7 +1873,7 @@ Home banner logic: on mount, fetch active promotions for the user's preferred/la
 ---
 
 ### Step 8 — Web Dashboard: Store Configuration UI
-**File:** `petcare-web` dashboard
+**File:** `rides-admin` dashboard
 
 Add store settings pages so managers can configure their own catalog:
 
@@ -1907,3 +1907,4 @@ These are admin/manager only (reuse existing role-gating patterns).
 - [x] Step 7 — Navigation + home banner
 - [x] Step 8 — Web dashboard configuration UI
 - [x] Step 9 — Polish & edge cases
+

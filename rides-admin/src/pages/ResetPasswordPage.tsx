@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from 'react';
+﻿import { FormEvent, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useI18n } from '../i18n/I18nContext';
@@ -52,7 +52,7 @@ export default function ResetPasswordPage() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-header">
-          <img src="/logo.png" alt="PetCare" className="login-logo" />
+          <img src="/logo.svg" alt="UnforgettableRides" className="login-logo" />
           <h1>{t('auth.resetTitle')}</h1>
           <p>{t('auth.resetSubtitle')}</p>
         </div>
@@ -109,3 +109,4 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+﻿import { expect, test } from '@playwright/test';
 import { registerFreshUser } from './helpers';
 
 test.describe('App auth + navigation regression', () => {
@@ -8,7 +8,7 @@ test.describe('App auth + navigation regression', () => {
     await page.getByText(/^Forgot password\?$/i).click();
 
     await expect(page.getByText(/^Forgot Password$/i)).toBeVisible();
-    await page.getByPlaceholder(/your@email.com/i).fill(`e2e-forgot-${Date.now()}@petcare.test`);
+    await page.getByPlaceholder(/your@email.com/i).fill(`e2e-forgot-${Date.now()}@unforgettablerides.test`);
     await page.getByText(/^Send Reset Link$/i).click();
     await expect(page.getByText(/password reset link has been sent/i)).toBeVisible();
 
@@ -42,3 +42,4 @@ test.describe('App auth + navigation regression', () => {
     await expect(page.getByText(/^Sign In$/)).toBeVisible();
   });
 });
+

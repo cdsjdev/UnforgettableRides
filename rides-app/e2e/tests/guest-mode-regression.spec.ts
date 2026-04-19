@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+﻿import { expect, test } from '@playwright/test';
 
 test.describe('Guest mode regression', () => {
   test('guest can enter demo and reach booking demo flow', async ({ page }) => {
@@ -24,8 +24,8 @@ test.describe('Guest mode regression', () => {
     const signupRes = await page.request.post('http://127.0.0.1:3100/api/v1/auth/signup', {
       data: {
         name: `Guest Feed Seeder ${Date.now()}`,
-        email: `guest_feed_seed_${Date.now()}@petcare.test`,
-        password: 'Petcare123!',
+        email: `guest_feed_seed_${Date.now()}@unforgettablerides.test`,
+        password: 'UnforgettableRides123!',
       },
     });
     expect(signupRes.ok()).toBeTruthy();
@@ -74,3 +74,4 @@ test.describe('Guest mode regression', () => {
     await expect(page.getByPlaceholder(/your@email.com/i)).toBeVisible();
   });
 });
+

@@ -1,4 +1,4 @@
-process.env.AUTH_REQUIRE_VERIFIED_FOR_SENSITIVE = 'true';
+﻿process.env.AUTH_REQUIRE_VERIFIED_FOR_SENSITIVE = 'true';
 
 const { app, db, request, createTestUser } = require('./helpers');
 
@@ -13,7 +13,7 @@ describe('Email verification gates on sensitive customer actions', () => {
   });
 
   test('blocks appointment create for unverified customer', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-appt@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-appt@unforgettablerides.test` });
     const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
     const res = await request(app)
       .post('/api/v1/appointments')
@@ -31,7 +31,7 @@ describe('Email verification gates on sensitive customer actions', () => {
   });
 
   test('blocks order create for unverified customer', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-order@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-order@unforgettablerides.test` });
     const product = db.prepare('SELECT id FROM products WHERE is_active = 1 ORDER BY id LIMIT 1').get();
     expect(product?.id).toBeTruthy();
 
@@ -48,7 +48,7 @@ describe('Email verification gates on sensitive customer actions', () => {
   });
 
   test('blocks payment intent create for unverified customer', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-pay@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-pay@unforgettablerides.test` });
     const res = await request(app)
       .post('/api/v1/payments/create-intent')
       .set('Authorization', `Bearer ${user.token}`)
@@ -59,7 +59,7 @@ describe('Email verification gates on sensitive customer actions', () => {
   });
 
   test('blocks square payment create for unverified customer', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-sqpay@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-sqpay@unforgettablerides.test` });
     const res = await request(app)
       .post('/api/v1/payments/square/create-payment')
       .set('Authorization', `Bearer ${user.token}`)
@@ -70,7 +70,7 @@ describe('Email verification gates on sensitive customer actions', () => {
   });
 
   test('blocks PayPal create-order for unverified customer', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-pp-create@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-pp-create@unforgettablerides.test` });
     const res = await request(app)
       .post('/api/v1/payments/paypal/create-order')
       .set('Authorization', `Bearer ${user.token}`)
@@ -81,7 +81,7 @@ describe('Email verification gates on sensitive customer actions', () => {
   });
 
   test('blocks PayPal capture-order for unverified customer', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-pp-capture@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-pp-capture@unforgettablerides.test` });
     const res = await request(app)
       .post('/api/v1/payments/paypal/capture-order')
       .set('Authorization', `Bearer ${user.token}`)
@@ -91,3 +91,4 @@ describe('Email verification gates on sensitive customer actions', () => {
     expect(res.body?.error?.code).toBe('EMAIL_VERIFICATION_REQUIRED');
   });
 });
+

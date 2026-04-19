@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authAPI, settingsAPI } from '../services/api';
 import { useI18n } from '../i18n/I18nContext';
@@ -24,7 +24,7 @@ function SecuritySettingsPage() {
   const [showSmtpPassword, setShowSmtpPassword] = useState(false);
   const [smtpUseTls, setSmtpUseTls] = useState(true);
   const [smtpUseSsl, setSmtpUseSsl] = useState(false);
-  const [emailFromName, setEmailFromName] = useState('PetCare');
+  const [emailFromName, setEmailFromName] = useState('UnforgettableRides');
   const [emailFromAddress, setEmailFromAddress] = useState('');
   const [emailTestTo, setEmailTestTo] = useState('');
 
@@ -50,7 +50,7 @@ function SecuritySettingsPage() {
     setSmtpPasswordConfigured(parseBool(globalSettings.smtp_pass_configured));
     setSmtpUseTls(parseBool(globalSettings.smtp_use_tls ?? '1'));
     setSmtpUseSsl(parseBool(globalSettings.smtp_use_ssl ?? '0'));
-    setEmailFromName(String(globalSettings.email_from_name ?? 'PetCare').trim() || 'PetCare');
+    setEmailFromName(String(globalSettings.email_from_name ?? 'UnforgettableRides').trim() || 'UnforgettableRides');
     setEmailFromAddress(String(globalSettings.email_from_address ?? '').trim());
   }, [globalSettings]);
 
@@ -383,3 +383,4 @@ function SecuritySettingsPage() {
 }
 
 export default SecuritySettingsPage;
+

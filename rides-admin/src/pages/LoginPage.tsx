@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+﻿import { useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useI18n } from '../i18n/I18nContext';
@@ -49,7 +49,7 @@ export default function LoginPage() {
     <div className="login-page">
       <div className="login-card">
         <div className="login-header">
-          <img src="/logo.png" alt="PetCare" className="login-logo" />
+          <img src="/logo.svg" alt="UnforgettableRides" className="login-logo" />
           <h1>{t('login.title')}</h1>
           <p>{t('login.subtitle')}</p>
         </div>
@@ -64,7 +64,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@petcare.com"
+              placeholder="admin@unforgettablerides.com"
               required
               autoFocus
               disabled={loading}
@@ -167,3 +167,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

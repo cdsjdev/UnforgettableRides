@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 set -euo pipefail
 
 # ============================================================
-# PetCare Backup Script
+# UnforgettableRides Backup Script
 #
 # Backs up SQLite databases and JSON data files.
 # Keeps the last N backups (default 7).
@@ -142,3 +142,4 @@ fi
 
 info "Backup complete: $BACKUP_DIR"
 ls -lh "$BACKUP_DIR"
+

@@ -1,4 +1,4 @@
-export type Language = 'en';
+﻿export type Language = 'en';
 type Dict = Record<string, string>;
 
 export const translations: Record<Language, Dict> = {
@@ -143,7 +143,7 @@ export const translations: Record<Language, Dict> = {
     'guest.guestHint': 'Guest mode is for trial only. Sign in to save your data.',
     'guest.mode': 'Guest Mode',
     'guest.demoBadge': 'OPENING DAY DEMO',
-    'guest.homeTitle': 'Try PetCare Instantly',
+    'guest.homeTitle': 'Try UnforgettableRides Instantly',
     'guest.homeSubtitle': 'Explore scanning, shopping, and advisor features before creating an account.',
     'guest.tryFeatures': 'Try These Features',
     'guest.browseStore': 'Browse Store',
@@ -193,7 +193,7 @@ export const translations: Record<Language, Dict> = {
 
     // Register screen
     'register.title': 'Create your account',
-    'register.subtitle': 'Join PetCare to get started',
+    'register.subtitle': 'Join UnforgettableRides to get started',
     'register.signUp': 'Sign Up',
     'register.fullName': 'Full Name',
     'register.email': 'Email',
@@ -938,10 +938,10 @@ export const translations: Record<Language, Dict> = {
     'advisor.noProviders': 'No AI Providers Configured',
     'advisor.noProvidersMsg': 'To use the AI advisor, you need at least one AI provider API key configured.',
     'advisor.disclaimer': 'Advisor tips are informational only and not veterinary medical advice.',
-    'advisor.welcomeMsg': 'Ask me anything about pet care!',
+    'advisor.welcomeMsg': 'Ask me anything about classic car!',
     'advisor.personalizedMsg': 'I know about your dogs and can give personalized advice.',
     'advisor.thinking': 'Thinking...',
-    'advisor.inputPh': 'Ask about pet care...',
+    'advisor.inputPh': 'Ask about classic car...',
     'advisor.exampleQ1': 'How often should I brush my dog?',
     'advisor.exampleQ2': 'What foods are dangerous for dogs?',
     'advisor.exampleQ3': 'My dog keeps scratching - help!',
@@ -956,8 +956,8 @@ export const translations: Record<Language, Dict> = {
     'aiSettings.saved': 'Saved',
     'aiSettings.savedMsg': 'Your AI settings have been saved.',
     'aiSettings.saveFailed': 'Failed to save keys.',
-    'aiSettings.privacy': 'API keys you provide are stored only on this device/browser and are encrypted in transit (HTTPS/TLS) when sent to the PetCare server per request; they are never stored on the server. If you use a shared/public device, do not enter personal API keys. If you have used one, clear app/site data on that device to remove saved keys.',
-    'aiSettings.keyPriority': 'If you enter your own API key, PetCare will use your key first. If you do not provide a key, PetCare may provide AI access using our company-managed key at our cost, subject to availability and usage limits.',
+    'aiSettings.privacy': 'API keys you provide are stored only on this device/browser and are encrypted in transit (HTTPS/TLS) when sent to the UnforgettableRides server per request; they are never stored on the server. If you use a shared/public device, do not enter personal API keys. If you have used one, clear app/site data on that device to remove saved keys.',
+    'aiSettings.keyPriority': 'If you enter your own API key, UnforgettableRides will use your key first. If you do not provide a key, UnforgettableRides may provide AI access using our company-managed key at our cost, subject to availability and usage limits.',
     'aiSettings.localOnlyWarning': 'Security note: keys stay on this device/browser only. Do not enter personal API keys on shared or public devices. On other devices, remove app/site data to clear saved keys.',
     'aiSettings.inputSafetyTitle': 'Before Entering API Keys',
     'aiSettings.inputSafetyMsg': 'Your API keys are kept locally on this device/browser and are not saved on the server. If this is a shared device, do not save personal keys.',
@@ -1014,7 +1014,7 @@ export const translations: Record<Language, Dict> = {
     'feedback.submitFailed': 'Failed to submit feedback. Please try again.',
 
     // Custom Header
-    'header.brand': 'PetCare',
+    'header.brand': 'UnforgettableRides',
     'header.settings': 'Settings',
     'header.help': 'Help',
     'header.profile': 'Account',
@@ -1318,3 +1318,4 @@ export const translations: Record<Language, Dict> = {
     'social.report.other': 'Other',
 },
 };
+

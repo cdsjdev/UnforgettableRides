@@ -9,7 +9,7 @@
     "price_per_day_cents": 95000,
     "price_per_hour_cents": 15000,
     "location": "London, UK",
-    "image_url": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Rolls_Royce_Silver_Shadow_%281971%29.jpg"
   },
   {
     "make": "Bentley",
@@ -21,7 +21,7 @@
     "price_per_day_cents": 120000,
     "price_per_hour_cents": 20000,
     "location": "Surrey, UK",
-    "image_url": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d6/1961_Bentley_S2_6.2.jpg"
   },
   {
     "make": "Jaguar",
@@ -33,7 +33,7 @@
     "price_per_day_cents": 75000,
     "price_per_hour_cents": 12000,
     "location": "Oxfordshire, UK",
-    "image_url": "https://images.unsplash.com/photo-1547245324-d777c6f05e80?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Jaguar_E-Type_Series_1_3.8_Litre_1961.jpg"
   },
   {
     "make": "Aston Martin",
@@ -45,7 +45,7 @@
     "price_per_day_cents": 150000,
     "price_per_hour_cents": 25000,
     "location": "Edinburgh, UK",
-    "image_url": "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3d/Aston_Martin_DB5_%28Skyfall%29.jpg"
   },
   {
     "make": "Mercedes-Benz",
@@ -57,7 +57,7 @@
     "price_per_day_cents": 85000,
     "price_per_hour_cents": 14000,
     "location": "Cheshire, UK",
-    "image_url": "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Terenure%2C_Co._Dublin_-_Ireland_%286038324974%29.jpg"
   },
   {
     "make": "Ferrari",
@@ -69,7 +69,7 @@
     "price_per_day_cents": 200000,
     "price_per_hour_cents": 35000,
     "location": "London, UK",
-    "image_url": "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Ferrari_250_Lusso_in_Grey%2C_front_right.jpg"
   },
   {
     "make": "Porsche",
@@ -81,7 +81,7 @@
     "price_per_day_cents": 110000,
     "price_per_hour_cents": 18000,
     "location": "Bristol, UK",
-    "image_url": "https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/07/2007-07-08_Porsche_356_C_%2801_kl_ret%29.jpg"
   },
   {
     "make": "Daimler",
@@ -93,7 +93,7 @@
     "price_per_day_cents": 65000,
     "price_per_hour_cents": 10000,
     "location": "Yorkshire, UK",
-    "image_url": "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Daimler_DS_420%2C_Castle_Hill%2C_Lincoln.jpg"
   },
   {
     "make": "Ford",
@@ -105,7 +105,7 @@
     "price_per_day_cents": 55000,
     "price_per_hour_cents": 9000,
     "location": "Manchester, UK",
-    "image_url": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/7f/1965_Ford_Mustang_2D_Hardtop_Front.jpg"
   },
   {
     "make": "Triumph",
@@ -117,7 +117,7 @@
     "price_per_day_cents": 40000,
     "price_per_hour_cents": 7000,
     "location": "Cotswolds, UK",
-    "image_url": "https://images.unsplash.com/photo-1567818735868-e71b99932e29?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/37/1975_Triumph_TR6_Injection_2.5_Front.jpg"
   },
   {
     "make": "Austin",
@@ -129,7 +129,7 @@
     "price_per_day_cents": 50000,
     "price_per_hour_cents": 8500,
     "location": "Kent, UK",
-    "image_url": "https://images.unsplash.com/photo-1464219789935-c2d9d9aba644?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Austin_Princes_III_3995cc_registered_March_1954.JPG"
   },
   {
     "make": "Alfa Romeo",
@@ -141,6 +141,6 @@
     "price_per_day_cents": 90000,
     "price_per_hour_cents": 15000,
     "location": "London, UK",
-    "image_url": "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800"
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/09/Arese_Museo_Storico_Alfa_Romeo_1965_Giulia_Sprint_GTA_1.jpg"
   }
 ]

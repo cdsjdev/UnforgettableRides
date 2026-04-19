@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const request = require('supertest');
 const Database = require('better-sqlite3');
 const { registerPaymentsRoutes } = require('../src/routes/payments');
@@ -53,7 +53,7 @@ function setupDb() {
 }
 
 function seedOrder(db, { customerEmail }) {
-  db.prepare('INSERT INTO users (id, email) VALUES (?, ?)').run('user-1', 'account-owner@petcare.test');
+  db.prepare('INSERT INTO users (id, email) VALUES (?, ?)').run('user-1', 'account-owner@unforgettablerides.test');
   db.prepare(`
     INSERT INTO orders (id, user_id, customer_name, customer_email, status, total, created_at, updated_at)
     VALUES (?, ?, ?, ?, 'pending', 24.99, datetime('now'), datetime('now'))
@@ -71,7 +71,7 @@ function buildApp(db, sendEmailNotification) {
     req.user = {
       id: 'user-1',
       role: 'customer',
-      email: 'account-owner@petcare.test',
+      email: 'account-owner@unforgettablerides.test',
       email_verified_at: '2026-01-01 00:00:00',
     };
     next();
@@ -116,7 +116,7 @@ function buildApp(db, sendEmailNotification) {
 describe('Payment confirmation email recipient fallback', () => {
   test('uses order.customer_email when present', async () => {
     const db = setupDb();
-    seedOrder(db, { customerEmail: 'order-customer@petcare.test' });
+    seedOrder(db, { customerEmail: 'order-customer@unforgettablerides.test' });
     const sendEmailNotification = jest.fn().mockResolvedValue(true);
     const app = buildApp(db, sendEmailNotification);
 
@@ -132,7 +132,7 @@ describe('Payment confirmation email recipient fallback', () => {
     expect(sendEmailNotification).toHaveBeenCalledTimes(1);
     expect(sendEmailNotification).toHaveBeenCalledWith(expect.objectContaining({
       kind: 'order_confirmed',
-      to: 'order-customer@petcare.test',
+      to: 'order-customer@unforgettablerides.test',
     }));
   });
 
@@ -154,7 +154,8 @@ describe('Payment confirmation email recipient fallback', () => {
     expect(sendEmailNotification).toHaveBeenCalledTimes(1);
     expect(sendEmailNotification).toHaveBeenCalledWith(expect.objectContaining({
       kind: 'order_confirmed',
-      to: 'account-owner@petcare.test',
+      to: 'account-owner@unforgettablerides.test',
     }));
   });
 });
+

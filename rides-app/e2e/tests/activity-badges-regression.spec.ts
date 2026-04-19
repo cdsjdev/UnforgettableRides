@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+﻿import { expect, test } from '@playwright/test';
 import { registerFreshUser } from './helpers';
 
 type MockState = {
@@ -31,7 +31,7 @@ function upcomingAppointment(params?: { withDog?: boolean; status?: string; dogI
     dog_name: withDog ? dogName : 'Guest Dog',
     customer_name: 'Badge User',
     customer_phone: '5551234567',
-    customer_email: 'badge_user@petcare.test',
+    customer_email: 'badge_user@unforgettablerides.test',
     service_type: 'wash',
     date,
     time,
@@ -54,7 +54,7 @@ function oldPastAppointment() {
     dog_name: 'Old Dog',
     customer_name: 'Badge User',
     customer_phone: '5551234567',
-    customer_email: 'badge_user@petcare.test',
+    customer_email: 'badge_user@unforgettablerides.test',
     service_type: 'wash',
     date,
     time,
@@ -156,7 +156,7 @@ function tabDot(page: any, name: 'care' | 'dogs' | 'social') {
 async function setOldSeenTimestamps(page: any, userId: string) {
   const oldTs = String(Date.now() - 24 * 60 * 60_000);
   await page.evaluate(({ uid, ts }) => {
-    localStorage.setItem(`@petcare_new_seen_care:${uid}`, ts);
+    localStorage.setItem(`@rides_new_seen_care:${uid}`, ts);
   }, { uid: userId, ts: oldTs });
 }
 
@@ -278,3 +278,4 @@ test.describe('Activity badges regression', () => {
   });
 
 });
+

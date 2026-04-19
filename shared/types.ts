@@ -1,4 +1,4 @@
-// Shared TypeScript types for PetCare app and API
+﻿// Shared TypeScript types for UnforgettableRides app and API
 // Based on specs in docs/specs/02-data-schemas.md
 
 // ============================================================================
@@ -1534,3 +1534,4 @@ export interface Payout {
   created_at: string;
   updated_at: string;
 }
+

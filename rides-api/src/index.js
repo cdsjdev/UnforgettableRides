@@ -1,4 +1,4 @@
-const dotenv = require('dotenv');
+﻿const dotenv = require('dotenv');
 dotenv.config();
 dotenv.config({ path: require('path').resolve(__dirname, '../../.env.local'), override: true });
 const express = require('express');
@@ -808,7 +808,7 @@ if (settingsCount === 0) {
     store_close_hour: '18',
     max_concurrent_appointments: '3',
     appointment_slot_minutes: '30',
-    store_name: 'PetCare Store',
+    store_name: 'UnforgettableRides',
     store_phone: '',
     store_address: '',
   };
@@ -952,7 +952,7 @@ const apiResponse = (data, error = null) => {
 // Auth Configuration
 // ============================================================================
 
-const JWT_SECRET = process.env.JWT_SECRET || 'petcare-dev-secret-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'rides-dev-secret-change-in-production';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 const PASSWORD_RESET_TOKEN_EXPIRES_MIN = parseInt(process.env.PASSWORD_RESET_TOKEN_EXPIRES_MIN || '30', 10);
 const PASSWORD_RESET_BASE_URL = process.env.PASSWORD_RESET_BASE_URL || 'http://localhost:5173';
@@ -974,7 +974,7 @@ if (!process.env.JWT_SECRET) {
 // Uses ADMIN_EMAIL / ADMIN_PASSWORD env vars, falls back to defaults in dev only
 const adminCount = db.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'admin'").get();
 if (adminCount.count === 0) {
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@petcare.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@unforgettablerides.com';
   const adminPassword = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === 'production' ? null : 'admin123');
   if (!adminPassword) {
     console.error('ERROR: No admin exists and ADMIN_PASSWORD not set. Set ADMIN_EMAIL and ADMIN_PASSWORD env vars.');
@@ -1321,7 +1321,7 @@ function getRuntimeEmailConfig() {
   const smtpPass = decryptSettingSecret(smtpPassEnc) || SMTP_PASS;
   const smtpUseTls = parseBoolSetting(getSetting('smtp_use_tls', SMTP_USE_TLS ? '1' : '0'), SMTP_USE_TLS);
   const smtpUseSsl = parseBoolSetting(getSetting('smtp_use_ssl', SMTP_USE_SSL ? '1' : '0'), SMTP_USE_SSL);
-  const fromName = String(getSetting('email_from_name', EMAIL_FROM_NAME) || '').trim() || 'PetCare';
+  const fromName = String(getSetting('email_from_name', EMAIL_FROM_NAME) || '').trim() || 'UnforgettableRides';
   const fromAddress = String(getSetting('email_from_address', EMAIL_FROM_ADDRESS || SMTP_USER) || '').trim() || smtpUser;
   return {
     mode,
@@ -1390,8 +1390,8 @@ async function sendEmailNotification({ kind, to, payload }) {
   const transporter = getSmtpTransporter(emailConfig);
   if (!transporter) return false;
   try {
-    const subject = String(payload?.subject || 'PetCare Notification');
-    const text = String(payload?.message || payload?.text || 'PetCare notification');
+    const subject = String(payload?.subject || 'UnforgettableRides Notification');
+    const text = String(payload?.message || payload?.text || 'UnforgettableRides notification');
     const html = typeof payload?.html === 'string' ? payload.html : undefined;
     const from = emailConfig.fromAddress
       ? (emailConfig.fromName ? `"${emailConfig.fromName}" <${emailConfig.fromAddress}>` : emailConfig.fromAddress)
@@ -1418,7 +1418,7 @@ async function sendPasswordResetEmail({ email, resetUrl, userName, client = 'app
     ? [
       `Hello${safeUser ? ` ${safeUser}` : ''},`,
       '',
-      'A password reset was requested for your PetCare Store dashboard account.',
+      'A password reset was requested for your UnforgettableRides dashboard account.',
       '',
       'Reset link:',
       resetUrl,
@@ -1430,7 +1430,7 @@ async function sendPasswordResetEmail({ email, resetUrl, userName, client = 'app
     : [
       `Hello${safeUser ? ` ${safeUser}` : ''},`,
       '',
-      'We received a request to reset your PetCare app password.',
+      'We received a request to reset your UnforgettableRides app password.',
       '',
       'Tap this link to reset your password:',
       resetUrl,
@@ -1443,7 +1443,7 @@ async function sendPasswordResetEmail({ email, resetUrl, userName, client = 'app
     ? `
       <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827;">
         <p>Hello${safeUser ? ` ${safeUser}` : ''},</p>
-        <p>A password reset was requested for your PetCare Store dashboard account.</p>
+        <p>A password reset was requested for your UnforgettableRides dashboard account.</p>
         <p><a href="${resetUrl}" target="_blank" rel="noopener noreferrer">Reset Dashboard Password</a></p>
         <p>If the link does not open, copy and paste this URL:</p>
         <p><a href="${resetUrl}" target="_blank" rel="noopener noreferrer">${resetUrl}</a></p>
@@ -1454,9 +1454,9 @@ async function sendPasswordResetEmail({ email, resetUrl, userName, client = 'app
     : `
       <div style="font-family:Arial,sans-serif;line-height:1.6;color:#0F172A;background:#F8FAFC;padding:20px;">
         <div style="max-width:560px;margin:0 auto;background:#FFFFFF;border:1px solid #E2E8F0;border-radius:14px;padding:22px;">
-          <h2 style="margin:0 0 10px 0;font-size:20px;font-weight:600;color:#0F172A;text-align:center;">Reset your PetCare app password</h2>
+          <h2 style="margin:0 0 10px 0;font-size:20px;font-weight:600;color:#0F172A;text-align:center;">Reset your UnforgettableRides app password</h2>
           <p style="margin:0 0 12px 0;">Hello${safeUser ? ` ${safeUser}` : ''},</p>
-          <p style="margin:0 0 16px 0;">We received a request to reset your PetCare app password.</p>
+          <p style="margin:0 0 16px 0;">We received a request to reset your UnforgettableRides app password.</p>
           <div style="text-align:center;margin:18px 0;">
             <a href="${resetUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#3B82F6;color:#FFFFFF;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:600;">Reset Password</a>
           </div>
@@ -1472,8 +1472,8 @@ async function sendPasswordResetEmail({ email, resetUrl, userName, client = 'app
     to: email,
     payload: {
       subject: normalizedClient === 'dashboard'
-        ? 'PetCare Store dashboard password reset'
-        : 'Reset your PetCare app password',
+        ? 'UnforgettableRides dashboard password reset'
+        : 'Reset your UnforgettableRides app password',
       user_name: userName || null,
       client: normalizedClient,
       reset_url: resetUrl,
@@ -1493,12 +1493,12 @@ async function sendAuthCodeEmail({ email, userName, purpose, code, expiresMinute
     ? `Use this code to confirm sign-in on a new device: ${code}`
     : (purpose === 'email_change'
       ? `Use this code to confirm your new email address: ${code}`
-      : `Use this code to verify your PetCare account email: ${code}`);
+      : `Use this code to verify your UnforgettableRides account email: ${code}`);
   await sendEmailNotification({
     kind: 'auth_code',
     to: email,
     payload: {
-      subject: `${purposeLabel} - PetCare`,
+      subject: `${purposeLabel} - UnforgettableRides`,
       user_name: userName || null,
       code,
       purpose,
@@ -1513,7 +1513,7 @@ async function sendEmailVerificationLinkEmail({ email, userName, verifyUrl, expi
   const html = `
     <div style="font-family:Arial,sans-serif;line-height:1.5;color:#111827;">
       <p>Hi${safeUser ? ` ${safeUser}` : ''},</p>
-      <p>Please verify your PetCare account email by clicking the link below:</p>
+      <p>Please verify your UnforgettableRides account email by clicking the link below:</p>
       <p><a href="${verifyUrl}" target="_blank" rel="noopener noreferrer">Verify Email</a></p>
       <p>If the button/link does not open, copy and paste this URL into your browser:</p>
       <p><a href="${verifyUrl}" target="_blank" rel="noopener noreferrer">${verifyUrl}</a></p>
@@ -1524,12 +1524,12 @@ async function sendEmailVerificationLinkEmail({ email, userName, verifyUrl, expi
     kind: 'email_verify_link',
     to: email,
     payload: {
-      subject: 'Verify your PetCare email',
+      subject: 'Verify your UnforgettableRides email',
       user_name: userName || null,
       verify_url: verifyUrl,
       expires_minutes: expiresMinutes,
       html,
-      message: `Verify your PetCare email: <${verifyUrl}>. This link expires in ${expiresMinutes} minute(s).`,
+      message: `Verify your UnforgettableRides email: <${verifyUrl}>. This link expires in ${expiresMinutes} minute(s).`,
     },
   });
 }
@@ -1706,7 +1706,7 @@ function awardBusinessMemberPoints({ businessMembershipId, customerUserId = null
 // Internal service auth — HMAC-signed requests (preferred) or static key (legacy)
 // HMAC: camera_worker signs request body with shared secret + timestamp to prevent replay
 const crypto = require('crypto');
-const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || (process.env.NODE_ENV === 'production' ? null : 'petcare-internal-dev-key');
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || (process.env.NODE_ENV === 'production' ? null : 'rides-internal-dev-key');
 const INTERNAL_HMAC_MAX_AGE_MS = parseInt(process.env.INTERNAL_HMAC_MAX_AGE_MS || '300000', 10); // 5 min default
 if (!INTERNAL_API_KEY && process.env.NODE_ENV === 'production') {
   console.warn('WARNING: INTERNAL_API_KEY not set - internal service callbacks will fail');
@@ -2051,7 +2051,7 @@ const GLOBAL_EMAIL_SETTING_DEFAULTS = {
   smtp_user: SMTP_USER || '',
   smtp_use_tls: SMTP_USE_TLS ? '1' : '0',
   smtp_use_ssl: SMTP_USE_SSL ? '1' : '0',
-  email_from_name: EMAIL_FROM_NAME || 'PetCare',
+  email_from_name: EMAIL_FROM_NAME || 'UnforgettableRides',
   email_from_address: EMAIL_FROM_ADDRESS || SMTP_USER || '',
 };
 
@@ -2466,8 +2466,8 @@ app.post('/api/v1/settings/email/test', roleGuard('admin'), async (req, res) => 
       return res.status(400).json(apiResponse(null, { code: 'INVALID_REQUEST', message: 'Recipient email is required' }));
     }
     const payload = {
-      subject: 'PetCare email configuration test',
-      message: 'This is a test email from PetCare dashboard settings.',
+      subject: 'UnforgettableRides email configuration test',
+      message: 'This is a test email from UnforgettableRides dashboard settings.',
     };
     const emailConfig = getRuntimeEmailConfig();
     const useWebhook = emailConfig.mode === 'webhook' || (!emailConfig.mode && !!emailConfig.webhookUrl);
@@ -6229,7 +6229,7 @@ function formatRagContextForPrompt(retrievedChunks = []) {
 }
 
 function buildSystemPrompt(dogProfiles, ragContext = '') {
-  let prompt = `You are PetCare Advisor, an AI assistant for dog care in the PetCare app.
+  let prompt = `You are UnforgettableRides Advisor, an AI assistant for dog care in the UnforgettableRides app.
 
 Guidelines:
 - Give practical, actionable advice that is personalized to the app data below.
@@ -6318,7 +6318,7 @@ Action block format (must match exactly):
 {valid JSON object for one action}
 [[/ACTION]]`;
 
-  prompt += '\n\nSafety disclaimer to include when giving medical guidance: "I can share general pet care information, but this is not veterinary medical advice."';
+  prompt += '\n\nSafety disclaimer to include when giving medical guidance: "I can share general classic car information, but this is not veterinary medical advice."';
   if (ragContext) {
     prompt += ragContext;
     prompt += '\nIf user question conflicts with snippets, explicitly say what is uncertain.';
@@ -6605,6 +6605,7 @@ if (require.main === module) {
 
 // Export internals for testing — _dogs getter returns a reference to the live in-memory array
 module.exports = { app, db };
+
 
 
 

@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+﻿const crypto = require('crypto');
 const { app, db, request, createTestUser } = require('./helpers');
 
 function hashAuthCode(userId, purpose, code) {
@@ -30,7 +30,7 @@ describe('Auth email security (email verification + device verify)', () => {
   });
 
   test('signup returns email verification challenge metadata', async () => {
-    const email = `${prefix}-signup@petcare.test`;
+    const email = `${prefix}-signup@unforgettablerides.test`;
     const res = await request(app)
       .post('/api/v1/auth/signup')
       .send({ email, password: 'Test123!', name: 'Email Verify User' });
@@ -42,7 +42,7 @@ describe('Auth email security (email verification + device verify)', () => {
   });
 
   test('signed-in user can request and complete email verification via link', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-verify@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-verify@unforgettablerides.test` });
     const sendRes = await request(app)
       .post('/api/v1/auth/email/send-verification')
       .set('Authorization', `Bearer ${user.token}`)
@@ -76,7 +76,7 @@ describe('Auth email security (email verification + device verify)', () => {
   });
 
   test('login/verify-device accepts valid challenge code and returns token', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-device@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-device@unforgettablerides.test` });
     const challengeId = `challenge-${Date.now()}`;
     const code = '654321';
     const metadata = JSON.stringify({
@@ -111,7 +111,7 @@ describe('Auth email security (email verification + device verify)', () => {
   });
 
   test('login respects auth_device_challenge_enabled setting', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-toggle@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-toggle@unforgettablerides.test` });
     db.prepare("DELETE FROM trusted_devices WHERE user_id = ?").run(user.user.id);
 
     db.prepare("INSERT INTO store_settings (key, value, updated_at) VALUES (?, ?, datetime('now')) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at")
@@ -133,7 +133,7 @@ describe('Auth email security (email verification + device verify)', () => {
   });
 
   test('repeat login challenge within short window reuses the same challenge id', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-reuse@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-reuse@unforgettablerides.test` });
     db.prepare("DELETE FROM trusted_devices WHERE user_id = ?").run(user.user.id);
     db.prepare("INSERT INTO store_settings (key, value, updated_at) VALUES (?, ?, datetime('now')) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at")
       .run(settingKey, '1');
@@ -161,7 +161,7 @@ describe('Auth email security (email verification + device verify)', () => {
   });
 
   test('store manager cannot update security settings through /settings', async () => {
-    const manager = createTestUser('store_manager', { email: `${prefix}-manager@petcare.test` });
+    const manager = createTestUser('store_manager', { email: `${prefix}-manager@unforgettablerides.test` });
     const res = await request(app)
       .put('/api/v1/settings')
       .set('Authorization', `Bearer ${manager.token}`)
@@ -171,9 +171,9 @@ describe('Auth email security (email verification + device verify)', () => {
   });
 
   test('user can change email with code verification', async () => {
-    const oldEmail = `${prefix}-emailchange-old@petcare.test`;
+    const oldEmail = `${prefix}-emailchange-old@unforgettablerides.test`;
     const user = createTestUser('customer', { email: oldEmail, password: 'EmailOld1!' });
-    const newEmail = `${prefix}-emailchange-new@petcare.test`;
+    const newEmail = `${prefix}-emailchange-new@unforgettablerides.test`;
 
     const requestRes = await request(app)
       .post('/api/v1/auth/email/change/request')
@@ -204,3 +204,4 @@ describe('Auth email security (email verification + device verify)', () => {
     expect(confirmRes.body?.data?.user?.email_verified_at).toBeTruthy();
   });
 });
+

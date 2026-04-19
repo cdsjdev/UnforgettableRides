@@ -1,4 +1,4 @@
-import { expect, Page } from '@playwright/test';
+﻿import { expect, Page } from '@playwright/test';
 
 export async function registerFreshUser(
   page: Page,
@@ -6,8 +6,8 @@ export async function registerFreshUser(
 ): Promise<{ email: string; password: string }> {
   const now = Date.now();
   const emailPrefix = options?.emailPrefix || 'e2e';
-  const email = `${emailPrefix}_${now}@petcare.test`;
-  const password = 'Petcare123!';
+  const email = `${emailPrefix}_${now}@unforgettablerides.test`;
+  const password = 'UnforgettableRides123!';
   const name = options?.name || 'E2E User';
 
   await page.goto('/');
@@ -59,3 +59,4 @@ export function meetupCardByTitle(page: Page, title: string) {
   const titleNode = page.getByText(title, { exact: true }).first();
   return titleNode.locator('xpath=ancestor::*[self::div or self::a][1]');
 }
+

@@ -1,4 +1,4 @@
-const { app, db, request, createTestUser } = require('./helpers');
+﻿const { app, db, request, createTestUser } = require('./helpers');
 const { v4: uuidv4 } = require('uuid');
 
 describe('PUT /api/v1/appointments/:id - reschedule validation', () => {
@@ -17,7 +17,7 @@ describe('PUT /api/v1/appointments/:id - reschedule validation', () => {
       ON CONFLICT(id) DO UPDATE SET name = excluded.name, is_active = 1, updated_at = datetime('now')
     `).run(storeId, `${prefix} Store`, `${prefix}-store`);
 
-    customer = createTestUser('customer', { email: `${prefix}-cust@petcare.test`, store_id: storeId });
+    customer = createTestUser('customer', { email: `${prefix}-cust@unforgettablerides.test`, store_id: storeId });
 
     // Ensure store hours 9-18
     const upsertSetting = db.prepare(`
@@ -210,7 +210,7 @@ describe('PUT /api/v1/appointments/:id - reschedule validation', () => {
   });
 
   test('customer cannot update another user appointment', async () => {
-    const other = createTestUser('customer', { email: `${prefix}-other@petcare.test`, store_id: storeId });
+    const other = createTestUser('customer', { email: `${prefix}-other@unforgettablerides.test`, store_id: storeId });
 
     const res = await request(app)
       .put(`/api/v1/appointments/${apptId}`)
@@ -241,7 +241,7 @@ describe('PUT /api/v1/appointments/:id - reschedule validation', () => {
   });
 
   test('staff can change status field', async () => {
-    const staff = createTestUser('staff', { email: `${prefix}-staff@petcare.test`, store_id: storeId });
+    const staff = createTestUser('staff', { email: `${prefix}-staff@unforgettablerides.test`, store_id: storeId });
 
     const res = await request(app)
       .put(`/api/v1/appointments/${apptId}`)
@@ -280,3 +280,4 @@ describe('PUT /api/v1/appointments/:id - reschedule validation', () => {
     expect(res.body?.error?.code).toBe('SERVICE_DISABLED');
   });
 });
+

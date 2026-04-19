@@ -1,4 +1,4 @@
-const { normalizeSquarePaymentStatus, extractSquareErrorMessage } = require('./payment-utils');
+﻿const { normalizeSquarePaymentStatus, extractSquareErrorMessage } = require('./payment-utils');
 
 function registerPaymentsRoutes({
   app,
@@ -48,7 +48,7 @@ function registerPaymentsRoutes({
       `  • ${i.product_name || i.product_id} x${i.quantity}  $${Number(i.unit_price * i.quantity).toFixed(2)}`
     ).join('\n');
 
-    const subject = `Your PetCare order #${orderId} is confirmed — payment received`;
+    const subject = `Your UnforgettableRides order #${orderId} is confirmed — payment received`;
     const text = [
       'Great news — your payment was successful and your order is confirmed.',
       '',
@@ -58,12 +58,12 @@ function registerPaymentsRoutes({
       'Items:',
       itemsText,
       '',
-      'Thank you for choosing PetCare!',
+      'Thank you for choosing UnforgettableRides!',
     ].join('\n');
     const html = `
 <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;color:#111827">
   <div style="background:#3B82F6;padding:24px;border-radius:8px 8px 0 0">
-    <h1 style="color:#fff;margin:0;font-size:20px">🐾 PetCare</h1>
+    <h1 style="color:#fff;margin:0;font-size:20px">🐾 UnforgettableRides</h1>
   </div>
   <div style="background:#fff;padding:24px;border:1px solid #E5E7EB;border-top:none;border-radius:0 0 8px 8px">
     <p style="font-size:16px">Great news — your payment was successful and your order is confirmed.</p>
@@ -76,7 +76,7 @@ function registerPaymentsRoutes({
       </tr>
     </table>
     <p style="color:#6B7280;font-size:13px">Order #${orderId}</p>
-    <p style="color:#6B7280;font-size:13px">Thank you for choosing PetCare!</p>
+    <p style="color:#6B7280;font-size:13px">Thank you for choosing UnforgettableRides!</p>
   </div>
 </div>`;
     await sendEmailNotification({ kind: 'order_confirmed', to, payload: { subject, message: text, html } }).catch(() => {});
@@ -305,7 +305,7 @@ function registerPaymentsRoutes({
         },
         locationId: String(SQUARE_LOCATION_ID),
         referenceId: String(orderId),
-        note: `PetCare order ${orderId}`,
+        note: `UnforgettableRides order ${orderId}`,
         autocomplete: true,
         verificationToken,
         buyerEmailAddress: order.customer_email || req.user?.email || undefined,
@@ -437,7 +437,7 @@ function registerPaymentsRoutes({
           purchaseUnits: [{
             referenceId: orderId,
             amount: { currencyCode: currency, value: amountStr },
-            description: `PetCare order ${orderId}`,
+            description: `UnforgettableRides order ${orderId}`,
           }],
         },
       });
@@ -454,12 +454,12 @@ function registerPaymentsRoutes({
   app.post('/api/v1/payments/paypal/capture-order', async (req, res) => {
     try {
       if (!ensureVerifiedForSensitive(req, res)) return;
-      const { order_id: petcareOrderId, paypal_order_id: paypalOrderId } = req.body || {};
-      if (!petcareOrderId || !paypalOrderId) {
+      const { order_id: ridesOrderId, paypal_order_id: paypalOrderId } = req.body || {};
+      if (!ridesOrderId || !paypalOrderId) {
         return res.status(400).json(apiResponse(null, { code: 'VALIDATION', message: 'order_id and paypal_order_id are required' }));
       }
 
-      const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(petcareOrderId);
+      const order = db.prepare('SELECT * FROM orders WHERE id = ?').get(ridesOrderId);
       if (!order) return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Order not found' }));
       if (order.user_id !== req.user?.id && !isStaff(req.user)) {
         return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
@@ -468,7 +468,7 @@ function registerPaymentsRoutes({
       // Idempotency: if already succeeded, return existing record (before capability check).
       const existing = db.prepare(
         "SELECT * FROM payments WHERE order_id = ? AND provider = 'paypal' AND status = 'succeeded' LIMIT 1"
-      ).get(petcareOrderId);
+      ).get(ridesOrderId);
       if (existing) {
         return res.json(apiResponse({ payment_id: existing.id, status: 'succeeded', amount: existing.amount, currency: existing.currency }));
       }
@@ -499,12 +499,12 @@ function registerPaymentsRoutes({
         `INSERT INTO payments
           (id, order_id, stripe_payment_intent_id, provider, provider_payment_id, amount, currency, status, payment_method, receipt_url, failure_reason)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-      ).run(paymentId, petcareOrderId, null, 'paypal', providerPaymentId, amountCents, currency, normalizedStatus, 'paypal', null, null);
+      ).run(paymentId, ridesOrderId, null, 'paypal', providerPaymentId, amountCents, currency, normalizedStatus, 'paypal', null, null);
 
       if (normalizedStatus === 'succeeded') {
         db.prepare(
           "UPDATE orders SET status = 'confirmed', updated_at = datetime('now') WHERE id = ? AND status = 'pending'"
-        ).run(petcareOrderId);
+        ).run(ridesOrderId);
         sendNotification(order.user_id, 'payment_succeeded', { order_id: order.id, total: order.total }).catch(() => {});
         sendPaymentConfirmedEmail(order).catch(() => {});
       }
@@ -588,3 +588,4 @@ function registerPaymentsRoutes({
 module.exports = {
   registerPaymentsRoutes,
 };
+

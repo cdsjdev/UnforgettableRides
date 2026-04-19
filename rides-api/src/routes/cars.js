@@ -42,40 +42,64 @@ function registerCarsRoutes({
       const limit = Math.min(Number.isFinite(rawLimit) && rawLimit > 0 ? rawLimit : 20, 50);
       const offset = Math.max(0, parseInt(req.query.offset || '0', 10) || 0);
 
-      let sql = 'SELECT * FROM classic_cars WHERE is_active = 1';
+      let sql = `
+        SELECT
+          c.*,
+          (
+            SELECT ci.url
+            FROM car_images ci
+            WHERE ci.car_id = c.id
+            ORDER BY ci.is_primary DESC, ci.sort_order ASC, ci.created_at ASC
+            LIMIT 1
+          ) AS primary_image_url,
+          COALESCE((
+            SELECT AVG(r.rating)
+            FROM reviews r
+            WHERE r.car_id = c.id AND r.is_active = 1
+          ), 0) AS average_rating,
+          (
+            SELECT COUNT(r2.id)
+            FROM reviews r2
+            WHERE r2.car_id = c.id AND r2.is_active = 1
+          ) AS review_count
+        FROM classic_cars c
+        WHERE c.is_active = 1
+      `;
       const params = [];
 
       if (availableOnly) {
-        sql += ' AND available_for_hire = 1';
+        sql += ' AND c.available_for_hire = 1';
       }
       if (make) {
-        sql += ' AND LOWER(make) LIKE ?';
+        sql += ' AND LOWER(c.make) LIKE ?';
         params.push(`%${make.toLowerCase()}%`);
       }
       if (Number.isFinite(yearMin)) {
-        sql += ' AND year >= ?';
+        sql += ' AND c.year >= ?';
         params.push(yearMin);
       }
       if (Number.isFinite(yearMax)) {
-        sql += ' AND year <= ?';
+        sql += ' AND c.year <= ?';
         params.push(yearMax);
       }
       if (location) {
-        sql += ' AND LOWER(location) LIKE ?';
+        sql += ' AND LOWER(c.location) LIKE ?';
         params.push(`%${location.toLowerCase()}%`);
       }
       if (tag) {
-        sql += ' AND tags LIKE ?';
+        sql += ' AND c.tags LIKE ?';
         params.push(`%${tag}%`);
       }
 
-      sql += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+      sql += ' ORDER BY c.created_at DESC LIMIT ? OFFSET ?';
       params.push(limit, offset);
 
       const rows = db.prepare(sql).all(...params);
       const cars = rows.map((row) => ({
         ...row,
         tags: (() => { try { return JSON.parse(row.tags || '[]'); } catch (_) { return []; } })(),
+        average_rating: Math.round(Number(row.average_rating || 0) * 10) / 10,
+        review_count: Number(row.review_count || 0),
       }));
 
       return res.json(apiResponse({ items: cars, limit, offset }));

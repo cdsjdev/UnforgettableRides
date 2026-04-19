@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+﻿import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const GUEST_DOGS_KEY = '@petcare_guest_saved_dogs';
+export const GUEST_DOGS_KEY = '@rides_guest_saved_dogs';
 const MAX_GUEST_DOGS = 20;
 const listeners = new Set<() => void>();
 
@@ -61,3 +61,4 @@ export function subscribeGuestDogsChanged(listener: () => void): () => void {
     listeners.delete(listener);
   };
 }
+

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -402,7 +402,7 @@ export default function HelpScreen() {
       <HelpSection title={t('help.aiAdvisor')} icon="chatbubble-ellipses">
         <Text style={styles.paragraph}>
           {L(
-            "The AI Advisor is your personal pet care assistant. Ask questions about your dogs' health, grooming, nutrition, behavior, and more.",
+            "The AI Advisor is your personal classic car assistant. Ask questions about your dogs' health, grooming, nutrition, behavior, and more.",
             'AI 顾问是你的宠物护理助手，可咨询健康、洗护、营养、行为等问题。',
           )}
         </Text>
@@ -446,7 +446,7 @@ export default function HelpScreen() {
         <InfoCard
           title={L('Privacy First', '隐私优先')}
           description={L(
-            'API keys are stored only on your device. They are sent to the PetCare server per-request over HTTPS and are never stored on the server.',
+            'API keys are stored only on your device. They are sent to the UnforgettableRides server per-request over HTTPS and are never stored on the server.',
             'API 密钥仅保存在你的设备本地。每次请求经 HTTPS 发送，不会保存在服务器。',
           )}
           icon="shield-checkmark"
@@ -483,7 +483,7 @@ export default function HelpScreen() {
       {/* Breed Analysis */}
       <HelpSection title={t('help.breedAnalysis')} icon="scan">
         <Text style={styles.paragraph}>
-          {L("PetCare uses a hybrid approach to identify your dog's breed with the highest accuracy possible.", 'PetCare 使用混合识别方案，以尽可能提高品种识别准确率。')}
+          {L("UnforgettableRides uses a hybrid approach to identify your dog's breed with the highest accuracy possible.", 'UnforgettableRides 使用混合识别方案，以尽可能提高品种识别准确率。')}
         </Text>
 
         <Text style={styles.subheading}>{L('How It Works', '工作方式')}</Text>
@@ -499,7 +499,7 @@ export default function HelpScreen() {
         <InfoCard
           title={L('ML Service (Fallback)', 'ML 服务（回退）')}
           description={L(
-            "If AI Vision is unavailable, PetCare falls back to a specialized machine learning model (Stanford Dogs ViT). It's fast, free, and robust.",
+            "If AI Vision is unavailable, UnforgettableRides falls back to a specialized machine learning model (Stanford Dogs ViT). It's fast, free, and robust.",
             '若 AI 视觉不可用，系统会回退到专用机器学习模型（Stanford Dogs ViT），稳定且快速。',
           )}
           icon="sparkles-outline"
@@ -527,7 +527,7 @@ export default function HelpScreen() {
       {/* Shopping */}
       <HelpSection title={t('help.shoppingOrders')} icon="cart">
         <Text style={styles.paragraph}>
-          {L('Browse and purchase pet care products directly from the app.', '可在 App 内直接浏览并购买宠物用品。')}
+          {L('Browse and purchase classic car products directly from the app.', '可在 App 内直接浏览并购买宠物用品。')}
         </Text>
 
         <Text style={styles.subheading}>{t('help.businessMembershipTitle')}</Text>
@@ -941,3 +941,4 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 });
+

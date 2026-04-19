@@ -18,7 +18,7 @@ WORKDIR /app
 RUN apk add --no-cache libstdc++ curl
 
 # Non-root user for security
-RUN addgroup -S petcare && adduser -S petcare -G petcare
+RUN addgroup -S rides && adduser -S rides -G rides
 
 # Copy production deps from build stage
 COPY --from=deps /app/node_modules ./node_modules
@@ -30,7 +30,7 @@ COPY public/ ./public/
 COPY migrations/ ./migrations/
 
 # Data directory — mount a volume here for persistence
-RUN mkdir -p /app/src/data /app/db /app/uploads && chown -R petcare:petcare /app
+RUN mkdir -p /app/src/data /app/db /app/uploads && chown -R rides:rides /app
 
 
 ENV NODE_ENV=production
@@ -41,5 +41,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://localhost:3000/api/v1/health || exit 1
 
-USER petcare
+USER rides
 CMD ["node", "src/index.js"]

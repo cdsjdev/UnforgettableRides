@@ -1,4 +1,4 @@
-const { app, db, request, createTestUser, cleanupTestUsers, restoreDogs } = require('./helpers');
+﻿const { app, db, request, createTestUser, cleanupTestUsers, restoreDogs } = require('./helpers');
 const appModule = require('../src/index');
 const { v4: uuidv4 } = require('uuid');
 
@@ -34,10 +34,10 @@ describe('Store offers/membership API (Step 4.5)', () => {
     upsertStore.run(storeA, `${prefix} Store A`, `${prefix}-store-a`);
     upsertStore.run(storeB, `${prefix} Store B`, `${prefix}-store-b`);
 
-    admin = createTestUser('admin', { email: `${prefix}-admin@petcare.test` });
-    manager = createTestUser('store_manager', { email: `${prefix}-mgr@petcare.test` });
-    customer = createTestUser('customer', { email: `${prefix}-cust@petcare.test` });
-    otherCustomer = createTestUser('customer', { email: `${prefix}-cust2@petcare.test` });
+    admin = createTestUser('admin', { email: `${prefix}-admin@unforgettablerides.test` });
+    manager = createTestUser('store_manager', { email: `${prefix}-mgr@unforgettablerides.test` });
+    customer = createTestUser('customer', { email: `${prefix}-cust@unforgettablerides.test` });
+    otherCustomer = createTestUser('customer', { email: `${prefix}-cust2@unforgettablerides.test` });
 
     db.prepare(`
       INSERT INTO user_store_links (user_id, store_id, is_active, created_at, updated_at)
@@ -886,3 +886,4 @@ describe('Store offers/membership API (Step 4.5)', () => {
     expect((mgrRes.body.data || []).find((p) => p.id === promoId)).toBeTruthy();
   });
 });
+

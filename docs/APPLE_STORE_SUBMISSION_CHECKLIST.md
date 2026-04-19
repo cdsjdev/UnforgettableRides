@@ -1,4 +1,4 @@
-# App Store Submission Checklist — UnforgettableRides
+﻿# App Store Submission Checklist — UnforgettableRides
 
 *Last updated: 2026-04-19 · Status: Phase 4 not yet started*
 
@@ -29,7 +29,7 @@
 
 ## App Store Connect
 
-- [ ] App description written (no references to PetCare or dog grooming)
+- [ ] App description written (no references to UnforgettableRides or dog grooming)
 - [ ] Keywords set (classic cars, wedding car hire, vintage car, etc.)
 - [ ] Privacy policy URL set
 - [ ] Age rating completed
@@ -49,3 +49,4 @@
 - [ ] `expo.android.package` = `"com.unforgettablerides.app"`
 - [ ] Signing keystore configured in EAS
 - [ ] Store listing completed in Google Play Console
+

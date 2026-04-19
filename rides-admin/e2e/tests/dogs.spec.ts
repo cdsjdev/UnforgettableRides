@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+﻿import { expect, test } from '@playwright/test';
 import { API_BASE, getAuthToken, loginAsAdmin } from './helpers';
 
 test.describe('Dogs management regression', () => {
@@ -109,7 +109,7 @@ test.describe('Dogs management regression', () => {
 
     const uniqueSuffix = Date.now();
     const dogName = `E2E Reassign Dog ${uniqueSuffix}`;
-    const ownerEmail = `e2e-owner-${uniqueSuffix}@petcare.test`;
+    const ownerEmail = `e2e-owner-${uniqueSuffix}@unforgettablerides.test`;
     const ownerName = `E2E Owner ${uniqueSuffix}`;
     let createdDogId: string | null = null;
     let createdOwnerId: string | null = null;
@@ -233,3 +233,4 @@ test.describe('Dogs management regression', () => {
     }
   });
 });
+

@@ -1,4 +1,4 @@
-const { app, db, request, createTestUser } = require('./helpers');
+﻿const { app, db, request, createTestUser } = require('./helpers');
 
 describe('Order return refund completion', () => {
   const prefix = `order-return-refund-${Date.now()}`;
@@ -18,7 +18,7 @@ describe('Order return refund completion', () => {
     db.prepare(`
       INSERT INTO orders (id, user_id, customer_name, customer_email, status, total, created_at, updated_at)
       VALUES (?, ?, ?, ?, 'confirmed', 19.99, datetime('now'), datetime('now'))
-    `).run(orderId, userId, customerName, `${customerName}@petcare.test`);
+    `).run(orderId, userId, customerName, `${customerName}@unforgettablerides.test`);
 
     db.prepare(`
       INSERT INTO order_returns
@@ -30,8 +30,8 @@ describe('Order return refund completion', () => {
   }
 
   test('returns 400 when completing refund without successful payment and no manual reference', async () => {
-    const admin = createTestUser('admin', { email: `${prefix}-admin-a@petcare.test` });
-    const customer = createTestUser('customer', { email: `${prefix}-cust-a@petcare.test` });
+    const admin = createTestUser('admin', { email: `${prefix}-admin-a@unforgettablerides.test` });
+    const customer = createTestUser('customer', { email: `${prefix}-cust-a@unforgettablerides.test` });
     const { returnId } = insertOrderAndReturn({ userId: customer.user.id });
 
     const res = await request(app)
@@ -44,8 +44,8 @@ describe('Order return refund completion', () => {
   });
 
   test('allows manual refund completion with refund_reference when no provider payment exists', async () => {
-    const admin = createTestUser('admin', { email: `${prefix}-admin-b@petcare.test` });
-    const customer = createTestUser('customer', { email: `${prefix}-cust-b@petcare.test` });
+    const admin = createTestUser('admin', { email: `${prefix}-admin-b@unforgettablerides.test` });
+    const customer = createTestUser('customer', { email: `${prefix}-cust-b@unforgettablerides.test` });
     const { returnId } = insertOrderAndReturn({ userId: customer.user.id });
 
     const res = await request(app)
@@ -64,8 +64,8 @@ describe('Order return refund completion', () => {
   });
 
   test('returns 502 for unsupported provider when auto refund is attempted', async () => {
-    const admin = createTestUser('admin', { email: `${prefix}-admin-c@petcare.test` });
-    const customer = createTestUser('customer', { email: `${prefix}-cust-c@petcare.test` });
+    const admin = createTestUser('admin', { email: `${prefix}-admin-c@unforgettablerides.test` });
+    const customer = createTestUser('customer', { email: `${prefix}-cust-c@unforgettablerides.test` });
     const { orderId, returnId } = insertOrderAndReturn({ userId: customer.user.id });
 
     db.prepare(`
@@ -84,8 +84,8 @@ describe('Order return refund completion', () => {
   });
 
   test('idempotent no-op when status is already refund_completed', async () => {
-    const admin = createTestUser('admin', { email: `${prefix}-admin-d@petcare.test` });
-    const customer = createTestUser('customer', { email: `${prefix}-cust-d@petcare.test` });
+    const admin = createTestUser('admin', { email: `${prefix}-admin-d@unforgettablerides.test` });
+    const customer = createTestUser('customer', { email: `${prefix}-cust-d@unforgettablerides.test` });
     const { returnId } = insertOrderAndReturn({ userId: customer.user.id, status: 'refund_completed' });
 
     const res = await request(app)
@@ -97,3 +97,4 @@ describe('Order return refund completion', () => {
     expect(res.body?.data?.status).toBe('refund_completed');
   });
 });
+

@@ -1,4 +1,4 @@
-# Admin Dashboard Help
+﻿# Admin Dashboard Help
 
 *Last updated: 2026-04-19*
 
@@ -33,7 +33,7 @@ The following pages are planned for the admin dashboard:
 | Moderation | `/moderation` | Review moderation, listing moderation |
 | Payouts | `/payouts` | Payout tracking per owner, initiate payout |
 
-> **Note:** Phase 3 (admin dashboard transformation) has not yet been implemented. The current admin app still contains petcare-era pages. See `docs/PLAN.md` for status.
+> **Note:** Phase 3 (admin dashboard transformation) has not yet been implemented. The current admin app still contains legacy-era pages. See `docs/PLAN.md` for status.
 
 ---
 
@@ -49,7 +49,7 @@ Default admin credentials (seeded on first run):
 
 | Field | Value |
 |---|---|
-| Email | `admin@petcare.com` |
+| Email | `admin@unforgettablerides.com` |
 | Password | `admin123` |
 
 > Change these immediately in any non-development environment.
@@ -59,3 +59,4 @@ Default admin credentials (seeded on first run):
 ## API Base URL
 
 The admin app calls `http://localhost:3000/api/v1` by default. This is configured in `rides-admin/src/services/api.ts`.
+

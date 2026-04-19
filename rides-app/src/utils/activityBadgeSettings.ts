@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+﻿import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ACTIVITY_BADGE_SETTINGS_KEY = '@petcare_activity_badge_settings';
+const ACTIVITY_BADGE_SETTINGS_KEY = '@rides_activity_badge_settings';
 
 export type ActivityBadgeSettings = {
   enabled: boolean;
@@ -54,3 +54,4 @@ export function subscribeActivityBadgeSettings(
     listeners.delete(listener);
   };
 }
+

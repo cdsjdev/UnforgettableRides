@@ -16,7 +16,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'petcare-dev-secret-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'rides-dev-secret-change-in-production';
 
 let roles; // { admin, store_manager, staff, customer } each with { user, token }
 
@@ -27,35 +27,35 @@ beforeAll(() => {
 afterAll(() => {
   db.prepare(`
     DELETE FROM feedback
-    WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@petcare.test')
+    WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@unforgettablerides.test')
   `).run();
   db.prepare(`
     DELETE FROM business_points_ledger
     WHERE business_membership_id IN (
       SELECT id FROM business_memberships
-      WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@petcare.test')
+      WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@unforgettablerides.test')
     )
   `).run();
   db.prepare(`
     DELETE FROM customer_business_links
-    WHERE customer_user_id IN (SELECT id FROM users WHERE email LIKE '%@petcare.test')
+    WHERE customer_user_id IN (SELECT id FROM users WHERE email LIKE '%@unforgettablerides.test')
        OR business_membership_id IN (
          SELECT id FROM business_memberships
-         WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@petcare.test')
+         WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@unforgettablerides.test')
        )
   `).run();
   db.prepare(`
     DELETE FROM business_member_applications
-    WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@petcare.test')
-       OR reviewed_by_user_id IN (SELECT id FROM users WHERE email LIKE '%@petcare.test')
+    WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@unforgettablerides.test')
+       OR reviewed_by_user_id IN (SELECT id FROM users WHERE email LIKE '%@unforgettablerides.test')
   `).run();
   db.prepare(`
     DELETE FROM password_reset_tokens
-    WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@petcare.test')
+    WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@unforgettablerides.test')
   `).run();
   db.prepare(`
     DELETE FROM business_memberships
-    WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@petcare.test')
+    WHERE user_id IN (SELECT id FROM users WHERE email LIKE '%@unforgettablerides.test')
   `).run();
   cleanupTestUsers();
   restoreDogs();
@@ -88,7 +88,7 @@ describe('Public routes', () => {
   });
 
   test('POST /api/v1/auth/signup creates customer account', async () => {
-    const email = `signup-test-${Date.now()}@petcare.test`;
+    const email = `signup-test-${Date.now()}@unforgettablerides.test`;
     const res = await request(app)
       .post('/api/v1/auth/signup')
       .send({ email, password: 'Test123!', name: 'Signup Test' });
@@ -163,12 +163,12 @@ describe('Public routes', () => {
 
     const missing = await request(app)
       .post('/api/v1/auth/password/forgot')
-      .send({ email: `missing-${Date.now()}@petcare.test` });
+      .send({ email: `missing-${Date.now()}@unforgettablerides.test` });
     expect(missing.status).toBe(200);
   });
 
   test('POST /api/v1/auth/password/reset updates password with valid token', async () => {
-    const user = createTestUser('staff', { email: `resetpw-${Date.now()}@petcare.test`, password: 'OldPass1' });
+    const user = createTestUser('staff', { email: `resetpw-${Date.now()}@unforgettablerides.test`, password: 'OldPass1' });
     const token = uuidv4().replace(/-/g, '') + uuidv4().replace(/-/g, '');
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
     const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
@@ -229,7 +229,7 @@ describe('Authentication gate', () => {
   });
 
   test('rejects inactive user', async () => {
-    const inactive = createTestUser('staff', { is_active: 0, email: `inactive-${Date.now()}@petcare.test` });
+    const inactive = createTestUser('staff', { is_active: 0, email: `inactive-${Date.now()}@unforgettablerides.test` });
     const res = await request(app)
       .get('/api/v1/auth/me')
       .set('Authorization', `Bearer ${inactive.token}`);
@@ -251,7 +251,7 @@ describe('Role-based access control', () => {
     test('POST /api/v1/auth/register â€” admin gets 201', async () => {
       const res = await request(app).post('/api/v1/auth/register')
         .set('Authorization', `Bearer ${roles.admin.token}`)
-        .send({ email: `reg-${Date.now()}@petcare.test`, password: 'Test123!', name: 'Reg Test' });
+        .send({ email: `reg-${Date.now()}@unforgettablerides.test`, password: 'Test123!', name: 'Reg Test' });
       expect(res.status).toBe(201);
     });
 
@@ -551,7 +551,7 @@ describe('Role-based access control', () => {
 
 describe('Business membership applications', () => {
   test('customer can submit application and cannot submit duplicate pending', async () => {
-    const applicant = createTestUser('customer', { email: `bm-app-${Date.now()}@petcare.test` });
+    const applicant = createTestUser('customer', { email: `bm-app-${Date.now()}@unforgettablerides.test` });
 
     const first = await request(app)
       .post('/api/v1/business-memberships/apply')
@@ -574,7 +574,7 @@ describe('Business membership applications', () => {
   });
 
   test('admin can review and approve application, which upgrades role and creates membership', async () => {
-    const applicant = createTestUser('customer', { email: `bm-approve-${Date.now()}@petcare.test` });
+    const applicant = createTestUser('customer', { email: `bm-approve-${Date.now()}@unforgettablerides.test` });
 
     const applyRes = await request(app)
       .post('/api/v1/business-memberships/apply')
@@ -632,8 +632,8 @@ describe('Ownership enforcement', () => {
   let customerA, customerB;
 
   beforeAll(() => {
-    customerA = createTestUser('customer', { email: `ownerA-${Date.now()}@petcare.test` });
-    customerB = createTestUser('customer', { email: `ownerB-${Date.now()}@petcare.test` });
+    customerA = createTestUser('customer', { email: `ownerA-${Date.now()}@unforgettablerides.test` });
+    customerB = createTestUser('customer', { email: `ownerB-${Date.now()}@unforgettablerides.test` });
   });
 
   describe('Dogs', () => {
@@ -826,7 +826,7 @@ describe('Ownership enforcement', () => {
 
 describe('Internal service auth', () => {
   const crypto = require('crypto');
-  const INTERNAL_KEY = process.env.INTERNAL_API_KEY || 'petcare-internal-dev-key';
+  const INTERNAL_KEY = process.env.INTERNAL_API_KEY || 'rides-internal-dev-key';
 
   function hmacSign(body, overrides = {}) {
     const ts = overrides.timestamp || String(Date.now());
@@ -992,7 +992,7 @@ describe('Internal service auth', () => {
 
 describe('Password change', () => {
   test('change password with correct current password', async () => {
-    const user = createTestUser('customer', { email: `pwchange-${Date.now()}@petcare.test`, password: 'OldPass1' });
+    const user = createTestUser('customer', { email: `pwchange-${Date.now()}@unforgettablerides.test`, password: 'OldPass1' });
     const res = await request(app)
       .put('/api/v1/auth/password')
       .set('Authorization', `Bearer ${user.token}`)
@@ -1028,7 +1028,7 @@ describe('Password change', () => {
 describe('Last-admin protection', () => {
   test('cannot deactivate the sole remaining active admin', async () => {
     // Create a fresh admin who will be the sole admin for this test
-    const soleAdmin = createTestUser('admin', { email: `sole-admin-${Date.now()}@petcare.test` });
+    const soleAdmin = createTestUser('admin', { email: `sole-admin-${Date.now()}@unforgettablerides.test` });
 
     // Deactivate ALL other admins so soleAdmin is the last one
     db.prepare("UPDATE users SET is_active = 0 WHERE role = 'admin' AND id != ?").run(soleAdmin.user.id);
@@ -1050,7 +1050,7 @@ describe('Last-admin protection', () => {
   });
 
   test('cannot demote the sole remaining active admin', async () => {
-    const soleAdmin = createTestUser('admin', { email: `sole-admin2-${Date.now()}@petcare.test` });
+    const soleAdmin = createTestUser('admin', { email: `sole-admin2-${Date.now()}@unforgettablerides.test` });
     db.prepare("UPDATE users SET is_active = 0 WHERE role = 'admin' AND id != ?").run(soleAdmin.user.id);
 
     const res = await request(app)
@@ -1084,7 +1084,7 @@ describe('Multi-store scope enforcement', () => {
     upsertStore.run('store-b', 'Store B', 'store-b');
     upsertStore.run('store-c', 'Store C', 'store-c');
 
-    manager = createTestUser('store_manager', { email: `${prefix}-mgr@petcare.test` });
+    manager = createTestUser('store_manager', { email: `${prefix}-mgr@unforgettablerides.test` });
     const upsertLink = db.prepare(`
       INSERT INTO user_store_links (user_id, store_id, is_active, created_at, updated_at)
       VALUES (?, ?, 1, datetime('now'), datetime('now'))
@@ -1174,7 +1174,7 @@ describe('Multi-store scope enforcement', () => {
   });
 
   test('manager with no store assignments cannot create write records', async () => {
-    const noScope = createTestUser('store_manager', { email: `${prefix}-noscope@petcare.test` });
+    const noScope = createTestUser('store_manager', { email: `${prefix}-noscope@unforgettablerides.test` });
     db.prepare('DELETE FROM user_store_links WHERE user_id = ?').run(noScope.user.id);
     db.prepare('UPDATE users SET store_id = NULL, updated_at = datetime(\'now\') WHERE id = ?').run(noScope.user.id);
 
@@ -1264,3 +1264,4 @@ describe('Feedback flow', () => {
     expect(updated.body.data.admin_note).toBe('Added to Q2 roadmap');
   });
 });
+

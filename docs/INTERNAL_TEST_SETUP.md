@@ -1,4 +1,4 @@
-# Internal Test Setup
+﻿# Internal Test Setup
 
 *Last updated: 2026-04-19*
 
@@ -42,7 +42,7 @@ On first run the API seeds:
 
 | Email | Password | Role |
 |---|---|---|
-| `admin@petcare.com` | `admin123` | admin |
+| `admin@unforgettablerides.com` | `admin123` | admin |
 
 To add test owner/customer accounts, register via the portal at http://localhost:5174/register.
 
@@ -68,7 +68,7 @@ curl http://localhost:3000/api/v1/cars/featured
 # Login
 curl -X POST http://localhost:3000/api/v1/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@petcare.com","password":"admin123"}'
+  -d '{"email":"admin@unforgettablerides.com","password":"admin123"}'
 ```
 
 ---
@@ -88,3 +88,4 @@ cd rides-portal && npm run build
 ```
 
 Output in `rides-portal/dist/`.
+

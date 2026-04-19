@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+﻿import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 const e2eDbPath = path.resolve(__dirname, '../rides-api/tests/data/analytics.e2e.db');
 const fullMatrix = process.env.PW_FULL_MATRIX === '1';
 const includeMobile = process.env.PW_INCLUDE_MOBILE === '1';
-const e2eAdminEmail = process.env.E2E_ADMIN_EMAIL || process.env.ADMIN_EMAIL || 'admin@petcare.com';
+const e2eAdminEmail = process.env.E2E_ADMIN_EMAIL || process.env.ADMIN_EMAIL || 'admin@unforgettablerides.com';
 const e2eAdminPassword = process.env.E2E_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD || 'admin123';
 
 // Keep test runner credentials and API seeding credentials aligned.
@@ -57,7 +57,7 @@ export default defineConfig({
         PORT: '3000',
         ADMIN_EMAIL: e2eAdminEmail,
         ADMIN_PASSWORD: e2eAdminPassword,
-        JWT_SECRET: process.env.JWT_SECRET || 'petcare-e2e-jwt-secret',
+        JWT_SECRET: process.env.JWT_SECRET || 'rides-e2e-jwt-secret',
         AUTH_DEVICE_CHALLENGE_ENABLED: 'false',
         ANALYTICS_DB_PATH: e2eDbPath,
         RATE_LIMIT_MAX_LOGIN: '10000',
@@ -74,3 +74,4 @@ export default defineConfig({
     },
   ],
 });
+

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { bookingsAPI, type Booking } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
-const FALLBACK = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=200&auto=format&fit=crop';
+const FALLBACK = 'https://images.pexels.com/photos/8867048/pexels-photo-8867048.jpeg?auto=compress&cs=tinysrgb&w=400';
 
 function statusLabel(s: string) {
   const map: Record<string, string> = { pending: 'Pending', confirmed: 'Confirmed', completed: 'Completed', cancelled: 'Cancelled' };

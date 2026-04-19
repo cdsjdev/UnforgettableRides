@@ -1,4 +1,4 @@
-const { app, db, request, createTestUser } = require('./helpers');
+﻿const { app, db, request, createTestUser } = require('./helpers');
 
 describe('Square payments routing', () => {
   const prefix = `payments-square-${Date.now()}`;
@@ -15,7 +15,7 @@ describe('Square payments routing', () => {
     db.prepare(`
       INSERT INTO orders (id, user_id, customer_name, customer_email, status, total, created_at, updated_at)
       VALUES (?, ?, ?, ?, 'pending', 19.99, datetime('now'), datetime('now'))
-    `).run(id, userId, customerName, `${customerName}@petcare.test`);
+    `).run(id, userId, customerName, `${customerName}@unforgettablerides.test`);
     return id;
   }
 
@@ -28,7 +28,7 @@ describe('Square payments routing', () => {
   });
 
   test('POST /api/v1/payments/create-intent returns provider-changed for verified user', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-compat@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-compat@unforgettablerides.test` });
     db.prepare("UPDATE users SET email_verified_at = datetime('now') WHERE id = ?").run(user.user.id);
     const res = await request(app)
       .post('/api/v1/payments/create-intent')
@@ -40,7 +40,7 @@ describe('Square payments routing', () => {
 
   test('POST /api/v1/payments/square/create-payment returns actionable provider error when unavailable', async () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    const user = createTestUser('customer', { email: `${prefix}-nocfg@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-nocfg@unforgettablerides.test` });
     db.prepare("UPDATE users SET email_verified_at = datetime('now') WHERE id = ?").run(user.user.id);
     const orderId = createPendingOrderForUser(user.user.id, `${prefix}-customer`);
 
@@ -64,3 +64,4 @@ describe('Square payments routing', () => {
     }
   });
 });
+

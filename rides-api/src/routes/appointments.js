@@ -1,4 +1,4 @@
-const { normalizeSquarePaymentStatus, extractSquareErrorMessage } = require('./payment-utils');
+﻿const { normalizeSquarePaymentStatus, extractSquareErrorMessage } = require('./payment-utils');
 
 function registerAppointmentsRoutes({
   app,
@@ -113,13 +113,13 @@ function registerAppointmentsRoutes({
     const whenText = `${formatAppointmentDate(appointment.date)} at ${formatAppointmentTime(appointment.time)}`;
     const dog = String(appointment.dog_name || 'your dog');
 
-    let subject = 'PetCare appointment update';
+    let subject = 'UnforgettableRides appointment update';
     let intro = `Your appointment has been updated for ${whenText}.`;
     if (type === 'created') {
-      subject = 'PetCare appointment confirmation';
+      subject = 'UnforgettableRides appointment confirmation';
       intro = `${dog}'s ${service} is scheduled for ${whenText}.`;
     } else if (type === 'rescheduled') {
-      subject = 'PetCare appointment rescheduled';
+      subject = 'UnforgettableRides appointment rescheduled';
       const oldWhen = extra.oldDate && extra.oldTime
         ? `${formatAppointmentDate(extra.oldDate)} at ${formatAppointmentTime(extra.oldTime)}`
         : null;
@@ -127,7 +127,7 @@ function registerAppointmentsRoutes({
         ? `${dog}'s ${service} was moved from ${oldWhen} to ${whenText}.`
         : `${dog}'s ${service} has been moved to ${whenText}.`;
     } else if (type === 'cancelled') {
-      subject = 'PetCare appointment cancellation confirmation';
+      subject = 'UnforgettableRides appointment cancellation confirmation';
       intro = `${dog}'s ${service} on ${whenText} has been cancelled.`;
     }
 
@@ -145,7 +145,7 @@ function registerAppointmentsRoutes({
       links.manageUrl,
       '',
       'Thank you,',
-      'PetCare',
+      'UnforgettableRides',
     ].join('\n');
 
     const html = `
@@ -157,7 +157,7 @@ function registerAppointmentsRoutes({
           <p style="margin:0 0 8px 0;">You can manage this appointment here:</p>
           <p style="margin:0 0 14px 0;"><a href="${links.manageUrl}" target="_blank" rel="noopener noreferrer">Open Appointments</a></p>
           <p style="margin:0 0 14px 0;color:#475569;">Use the Reschedule and Cancel actions on that page.</p>
-          <p style="margin:0;color:#64748B;">Thank you,<br/>PetCare</p>
+          <p style="margin:0;color:#64748B;">Thank you,<br/>UnforgettableRides</p>
         </div>
       </div>
     `.trim();
@@ -805,7 +805,7 @@ function registerAppointmentsRoutes({
           currency: String(PAYMENT_CURRENCY || 'usd').toUpperCase(),
         },
         locationId: String(SQUARE_LOCATION_ID),
-        note: `PetCare appointment deposit (${serviceType})`,
+        note: `UnforgettableRides appointment deposit (${serviceType})`,
         autocomplete: true,
         buyerEmailAddress: req.user?.email || undefined,
       });
@@ -1431,7 +1431,7 @@ function registerAppointmentsRoutes({
     const todayStr = toLocalDateStr(today);
     const dayName = today.toLocaleDateString('en-US', { weekday: 'long' });
   
-    const systemPrompt = `You are a booking assistant for a pet care store. Extract appointment details from the user's natural language input.
+    const systemPrompt = `You are a booking assistant for a classic car store. Extract appointment details from the user's natural language input.
   
   Today is ${dayName}, ${todayStr}.
   
@@ -1461,7 +1461,7 @@ function registerAppointmentsRoutes({
   - Extract the person's name if they say "my name is..." or "I'm...".
   - Extract phone numbers in any format.
   - Extract any special requests, notes, or comments (e.g., "please note...", "I may be late", etc.) into the notes field.
-  - If a store or location name is mentioned (e.g., "at PetCare Downtown", "Allviews store"), extract it into store_name.
+  - If a store or location name is mentioned (e.g., "at UnforgettableRides Downtown", "Allviews store"), extract it into store_name.
   - Do NOT include any text outside the JSON object.`;
   
     const messages = [{ role: 'user', content: text }];
@@ -1680,3 +1680,4 @@ function registerAppointmentsRoutes({
 module.exports = {
   registerAppointmentsRoutes,
 };
+

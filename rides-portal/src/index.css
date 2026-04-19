@@ -342,11 +342,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   gap: 16px;
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 72px;
 }
 
 .hero-scroll {
   position: absolute;
-  bottom: 36px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;

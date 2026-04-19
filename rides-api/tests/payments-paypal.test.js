@@ -1,4 +1,4 @@
-const { app, db, request, createTestUser } = require('./helpers');
+﻿const { app, db, request, createTestUser } = require('./helpers');
 
 describe('PayPal payments routing', () => {
   const prefix = `payments-paypal-${Date.now()}`;
@@ -15,7 +15,7 @@ describe('PayPal payments routing', () => {
     db.prepare(`
       INSERT INTO orders (id, user_id, customer_name, customer_email, status, total, created_at, updated_at)
       VALUES (?, ?, ?, ?, 'pending', 24.99, datetime('now'), datetime('now'))
-    `).run(id, userId, customerName, `${customerName}@petcare.test`);
+    `).run(id, userId, customerName, `${customerName}@unforgettablerides.test`);
     return id;
   }
 
@@ -42,7 +42,7 @@ describe('PayPal payments routing', () => {
   });
 
   test('POST /api/v1/payments/paypal/create-order returns 400 without order_id', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-noid@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-noid@unforgettablerides.test` });
     const res = await request(app)
       .post('/api/v1/payments/paypal/create-order')
       .set('Authorization', `Bearer ${user.token}`)
@@ -52,7 +52,7 @@ describe('PayPal payments routing', () => {
   });
 
   test('POST /api/v1/payments/paypal/create-order returns 404 for missing order', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-notfound@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-notfound@unforgettablerides.test` });
     const res = await request(app)
       .post('/api/v1/payments/paypal/create-order')
       .set('Authorization', `Bearer ${user.token}`)
@@ -62,8 +62,8 @@ describe('PayPal payments routing', () => {
   });
 
   test('POST /api/v1/payments/paypal/create-order returns 403 for another user\'s order', async () => {
-    const owner = createTestUser('customer', { email: `${prefix}-owner@petcare.test` });
-    const other = createTestUser('customer', { email: `${prefix}-other@petcare.test` });
+    const owner = createTestUser('customer', { email: `${prefix}-owner@unforgettablerides.test` });
+    const other = createTestUser('customer', { email: `${prefix}-other@unforgettablerides.test` });
     const orderId = createPendingOrder(owner.user.id, `${prefix}-owner`);
 
     const res = await request(app)
@@ -75,7 +75,7 @@ describe('PayPal payments routing', () => {
   });
 
   test('POST /api/v1/payments/paypal/create-order returns 503 when PayPal not configured', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-nocfg@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-nocfg@unforgettablerides.test` });
     const orderId = createPendingOrder(user.user.id, `${prefix}-nocfg`);
 
     const res = await request(app)
@@ -88,7 +88,7 @@ describe('PayPal payments routing', () => {
   });
 
   test('POST /api/v1/payments/paypal/capture-order returns 400 without required fields', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-cap-noid@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-cap-noid@unforgettablerides.test` });
     const res = await request(app)
       .post('/api/v1/payments/paypal/capture-order')
       .set('Authorization', `Bearer ${user.token}`)
@@ -98,7 +98,7 @@ describe('PayPal payments routing', () => {
   });
 
   test('POST /api/v1/payments/paypal/capture-order returns 404 for missing order', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-cap-notfound@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-cap-notfound@unforgettablerides.test` });
     const res = await request(app)
       .post('/api/v1/payments/paypal/capture-order')
       .set('Authorization', `Bearer ${user.token}`)
@@ -108,8 +108,8 @@ describe('PayPal payments routing', () => {
   });
 
   test('POST /api/v1/payments/paypal/capture-order returns 403 for another user\'s order', async () => {
-    const owner = createTestUser('customer', { email: `${prefix}-cap-owner@petcare.test` });
-    const other = createTestUser('customer', { email: `${prefix}-cap-other@petcare.test` });
+    const owner = createTestUser('customer', { email: `${prefix}-cap-owner@unforgettablerides.test` });
+    const other = createTestUser('customer', { email: `${prefix}-cap-other@unforgettablerides.test` });
     const orderId = createPendingOrder(owner.user.id, `${prefix}-cap-owner`);
 
     const res = await request(app)
@@ -121,7 +121,7 @@ describe('PayPal payments routing', () => {
   });
 
   test('POST /api/v1/payments/paypal/capture-order rejects non-pending order', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-cap-nonpending@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-cap-nonpending@unforgettablerides.test` });
     const orderId = createPendingOrder(user.user.id, `${prefix}-cap-nonpending`);
     db.prepare("UPDATE orders SET status = 'confirmed' WHERE id = ?").run(orderId);
 
@@ -135,7 +135,7 @@ describe('PayPal payments routing', () => {
   });
 
   test('POST /api/v1/payments/paypal/capture-order idempotent for already-succeeded payment', async () => {
-    const user = createTestUser('customer', { email: `${prefix}-cap-idem@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}-cap-idem@unforgettablerides.test` });
     const orderId = createPendingOrder(user.user.id, `${prefix}-cap-idem`);
 
     // Seed a succeeded payment directly
@@ -155,3 +155,4 @@ describe('PayPal payments routing', () => {
     expect(res.body?.data?.payment_id).toBe(paymentId);
   });
 });
+

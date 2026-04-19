@@ -1,4 +1,4 @@
-const { app, db, request, createTestUser } = require('./helpers');
+﻿const { app, db, request, createTestUser } = require('./helpers');
 
 function auth(token) {
   return { Authorization: `Bearer ${token}` };
@@ -91,7 +91,7 @@ describe('Social API integration', () => {
   });
 
   test('SOCIAL_ENABLED=false returns FEATURE_DISABLED', async () => {
-    const user = createTestUser('customer', { email: `${prefix}flagoff@petcare.test` });
+    const user = createTestUser('customer', { email: `${prefix}flagoff@unforgettablerides.test` });
     process.env.SOCIAL_ENABLED = 'false';
     try {
       const res = await request(app)
@@ -111,9 +111,9 @@ describe('Social API integration', () => {
   });
 
   test('non-member cannot read thread messages', async () => {
-    const a = createTestUser('customer', { email: `${prefix}member-a@petcare.test` });
-    const b = createTestUser('customer', { email: `${prefix}member-b@petcare.test` });
-    const outsider = createTestUser('customer', { email: `${prefix}outsider@petcare.test` });
+    const a = createTestUser('customer', { email: `${prefix}member-a@unforgettablerides.test` });
+    const b = createTestUser('customer', { email: `${prefix}member-b@unforgettablerides.test` });
+    const outsider = createTestUser('customer', { email: `${prefix}outsider@unforgettablerides.test` });
     await makeMutualFollow(a, b);
 
     const createRes = await request(app)
@@ -132,8 +132,8 @@ describe('Social API integration', () => {
   });
 
   test('blocked users cannot send messages (both directions)', async () => {
-    const a = createTestUser('customer', { email: `${prefix}block-a@petcare.test` });
-    const b = createTestUser('customer', { email: `${prefix}block-b@petcare.test` });
+    const a = createTestUser('customer', { email: `${prefix}block-a@unforgettablerides.test` });
+    const b = createTestUser('customer', { email: `${prefix}block-b@unforgettablerides.test` });
     await makeMutualFollow(a, b);
 
     const createRes = await request(app)
@@ -162,8 +162,8 @@ describe('Social API integration', () => {
   });
 
   test('message_privacy=nobody blocks new direct thread creation', async () => {
-    const owner = createTestUser('customer', { email: `${prefix}privacy-owner@petcare.test` });
-    const other = createTestUser('customer', { email: `${prefix}privacy-other@petcare.test` });
+    const owner = createTestUser('customer', { email: `${prefix}privacy-owner@unforgettablerides.test` });
+    const other = createTestUser('customer', { email: `${prefix}privacy-other@unforgettablerides.test` });
     await makeMutualFollow(owner, other);
 
     const settingsRes = await request(app)
@@ -181,8 +181,8 @@ describe('Social API integration', () => {
   });
 
   test('message_privacy=nobody does not break existing thread messaging', async () => {
-    const owner = createTestUser('customer', { email: `${prefix}existing-owner@petcare.test` });
-    const other = createTestUser('customer', { email: `${prefix}existing-other@petcare.test` });
+    const owner = createTestUser('customer', { email: `${prefix}existing-owner@unforgettablerides.test` });
+    const other = createTestUser('customer', { email: `${prefix}existing-other@unforgettablerides.test` });
     await makeMutualFollow(owner, other);
 
     const createRes = await request(app)
@@ -206,8 +206,8 @@ describe('Social API integration', () => {
   });
 
   test('direct thread creation requires mutual follow', async () => {
-    const a = createTestUser('customer', { email: `${prefix}mutual-create-a@petcare.test` });
-    const b = createTestUser('customer', { email: `${prefix}mutual-create-b@petcare.test` });
+    const a = createTestUser('customer', { email: `${prefix}mutual-create-a@unforgettablerides.test` });
+    const b = createTestUser('customer', { email: `${prefix}mutual-create-b@unforgettablerides.test` });
 
     const createRes = await request(app)
       .post('/api/v1/social/threads/direct')
@@ -219,8 +219,8 @@ describe('Social API integration', () => {
   });
 
   test('existing direct thread send is blocked after mutual follow is removed', async () => {
-    const a = createTestUser('customer', { email: `${prefix}mutual-send-a@petcare.test` });
-    const b = createTestUser('customer', { email: `${prefix}mutual-send-b@petcare.test` });
+    const a = createTestUser('customer', { email: `${prefix}mutual-send-a@unforgettablerides.test` });
+    const b = createTestUser('customer', { email: `${prefix}mutual-send-b@unforgettablerides.test` });
     await makeMutualFollow(a, b);
 
     const createRes = await request(app)
@@ -245,8 +245,8 @@ describe('Social API integration', () => {
   });
 
   test('client_msg_id is idempotent within a thread per sender', async () => {
-    const a = createTestUser('customer', { email: `${prefix}idemp-a@petcare.test` });
-    const b = createTestUser('customer', { email: `${prefix}idemp-b@petcare.test` });
+    const a = createTestUser('customer', { email: `${prefix}idemp-a@unforgettablerides.test` });
+    const b = createTestUser('customer', { email: `${prefix}idemp-b@unforgettablerides.test` });
     await makeMutualFollow(a, b);
     const createRes = await request(app)
       .post('/api/v1/social/threads/direct')
@@ -271,8 +271,8 @@ describe('Social API integration', () => {
   });
 
   test('thread messages pagination has no duplicate ids across pages', async () => {
-    const a = createTestUser('customer', { email: `${prefix}page-a@petcare.test` });
-    const b = createTestUser('customer', { email: `${prefix}page-b@petcare.test` });
+    const a = createTestUser('customer', { email: `${prefix}page-a@unforgettablerides.test` });
+    const b = createTestUser('customer', { email: `${prefix}page-b@unforgettablerides.test` });
     await makeMutualFollow(a, b);
     const createRes = await request(app)
       .post('/api/v1/social/threads/direct')
@@ -309,9 +309,9 @@ describe('Social API integration', () => {
   });
 
   test('social profile response omits email and phone', async () => {
-    const viewer = createTestUser('customer', { email: `${prefix}viewer@petcare.test` });
+    const viewer = createTestUser('customer', { email: `${prefix}viewer@unforgettablerides.test` });
     const target = createTestUser('customer', {
-      email: `${prefix}target@petcare.test`,
+      email: `${prefix}target@unforgettablerides.test`,
       name: 'Target Profile User',
     });
 
@@ -327,8 +327,8 @@ describe('Social API integration', () => {
   });
 
   test('follow requests can be accepted and rejected', async () => {
-    const owner = createTestUser('customer', { email: `${prefix}owner@petcare.test` });
-    const requester = createTestUser('customer', { email: `${prefix}requester@petcare.test` });
+    const owner = createTestUser('customer', { email: `${prefix}owner@unforgettablerides.test` });
+    const requester = createTestUser('customer', { email: `${prefix}requester@unforgettablerides.test` });
 
     await request(app)
       .put('/api/v1/social/me/settings')
@@ -368,12 +368,12 @@ describe('Social API integration', () => {
   });
 
   test('suggested contacts uses smart ranking and respects limit', async () => {
-    const viewer = createTestUser('customer', { email: `${prefix}suggest-viewer@petcare.test`, name: 'Suggest Viewer' });
-    const followsYou = createTestUser('customer', { email: `${prefix}suggest-follows-you@petcare.test`, name: 'Follows You' });
-    const mutualStrong = createTestUser('customer', { email: `${prefix}suggest-mutual-strong@petcare.test`, name: 'Mutual Strong' });
-    const activePoster = createTestUser('customer', { email: `${prefix}suggest-active-poster@petcare.test`, name: 'Active Poster' });
-    const bridgeA = createTestUser('customer', { email: `${prefix}suggest-bridge-a@petcare.test`, name: 'Bridge A' });
-    const bridgeB = createTestUser('customer', { email: `${prefix}suggest-bridge-b@petcare.test`, name: 'Bridge B' });
+    const viewer = createTestUser('customer', { email: `${prefix}suggest-viewer@unforgettablerides.test`, name: 'Suggest Viewer' });
+    const followsYou = createTestUser('customer', { email: `${prefix}suggest-follows-you@unforgettablerides.test`, name: 'Follows You' });
+    const mutualStrong = createTestUser('customer', { email: `${prefix}suggest-mutual-strong@unforgettablerides.test`, name: 'Mutual Strong' });
+    const activePoster = createTestUser('customer', { email: `${prefix}suggest-active-poster@unforgettablerides.test`, name: 'Active Poster' });
+    const bridgeA = createTestUser('customer', { email: `${prefix}suggest-bridge-a@unforgettablerides.test`, name: 'Bridge A' });
+    const bridgeB = createTestUser('customer', { email: `${prefix}suggest-bridge-b@unforgettablerides.test`, name: 'Bridge B' });
 
     // Candidate 1: follows viewer directly ("follows_you" signal).
     const directSignal = await request(app)
@@ -419,8 +419,8 @@ describe('Social API integration', () => {
   });
 
   test('suspended user cannot send messages', async () => {
-    const suspendedUser = createTestUser('customer', { email: `${prefix}suspend-a@petcare.test` });
-    const peer = createTestUser('customer', { email: `${prefix}suspend-b@petcare.test` });
+    const suspendedUser = createTestUser('customer', { email: `${prefix}suspend-a@unforgettablerides.test` });
+    const peer = createTestUser('customer', { email: `${prefix}suspend-b@unforgettablerides.test` });
     await makeMutualFollow(suspendedUser, peer);
 
     const createRes = await request(app)
@@ -447,8 +447,8 @@ describe('Social API integration', () => {
   });
 
   test('leaving a thread removes it from inbox', async () => {
-    const a = createTestUser('customer', { email: `${prefix}leave-a@petcare.test` });
-    const b = createTestUser('customer', { email: `${prefix}leave-b@petcare.test` });
+    const a = createTestUser('customer', { email: `${prefix}leave-a@unforgettablerides.test` });
+    const b = createTestUser('customer', { email: `${prefix}leave-b@unforgettablerides.test` });
     await makeMutualFollow(a, b);
 
     const createRes = await request(app)
@@ -478,8 +478,8 @@ describe('Social API integration', () => {
   });
 
   test('duplicate message content is blocked as spam', async () => {
-    const a = createTestUser('customer', { email: `${prefix}spam-msg-a@petcare.test` });
-    const b = createTestUser('customer', { email: `${prefix}spam-msg-b@petcare.test` });
+    const a = createTestUser('customer', { email: `${prefix}spam-msg-a@unforgettablerides.test` });
+    const b = createTestUser('customer', { email: `${prefix}spam-msg-b@unforgettablerides.test` });
     await makeMutualFollow(a, b);
 
     const createRes = await request(app)
@@ -511,8 +511,8 @@ describe('Social API integration', () => {
   });
 
   test('follow/unfollow churn is throttled for the same user pair', async () => {
-    const a = createTestUser('customer', { email: `${prefix}churn-a@petcare.test` });
-    const b = createTestUser('customer', { email: `${prefix}churn-b@petcare.test` });
+    const a = createTestUser('customer', { email: `${prefix}churn-a@unforgettablerides.test` });
+    const b = createTestUser('customer', { email: `${prefix}churn-b@unforgettablerides.test` });
 
     for (let i = 0; i < 4; i += 1) {
       const followRes = await request(app)
@@ -536,10 +536,10 @@ describe('Social API integration', () => {
   });
 
   test('report submissions are rate limited per user', async () => {
-    const reporter = createTestUser('customer', { email: `${prefix}rl-reporter@petcare.test` });
+    const reporter = createTestUser('customer', { email: `${prefix}rl-reporter@unforgettablerides.test` });
 
     for (let i = 0; i < 10; i += 1) {
-      const targetUser = createTestUser('customer', { email: `${prefix}rl-target-${i}@petcare.test` });
+      const targetUser = createTestUser('customer', { email: `${prefix}rl-target-${i}@unforgettablerides.test` });
       const res = await request(app)
         .post('/api/v1/social/reports')
         .set(auth(reporter.token))
@@ -556,7 +556,7 @@ describe('Social API integration', () => {
       .set(auth(reporter.token))
       .send({
         target_type: 'user',
-        target_id: createTestUser('customer', { email: `${prefix}rl-target-over-limit@petcare.test` }).user.id,
+        target_id: createTestUser('customer', { email: `${prefix}rl-target-over-limit@unforgettablerides.test` }).user.id,
         reason_code: 'abuse',
       });
     expect(limited.status).toBe(429);
@@ -564,11 +564,11 @@ describe('Social API integration', () => {
   });
 
   test('post is auto-flagged after repeated reports and restored after admin review', async () => {
-    const admin = createTestUser('admin', { email: `${prefix}flag-admin@petcare.test` });
-    const author = createTestUser('customer', { email: `${prefix}flag-author@petcare.test` });
-    const r1 = createTestUser('customer', { email: `${prefix}flag-r1@petcare.test` });
-    const r2 = createTestUser('customer', { email: `${prefix}flag-r2@petcare.test` });
-    const r3 = createTestUser('customer', { email: `${prefix}flag-r3@petcare.test` });
+    const admin = createTestUser('admin', { email: `${prefix}flag-admin@unforgettablerides.test` });
+    const author = createTestUser('customer', { email: `${prefix}flag-author@unforgettablerides.test` });
+    const r1 = createTestUser('customer', { email: `${prefix}flag-r1@unforgettablerides.test` });
+    const r2 = createTestUser('customer', { email: `${prefix}flag-r2@unforgettablerides.test` });
+    const r3 = createTestUser('customer', { email: `${prefix}flag-r3@unforgettablerides.test` });
 
     const createRes = await request(app)
       .post('/api/v1/social/posts')
@@ -646,12 +646,12 @@ describe('Social API integration', () => {
   });
 
   test('comment is auto-flagged after repeated reports and restored after admin review', async () => {
-    const admin = createTestUser('admin', { email: `${prefix}flag-comment-admin@petcare.test` });
-    const author = createTestUser('customer', { email: `${prefix}flag-comment-author@petcare.test` });
-    const commenter = createTestUser('customer', { email: `${prefix}flag-comment-commenter@petcare.test` });
-    const r1 = createTestUser('customer', { email: `${prefix}flag-comment-r1@petcare.test` });
-    const r2 = createTestUser('customer', { email: `${prefix}flag-comment-r2@petcare.test` });
-    const r3 = createTestUser('customer', { email: `${prefix}flag-comment-r3@petcare.test` });
+    const admin = createTestUser('admin', { email: `${prefix}flag-comment-admin@unforgettablerides.test` });
+    const author = createTestUser('customer', { email: `${prefix}flag-comment-author@unforgettablerides.test` });
+    const commenter = createTestUser('customer', { email: `${prefix}flag-comment-commenter@unforgettablerides.test` });
+    const r1 = createTestUser('customer', { email: `${prefix}flag-comment-r1@unforgettablerides.test` });
+    const r2 = createTestUser('customer', { email: `${prefix}flag-comment-r2@unforgettablerides.test` });
+    const r3 = createTestUser('customer', { email: `${prefix}flag-comment-r3@unforgettablerides.test` });
 
     const createRes = await request(app)
       .post('/api/v1/social/posts')
@@ -719,7 +719,7 @@ describe('Social API integration', () => {
   });
 
   test('abuse stats endpoint requires admin role', async () => {
-    const customer = createTestUser('customer', { email: `${prefix}abuse-nonadmin@petcare.test` });
+    const customer = createTestUser('customer', { email: `${prefix}abuse-nonadmin@unforgettablerides.test` });
     const res = await request(app)
       .get('/api/v1/social/admin/abuse-stats')
       .set(auth(customer.token));
@@ -728,12 +728,12 @@ describe('Social API integration', () => {
   });
 
   test('admin can read abuse stats with expected shape', async () => {
-    const admin = createTestUser('admin', { email: `${prefix}abuse-admin@petcare.test` });
-    const reporter = createTestUser('customer', { email: `${prefix}abuse-reporter@petcare.test` });
+    const admin = createTestUser('admin', { email: `${prefix}abuse-admin@unforgettablerides.test` });
+    const reporter = createTestUser('customer', { email: `${prefix}abuse-reporter@unforgettablerides.test` });
 
     // Generate a deterministic RATE_LIMITED signal for this test user.
     for (let i = 0; i < 10; i += 1) {
-      const targetUser = createTestUser('customer', { email: `${prefix}abuse-target-${i}@petcare.test` });
+      const targetUser = createTestUser('customer', { email: `${prefix}abuse-target-${i}@unforgettablerides.test` });
       const res = await request(app)
         .post('/api/v1/social/reports')
         .set(auth(reporter.token))
@@ -749,7 +749,7 @@ describe('Social API integration', () => {
       .set(auth(reporter.token))
       .send({
         target_type: 'user',
-        target_id: createTestUser('customer', { email: `${prefix}abuse-target-over-limit@petcare.test` }).user.id,
+        target_id: createTestUser('customer', { email: `${prefix}abuse-target-over-limit@unforgettablerides.test` }).user.id,
         reason_code: 'abuse',
       });
     expect(limited.status).toBe(429);
@@ -789,8 +789,8 @@ describe('Social API integration', () => {
   });
 
   test('meetups can be created, listed, and fetched from my meetups', async () => {
-    const host = createTestUser('customer', { email: `${prefix}meetup-host@petcare.test` });
-    const viewer = createTestUser('customer', { email: `${prefix}meetup-viewer@petcare.test` });
+    const host = createTestUser('customer', { email: `${prefix}meetup-host@unforgettablerides.test` });
+    const viewer = createTestUser('customer', { email: `${prefix}meetup-viewer@unforgettablerides.test` });
 
     const startAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
     const endAt = new Date(startAt.getTime() + 90 * 60 * 1000);
@@ -835,8 +835,8 @@ describe('Social API integration', () => {
   });
 
   test('private meetup join request can be approved by host', async () => {
-    const host = createTestUser('customer', { email: `${prefix}meetup-private-host@petcare.test` });
-    const requester = createTestUser('customer', { email: `${prefix}meetup-private-requester@petcare.test` });
+    const host = createTestUser('customer', { email: `${prefix}meetup-private-host@unforgettablerides.test` });
+    const requester = createTestUser('customer', { email: `${prefix}meetup-private-requester@unforgettablerides.test` });
 
     const startAt = new Date(Date.now() + 3 * 60 * 60 * 1000);
     const endAt = new Date(startAt.getTime() + 60 * 60 * 1000);
@@ -883,3 +883,4 @@ describe('Social API integration', () => {
     expect(requesterDetail.body?.data?.joinedByMe).toBe(true);
   });
 });
+

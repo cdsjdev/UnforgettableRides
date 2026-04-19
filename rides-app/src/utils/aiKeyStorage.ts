@@ -1,5 +1,5 @@
-const USER_API_KEYS_BASE = '@petcare_api_keys';
-const USER_PREF_BASE = '@petcare_preferred_provider';
+﻿const USER_API_KEYS_BASE = '@rides_api_keys';
+const USER_PREF_BASE = '@rides_preferred_provider';
 
 export function getUserAiStorageKeys(userId: string) {
   return {
@@ -7,3 +7,4 @@ export function getUserAiStorageKeys(userId: string) {
     preferredProvider: `${USER_PREF_BASE}:${userId}`,
   };
 }
+

@@ -1,4 +1,4 @@
-const { app, db, request, createTestUser } = require('./helpers');
+﻿const { app, db, request, createTestUser } = require('./helpers');
 const { v4: uuidv4 } = require('uuid');
 
 describe('Appointment assessment pricing with deposit', () => {
@@ -29,8 +29,8 @@ describe('Appointment assessment pricing with deposit', () => {
     upsertSetting.run(storeId, 'appointment_deposit_groom', '30');
     upsertSetting.run(storeId, 'service_price_groom', '120');
 
-    customer = createTestUser('customer', { email: `${prefix}-cust@petcare.test`, store_id: storeId });
-    staff = createTestUser('staff', { email: `${prefix}-staff@petcare.test`, store_id: storeId });
+    customer = createTestUser('customer', { email: `${prefix}-cust@unforgettablerides.test`, store_id: storeId });
+    staff = createTestUser('staff', { email: `${prefix}-staff@unforgettablerides.test`, store_id: storeId });
 
     serviceId = `svc-${uuidv4().slice(0, 8)}`;
     db.prepare(`
@@ -259,3 +259,4 @@ describe('Appointment assessment pricing with deposit', () => {
     db.prepare('DELETE FROM store_services WHERE id = ?').run(fixedServiceId);
   });
 });
+

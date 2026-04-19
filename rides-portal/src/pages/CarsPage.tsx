@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { carsAPI, type ClassicCar } from '../services/api';
 
-const FALLBACK = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&auto=format&fit=crop';
+const FALLBACK = 'https://images.pexels.com/photos/8867048/pexels-photo-8867048.jpeg?auto=compress&cs=tinysrgb&w=1200';
 
 const TAGS = ['all', 'wedding', 'photoshoot', 'event'];
 

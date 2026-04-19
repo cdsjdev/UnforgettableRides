@@ -2,7 +2,7 @@
 
 *Last updated: 2026-04-19*
 
-All commands use the SQLite CLI: `sqlite3 rides-api/petcare.db`
+All commands use the SQLite CLI: `sqlite3 rides-api/src/data/analytics.db`
 
 ---
 
@@ -73,14 +73,14 @@ Migrations are in `rides-api/migrations/`. They run automatically on server star
 
 To manually apply a migration:
 ```bash
-sqlite3 rides-api/petcare.db < rides-api/migrations/0019_rides_up.sql
+sqlite3 rides-api/src/data/analytics.db < rides-api/migrations/0019_rides_up.sql
 ```
 
 To roll back:
 ```bash
-sqlite3 rides-api/petcare.db < rides-api/migrations/0019_rides_down.sql
+sqlite3 rides-api/src/data/analytics.db < rides-api/migrations/0019_rides_down.sql
 # Then remove the migration record so it re-runs next start:
-sqlite3 rides-api/petcare.db "DELETE FROM schema_migrations WHERE filename = '0019_rides_up.sql';"
+sqlite3 rides-api/src/data/analytics.db "DELETE FROM schema_migrations WHERE filename = '0019_rides_up.sql';"
 ```
 
 ---
@@ -89,10 +89,10 @@ sqlite3 rides-api/petcare.db "DELETE FROM schema_migrations WHERE filename = '00
 
 ```bash
 # Backup
-sqlite3 rides-api/petcare.db ".backup rides-api/backup-$(date +%Y%m%d).db"
+sqlite3 rides-api/src/data/analytics.db ".backup rides-api/backup-$(date +%Y%m%d).db"
 
 # Restore
-cp rides-api/backup-20260419.db rides-api/petcare.db
+cp rides-api/backup-20260419.db rides-api/src/data/analytics.db
 ```
 
 ---

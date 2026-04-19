@@ -2,8 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { carsAPI, type ClassicCar } from '../services/api';
 
-const HERO_IMAGE = 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1800&auto=format&fit=crop&q=80';
-const FALLBACK_CAR = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&auto=format&fit=crop';
+// Royalty-free (Pexels) vintage classic car photo for hero background.
+const HERO_IMAGE = 'https://images.pexels.com/photos/5505825/pexels-photo-5505825.jpeg?auto=compress&cs=tinysrgb&w=1800';
+const FALLBACK_CAR = 'https://images.pexels.com/photos/8867048/pexels-photo-8867048.jpeg?auto=compress&cs=tinysrgb&w=1200';
 
 function tagLabel(tag: string) {
   const map: Record<string, string> = { wedding: 'Wedding', photoshoot: 'Photo Shoot', event: 'Event', other: 'Other' };

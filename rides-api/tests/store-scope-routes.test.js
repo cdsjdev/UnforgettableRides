@@ -1,4 +1,4 @@
-const { app, db, request, createTestUser } = require('./helpers');
+﻿const { app, db, request, createTestUser } = require('./helpers');
 
 describe('Store scope safety - commerce, appointments, and advisor routes', () => {
   let manager;
@@ -26,7 +26,7 @@ describe('Store scope safety - commerce, appointments, and advisor routes', () =
     upsertStore.run(storeB, `${prefix} Store B`, `${prefix}-store-b`);
     upsertStore.run(storeC, `${prefix} Store C`, `${prefix}-store-c`);
 
-    manager = createTestUser('store_manager', { email: `${prefix}-mgr@petcare.test` });
+    manager = createTestUser('store_manager', { email: `${prefix}-mgr@unforgettablerides.test` });
     const upsertLink = db.prepare(`
       INSERT INTO user_store_links (user_id, store_id, is_active, created_at, updated_at)
       VALUES (?, ?, 1, datetime('now'), datetime('now'))
@@ -225,3 +225,4 @@ describe('Store scope safety - commerce, appointments, and advisor routes', () =
     expect(res.body?.error?.code).toBe('NOT_FOUND');
   });
 });
+

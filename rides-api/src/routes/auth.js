@@ -1,4 +1,4 @@
-function registerAuthRoutes({
+﻿function registerAuthRoutes({
   app,
   apiResponse,
   authMiddleware,
@@ -1276,7 +1276,7 @@ function registerAuthRoutes({
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Email Verified - PetCare</title>
+    <title>Email Verified - UnforgettableRides</title>
     <style>
       body { margin: 0; padding: 24px; font-family: Arial, sans-serif; background: #f8fafc; color: #0f172a; }
       .card { max-width: 560px; margin: 40px auto; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08); }
@@ -1289,7 +1289,7 @@ function registerAuthRoutes({
   <body>
     <div class="card">
       <h1>Email verified</h1>
-      <p>Your PetCare email has been verified successfully.</p>
+      <p>Your UnforgettableRides email has been verified successfully.</p>
       <p><a href="${safeRedirectUrl}">Open App</a></p>
       ${fallbackLinkHtml}
       <p class="hint">If the app does not open automatically, tap one of the links above.</p>
@@ -1583,3 +1583,4 @@ function registerAuthRoutes({
 module.exports = {
   registerAuthRoutes,
 };
+

@@ -929,6 +929,9 @@ export interface LoginResponse {
   challenge_type?: 'email_code' | string;
   challenge_id?: string;
   expires_at?: string;
+  email_verification_required?: boolean;
+  verification_challenge_id?: string;
+  verification_expires_at?: string;
   message?: string;
 }
 

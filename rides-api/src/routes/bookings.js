@@ -167,14 +167,14 @@ function registerBookingsRoutes({
       if (req.user.role === 'admin') {
         sql = 'SELECT b.*, c.make, c.model, c.year FROM bookings b LEFT JOIN classic_cars c ON c.id = b.car_id WHERE 1=1';
       } else if (req.user.role === 'owner') {
-        // Owners see bookings for their cars
+        // Owners can act as both: car owner and customer on the same account.
         sql = `
           SELECT b.*, c.make, c.model, c.year
           FROM bookings b
           JOIN classic_cars c ON c.id = b.car_id
-          WHERE c.owner_id = ?
+          WHERE c.owner_id = ? OR b.customer_id = ?
         `;
-        params.push(req.user.id);
+        params.push(req.user.id, req.user.id);
       } else {
         // Customers see their own bookings
         sql = `

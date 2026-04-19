@@ -10,6 +10,9 @@ import MessagesPage from './pages/MessagesPage';
 import MessageThreadPage from './pages/MessageThreadPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
+import VerifyEmailPage from './pages/VerifyEmailPage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import AboutPage from './pages/AboutPage';
 import OwnerDashboardPage from './pages/OwnerDashboardPage';
@@ -39,8 +42,8 @@ function NavBar() {
         <Link to="/about" className="nav-hide-mobile">About</Link>
         {user ? (
           <>
-            {user.role === 'owner' && <Link to="/owner">My Listings</Link>}
-            {user.role !== 'owner' && <Link to="/bookings">My Bookings</Link>}
+            <Link to="/bookings">My Bookings</Link>
+            <Link to="/owner">My Listings</Link>
             <Link to="/messages">Messages</Link>
             <span className="nav-user">{user.name}</span>
             <button className="link-btn" onClick={logout}>Sign Out</button>
@@ -92,6 +95,9 @@ export default function App() {
         <Route path="/messages/:threadId" element={<MessageThreadPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/owner" element={<OwnerDashboardPage />} />

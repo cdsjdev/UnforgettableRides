@@ -18,7 +18,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       await register(form.name, form.email, form.password, form.role);
-      navigate(form.role === 'owner' ? '/owner' : '/cars');
+      navigate('/verify-email');
     } catch (err: any) {
       setError(err.response?.data?.error?.message || 'Registration failed. Please try again.');
     } finally {
@@ -30,7 +30,7 @@ export default function RegisterPage() {
     <div className="login-page">
       <div className="login-card">
         <h1>Create Account</h1>
-        <p className="subtitle">Join UnforgettableRides today.</p>
+        <p className="subtitle">Join UnforgettableRides today. One account can hire cars and list your own.</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">

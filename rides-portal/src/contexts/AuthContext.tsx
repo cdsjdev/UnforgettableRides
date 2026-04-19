@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import type { User } from '@shared/types';
+import type { User, LoginResponse } from '@shared/types';
 import { authAPI } from '../services/api';
 
 interface AuthState {
@@ -9,8 +9,10 @@ interface AuthState {
 }
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, role?: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<LoginResponse>;
+  register: (name: string, email: string, password: string, role?: string) => Promise<LoginResponse>;
+  setSession: (token: string, user: User) => void;
+  refreshMe: () => Promise<User | null>;
   logout: () => void;
 }
 
@@ -22,6 +24,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     token: localStorage.getItem('rides_token'),
     loading: true,
   });
+
+  const setSession = useCallback((token: string, user: User) => {
+    localStorage.setItem('rides_token', token);
+    localStorage.setItem('rides_user', JSON.stringify(user));
+    setState({ user, token, loading: false });
+  }, []);
+
+  const refreshMe = useCallback(async () => {
+    if (!state.token) return null;
+    try {
+      const user = await authAPI.me();
+      localStorage.setItem('rides_user', JSON.stringify(user));
+      setState((s) => ({ ...s, user }));
+      return user;
+    } catch {
+      return null;
+    }
+  }, [state.token]);
 
   useEffect(() => {
     if (state.token) {
@@ -40,19 +60,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     const res = await authAPI.login(email, password);
 
-    if (!res.token || !res.user) {
-      throw new Error(res.message || 'Login response missing token or user');
+    if (res.challenge_required) {
+      return res;
     }
 
-    localStorage.setItem('rides_token', res.token);
-    localStorage.setItem('rides_user', JSON.stringify(res.user));
-    setState({ user: res.user, token: res.token, loading: false });
-  }, []);
+    if (!res.token || !res.user) {
+      throw new Error(res.message || 'Login failed');
+    }
+
+    setSession(res.token, res.user);
+    return res;
+  }, [setSession]);
 
   const register = useCallback(async (name: string, email: string, password: string, role?: string) => {
-    await authAPI.signup({ email, password, name, role });
-    await login(email, password);
-  }, [login]);
+    const res = await authAPI.signup({ email, password, name, role });
+    if (!res.token || !res.user) {
+      throw new Error(res.message || 'Registration failed');
+    }
+    setSession(res.token, res.user);
+    return res;
+  }, [setSession]);
 
   const logout = useCallback(() => {
     localStorage.removeItem('rides_token');
@@ -61,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, register, logout }}>
+    <AuthContext.Provider value={{ ...state, login, register, setSession, refreshMe, logout }}>
       {children}
     </AuthContext.Provider>
   );

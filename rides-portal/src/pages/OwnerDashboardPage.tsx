@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { carsAPI, bookingsAPI, quotesAPI } from '../services/api';
+import { authAPI, carsAPI, bookingsAPI, quotesAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import type { ClassicCar, Booking, Quote } from '../services/api';
 
@@ -16,7 +16,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function OwnerDashboardPage() {
-  const { user } = useAuth();
+  const { user, refreshMe } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [activeTab, setActiveTab] = useState<'cars' | 'bookings' | 'quotes'>('cars');
@@ -57,10 +57,32 @@ export default function OwnerDashboardPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['owner-cars'] }),
   });
 
+  const becomeOwnerMutation = useMutation({
+    mutationFn: () => authAPI.becomeOwner(),
+    onSuccess: async () => {
+      await refreshMe();
+      navigate('/owner', { replace: true });
+    },
+  });
+
   if (!user) {
     return (
       <div className="container page">
         <p>Please <Link to="/login">sign in</Link> to view your dashboard.</p>
+      </div>
+    );
+  }
+
+  if (user.role !== 'owner' && user.role !== 'admin') {
+    return (
+      <div className="container page">
+        <div className="empty">
+          <h3>Enable Owner Access</h3>
+          <p>Use the same account for both hiring and listing cars.</p>
+          <button className="btn btn-primary" onClick={() => becomeOwnerMutation.mutate()} disabled={becomeOwnerMutation.isPending}>
+            {becomeOwnerMutation.isPending ? 'Enabling...' : 'Enable Owner Dashboard'}
+          </button>
+        </div>
       </div>
     );
   }

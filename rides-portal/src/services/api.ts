@@ -120,13 +120,48 @@ export const authAPI = {
     return data.data!;
   },
 
-  signup: async (payload: { email: string; password: string; name: string; role?: string }): Promise<User> => {
-    const { data } = await api.post<APIResponse<User>>('/auth/signup', payload);
+  signup: async (payload: { email: string; password: string; name: string; role?: string }): Promise<LoginResponse> => {
+    const { data } = await api.post<APIResponse<LoginResponse>>('/auth/signup', payload);
     return data.data!;
   },
 
   me: async (): Promise<User> => {
     const { data } = await api.get<APIResponse<User>>('/auth/me');
+    return data.data!;
+  },
+
+  verifyDeviceLogin: async (challenge_id: string, code: string, device_id?: string, device_name?: string): Promise<LoginResponse> => {
+    const { data } = await api.post<APIResponse<LoginResponse>>('/auth/login/verify-device', {
+      challenge_id,
+      code,
+      device_id,
+      device_name,
+    });
+    return data.data!;
+  },
+
+  forgotPassword: async (email: string, client: 'app' | 'dashboard' = 'app'): Promise<{ message: string }> => {
+    const { data } = await api.post<APIResponse<{ message: string }>>('/auth/password/forgot', { email, client });
+    return data.data || { message: 'If this email is registered, a password reset link has been sent.' };
+  },
+
+  resetPassword: async (token: string, new_password: string): Promise<{ message: string }> => {
+    const { data } = await api.post<APIResponse<{ message: string }>>('/auth/password/reset', { token, new_password });
+    return data.data || { message: 'Password reset successfully' };
+  },
+
+  sendEmailVerification: async (): Promise<{ message?: string; sent?: boolean; already_verified?: boolean; expires_at?: string }> => {
+    const { data } = await api.post<APIResponse<{ message?: string; sent?: boolean; already_verified?: boolean; expires_at?: string }>>('/auth/email/send-verification');
+    return data.data || {};
+  },
+
+  verifyEmailCode: async (code: string): Promise<{ verified: boolean; email_verified_at?: string; user?: User }> => {
+    const { data } = await api.post<APIResponse<{ verified: boolean; email_verified_at?: string; user?: User }>>('/auth/email/verify', { code });
+    return data.data!;
+  },
+
+  becomeOwner: async (): Promise<User> => {
+    const { data } = await api.post<APIResponse<User>>('/auth/role/become-owner');
     return data.data!;
   },
 };

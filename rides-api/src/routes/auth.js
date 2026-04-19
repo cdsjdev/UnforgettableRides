@@ -461,6 +461,28 @@
     const me = mapActiveUser(db.prepare(ACTIVE_USER_SELECT).get(req.user.id));
     res.json(apiResponse(me));
   });
+
+  // POST /api/v1/auth/role/become-owner
+  // Allow a signed-in customer to enable owner capabilities on the same account.
+  app.post('/api/v1/auth/role/become-owner', authMiddleware, (req, res) => {
+    const user = mapActiveUser(db.prepare(ACTIVE_USER_SELECT).get(req.user.id));
+    if (!user || !user.is_active) {
+      return res.status(401).json(apiResponse(null, { code: 'UNAUTHORIZED', message: 'User not found or inactive' }));
+    }
+    if (user.role === 'owner' || user.role === 'admin') {
+      return res.json(apiResponse(user));
+    }
+    if (user.role !== 'customer') {
+      return res.status(400).json(apiResponse(null, {
+        code: 'INVALID_REQUEST',
+        message: 'Only customer accounts can self-enable owner access',
+      }));
+    }
+
+    db.prepare("UPDATE users SET role = 'owner', updated_at = datetime('now') WHERE id = ?").run(user.id);
+    const updated = mapActiveUser(db.prepare(ACTIVE_USER_SELECT).get(user.id));
+    return res.json(apiResponse(updated));
+  });
   
   // PUT /api/v1/auth/password
   app.put('/api/v1/auth/password', authMiddleware, (req, res) => {

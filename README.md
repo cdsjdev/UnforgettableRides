@@ -25,7 +25,8 @@ This README is the canonical project entrypoint.
 1. Install dependencies for each service.
 2. Start backend services (`rides-api`, `ml-models`).
 3. Start `rides-admin`.
-4. Start `rides-app` with Expo.
+4. Start `rides-portal`.
+5. Start `rides-app` with Expo.
 
 Project helper scripts (Windows) are available in the repo root:
 - `setup.bat`
@@ -38,7 +39,11 @@ Project helper scripts (Windows) are available in the repo root:
 - API: `3000`
 - ML service: `8001`
 - Admin dashboard (dev): `5173`
+- Portal (dev): `5174`
 - Expo app (dev): `8081`
+- Admin (docker/prod): `8080`
+- Portal (docker/prod): `8082` by default (override with `PORTAL_PORT`)
+- App web (docker/prod): `8081`
 
 ## Documentation Quick Links
 

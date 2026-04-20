@@ -67,7 +67,14 @@ function Assert-HttpOk {
 }
 
 Invoke-Checked -Label 'containers running' -Action { docker compose -f $composeFilePath ps }
-foreach ($svc in @('rides-api', 'rides-admin', 'rides-portal', 'rides-app-web', 'ml-service')) {
+$services = @('rides-api', 'rides-admin', 'rides-portal', 'rides-app-web')
+if (Test-Path (Join-Path $root 'ml-models')) {
+  $services += 'ml-service'
+} else {
+  Write-Host '-> skipping ml-service status check (ml-models directory not found)'
+}
+
+foreach ($svc in $services) {
   Invoke-Checked -Label "service $svc status" -Action { Assert-ServiceRunning -Service $svc }
 }
 

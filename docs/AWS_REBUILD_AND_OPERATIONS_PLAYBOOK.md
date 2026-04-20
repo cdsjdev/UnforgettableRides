@@ -115,6 +115,54 @@ docker-compose -f docker-compose.production.yml up -d   # prod
 
 Services: `rides-api`, `rides-admin`, `rides-portal`, `rides-app-web`.
 
+### Production Ports (Docker)
+
+- Admin: `8080`
+- Portal: `8082` by default (`PORTAL_PORT` can override, for example `8083`)
+- App web: `8081`
+- API is reverse-proxied from web services under `/api/*`
+
+### Canonical AWS Deploy
+
+Use auto-select deploy script (CPU/GPU aware):
+
+```bash
+cd ~/UnforgettableRides
+git pull
+./scripts/deploy-auto.sh
+```
+
+This now deploys:
+- `rides-api`
+- `rides-admin`
+- `rides-portal`
+- `rides-app-web`
+- `ml-service` (when `ml-models/` is present)
+
+### If Portal Fails to Start (`8082 already in use`)
+
+```bash
+cd ~/UnforgettableRides
+docker ps -aq --filter "publish=8082" | xargs -r docker rm -f
+pm2 stop rides-portal 2>/dev/null || true
+pm2 delete rides-portal 2>/dev/null || true
+pid=$(sudo lsof -t -i:8082 -sTCP:LISTEN 2>/dev/null || true)
+[ -n "$pid" ] && sudo kill -9 "$pid" || true
+./scripts/deploy-auto.sh
+```
+
+Alternative (recommended if `8082` is used by Expo or another service):
+
+```bash
+cd ~/UnforgettableRides
+if grep -q '^PORTAL_PORT=' .env; then
+  sed -i 's/^PORTAL_PORT=.*/PORTAL_PORT=8083/' .env
+else
+  printf '\nPORTAL_PORT=8083\n' >> .env
+fi
+./scripts/deploy-auto.sh
+```
+
 ---
 
 ## PM2 (Production)

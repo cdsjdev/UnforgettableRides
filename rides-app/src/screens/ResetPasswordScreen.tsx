@@ -4,11 +4,13 @@ import {
   KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { authAPI } from '../services/api';
 
 const GOLD = '#c9a84c';
 
 export default function ResetPasswordScreen({ navigation, route }: any) {
+  const insets = useSafeAreaInsets();
   const tokenFromParams = route?.params?.token || '';
   const [token, setToken] = useState(tokenFromParams);
   const [password, setPassword] = useState('');
@@ -37,7 +39,16 @@ export default function ResetPasswordScreen({ navigation, route }: any) {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={[
+          styles.scroll,
+          {
+            paddingTop: Math.max(36, insets.top + 18),
+            paddingBottom: Math.max(32, insets.bottom + 16),
+          },
+        ]}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.card}>
           <Ionicons name="lock-closed-outline" size={40} color={GOLD} style={{ alignSelf: 'center', marginBottom: 16 }} />
           <Text style={styles.title}>Set New Password</Text>
@@ -93,7 +104,7 @@ export default function ResetPasswordScreen({ navigation, route }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0d0d0d' },
-  scroll: { flexGrow: 1, justifyContent: 'center', padding: 24 },
+  scroll: { flexGrow: 1, paddingHorizontal: 24 },
   card: { backgroundColor: '#1a1a1a', borderRadius: 16, padding: 24, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
   title: { color: '#f0ebe0', fontSize: 22, fontWeight: '700', marginBottom: 20, textAlign: 'center' },
   error: { color: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', borderRadius: 8, padding: 10, marginBottom: 14, fontSize: 13 },

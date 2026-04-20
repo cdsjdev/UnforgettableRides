@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../contexts/AuthContext';
 
 const GOLD = '#c9a84c';
@@ -14,6 +15,7 @@ const ROLES = [
 ];
 
 export default function RegisterScreen({ navigation, route }: any) {
+  const insets = useSafeAreaInsets();
   const { register } = useAuth();
   const initialRole = route?.params?.role || 'customer';
   const [name, setName] = useState('');
@@ -53,7 +55,16 @@ export default function RegisterScreen({ navigation, route }: any) {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={[
+          styles.scroll,
+          {
+            paddingTop: Math.max(36, insets.top + 18),
+            paddingBottom: Math.max(32, insets.bottom + 16),
+          },
+        ]}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.logo}>
           <Ionicons name="car-sport" size={48} color={GOLD} />
           <Text style={styles.brand}>UnforgettableRides</Text>
@@ -122,7 +133,7 @@ export default function RegisterScreen({ navigation, route }: any) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0d0d0d' },
-  scroll: { flexGrow: 1, justifyContent: 'center', padding: 24 },
+  scroll: { flexGrow: 1, paddingHorizontal: 24 },
   logo: { alignItems: 'center', marginBottom: 32 },
   brand: { color: GOLD, fontSize: 26, fontWeight: '800', marginTop: 12, letterSpacing: 0.5 },
   tagline: { color: '#a09070', fontSize: 13, marginTop: 4 },

@@ -80,29 +80,29 @@ export default function RegisterScreen({ navigation, route }: any) {
 
           <Text style={styles.label}>Full Name</Text>
           <View style={styles.inputRow}>
-            <Ionicons name="person-outline" size={18} color="#555" style={styles.inputIcon} />
-            <TextInput style={styles.input} placeholder="Your full name" placeholderTextColor="#555" value={name} onChangeText={v => { setName(v); setError(''); }} editable={!loading} />
+            <Ionicons name="person-outline" size={18} color="#9d9586" style={styles.inputIcon} />
+            <TextInput style={styles.input} placeholder="Your full name" placeholderTextColor="#9d9586" value={name} onChangeText={v => { setName(v); setError(''); }} editable={!loading} />
           </View>
 
           <Text style={styles.label}>Email</Text>
           <View style={styles.inputRow}>
-            <Ionicons name="mail-outline" size={18} color="#555" style={styles.inputIcon} />
-            <TextInput style={styles.input} placeholder="you@example.com" placeholderTextColor="#555" value={email} onChangeText={v => { setEmail(v); setError(''); }} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} editable={!loading} />
+            <Ionicons name="mail-outline" size={18} color="#9d9586" style={styles.inputIcon} />
+            <TextInput style={styles.input} placeholder="you@example.com" placeholderTextColor="#9d9586" value={email} onChangeText={v => { setEmail(v); setError(''); }} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} editable={!loading} />
           </View>
 
           <Text style={styles.label}>Password</Text>
           <View style={styles.inputRow}>
-            <Ionicons name="lock-closed-outline" size={18} color="#555" style={styles.inputIcon} />
-            <TextInput style={styles.input} placeholder="Min 6 characters" placeholderTextColor="#555" value={password} onChangeText={v => { setPassword(v); setError(''); }} secureTextEntry={!showPassword} editable={!loading} />
+            <Ionicons name="lock-closed-outline" size={18} color="#9d9586" style={styles.inputIcon} />
+            <TextInput style={styles.input} placeholder="Min 6 characters" placeholderTextColor="#9d9586" value={password} onChangeText={v => { setPassword(v); setError(''); }} secureTextEntry={!showPassword} editable={!loading} />
             <TouchableOpacity onPress={() => setShowPassword(v => !v)}>
-              <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color="#555" />
+              <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color="#9d9586" />
             </TouchableOpacity>
           </View>
 
           <Text style={styles.label}>Confirm Password</Text>
           <View style={styles.inputRow}>
-            <Ionicons name="lock-closed-outline" size={18} color="#555" style={styles.inputIcon} />
-            <TextInput style={styles.input} placeholder="Repeat password" placeholderTextColor="#555" value={confirmPassword} onChangeText={v => { setConfirmPassword(v); setError(''); }} secureTextEntry={!showPassword} editable={!loading} />
+            <Ionicons name="lock-closed-outline" size={18} color="#9d9586" style={styles.inputIcon} />
+            <TextInput style={styles.input} placeholder="Repeat password" placeholderTextColor="#9d9586" value={confirmPassword} onChangeText={v => { setConfirmPassword(v); setError(''); }} secureTextEntry={!showPassword} editable={!loading} />
           </View>
 
           <TouchableOpacity style={[styles.btn, loading && styles.btnDisabled]} onPress={handleRegister} disabled={loading}>
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   roleBtnActive: { borderColor: GOLD, backgroundColor: 'rgba(201,168,76,0.1)' },
   roleBtnTitle: { color: '#a09070', fontWeight: '700', fontSize: 14, marginBottom: 2 },
   roleBtnTitleActive: { color: GOLD },
-  roleBtnSub: { color: '#555', fontSize: 11 },
+  roleBtnSub: { color: '#9d9586', fontSize: 11 },
   roleBtnSubActive: { color: '#a09070' },
   inputRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#0d0d0d', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderRadius: 10, paddingHorizontal: 12, marginBottom: 16 },
   inputIcon: { marginRight: 8 },
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   btnText: { color: '#0d0d0d', fontWeight: '700', fontSize: 15 },
   divider: { flexDirection: 'row', alignItems: 'center', marginVertical: 20 },
   dividerLine: { flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.08)' },
-  dividerLabel: { color: '#555', fontSize: 12, marginHorizontal: 10 },
+  dividerLabel: { color: '#9d9586', fontSize: 12, marginHorizontal: 10 },
   outlineBtn: { borderWidth: 1.5, borderColor: GOLD, borderRadius: 10, paddingVertical: 13, alignItems: 'center' },
   outlineBtnText: { color: GOLD, fontWeight: '700', fontSize: 15 },
 });

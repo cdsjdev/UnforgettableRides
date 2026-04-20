@@ -115,7 +115,7 @@ export default function BookingScreen({ navigation, route }: any) {
       <TextInput
         style={styles.input}
         placeholder="YYYY-MM-DD"
-        placeholderTextColor="#555"
+        placeholderTextColor="#9d9586"
         value={eventDate}
         onChangeText={setEventDate}
       />
@@ -137,7 +137,7 @@ export default function BookingScreen({ navigation, route }: any) {
         <TextInput
           style={[styles.input, { flex: 1, marginBottom: 0 }]}
           placeholder={durationMode === 'days' ? 'e.g. 1' : 'e.g. 4'}
-          placeholderTextColor="#555"
+          placeholderTextColor="#9d9586"
           keyboardType="numeric"
           value={duration}
           onChangeText={setDuration}
@@ -148,7 +148,7 @@ export default function BookingScreen({ navigation, route }: any) {
       <TextInput
         style={styles.input}
         placeholder="Address or venue name"
-        placeholderTextColor="#555"
+        placeholderTextColor="#9d9586"
         value={pickupLocation}
         onChangeText={setPickupLocation}
       />
@@ -157,7 +157,7 @@ export default function BookingScreen({ navigation, route }: any) {
       <TextInput
         style={[styles.input, styles.textarea]}
         placeholder="Any special requirements…"
-        placeholderTextColor="#555"
+        placeholderTextColor="#9d9586"
         multiline
         numberOfLines={3}
         value={notes}

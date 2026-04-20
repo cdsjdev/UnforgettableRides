@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   Image, ActivityIndicator, FlatList, useWindowDimensions,
@@ -25,7 +25,7 @@ function CarCard({ car, onPress }: { car: ClassicCar; onPress: () => void }) {
         <Image source={{ uri: fullImg }} style={styles.cardImage} resizeMode="cover" />
       ) : (
         <View style={[styles.cardImage, styles.cardImagePlaceholder]}>
-          <Ionicons name="car-sport-outline" size={40} color="#444" />
+          <Ionicons name="car-sport-outline" size={40} color="#8c8576" />
         </View>
       )}
       <View style={styles.cardBody}>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   tagBadge: { backgroundColor: 'rgba(201,168,76,0.15)', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
   tagText: { color: GOLD, fontSize: 10, textTransform: 'capitalize' },
   price: { color: GOLD, fontSize: 11, fontWeight: '700', marginLeft: 'auto' },
-  emptyText: { color: '#666', fontSize: 14, textAlign: 'center', marginTop: 20 },
+  emptyText: { color: '#b1a998', fontSize: 14, textAlign: 'center', marginTop: 20 },
   viewAllBtn: { marginTop: 16, alignSelf: 'center', padding: 12 },
   viewAllText: { color: GOLD, fontSize: 15, fontWeight: '600' },
   ownerBanner: { margin: 20, backgroundColor: '#1a1a1a', borderRadius: 12, padding: 24, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(201,168,76,0.25)' },

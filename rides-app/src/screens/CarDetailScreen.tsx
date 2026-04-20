@@ -66,7 +66,7 @@ export default function CarDetailScreen({ navigation, route }: any) {
           <Image source={{ uri: fullImg }} style={styles.mainImage} resizeMode="cover" />
         ) : (
           <View style={[styles.mainImage, styles.imagePlaceholder]}>
-            <Ionicons name="car-sport-outline" size={60} color="#444" />
+            <Ionicons name="car-sport-outline" size={60} color="#8c8576" />
           </View>
         )}
         {images.length > 1 && (
@@ -138,7 +138,7 @@ export default function CarDetailScreen({ navigation, route }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0d0d0d' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#0d0d0d' },
-  errorText: { color: '#666', fontSize: 16 },
+  errorText: { color: '#b1a998', fontSize: 16 },
   gallery: { backgroundColor: '#0d0d0d' },
   mainImage: { width: '100%', aspectRatio: 16 / 10 },
   imagePlaceholder: { backgroundColor: '#1a1a1a', alignItems: 'center', justifyContent: 'center' },

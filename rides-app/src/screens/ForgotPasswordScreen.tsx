@@ -52,11 +52,11 @@ export default function ForgotPasswordScreen({ navigation }: any) {
               {error ? <Text style={styles.error}>{error}</Text> : null}
               <Text style={styles.label}>Email</Text>
               <View style={styles.inputRow}>
-                <Ionicons name="mail-outline" size={18} color="#555" style={styles.inputIcon} />
+                <Ionicons name="mail-outline" size={18} color="#9d9586" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="you@example.com"
-                  placeholderTextColor="#555"
+                  placeholderTextColor="#9d9586"
                   value={email}
                   onChangeText={v => { setEmail(v); setError(''); }}
                   keyboardType="email-address"

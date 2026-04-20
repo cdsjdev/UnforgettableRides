@@ -76,7 +76,7 @@ export default function MessageThreadScreen({ navigation, route }: any) {
         <Text style={[styles.bubbleText, isMine ? styles.bubbleTextMine : styles.bubbleTextTheirs]}>
           {msg.body}
         </Text>
-        <Text style={[styles.bubbleTime, isMine ? { color: 'rgba(13,13,13,0.6)' } : { color: '#555' }]}>
+        <Text style={[styles.bubbleTime, isMine ? { color: 'rgba(13,13,13,0.6)' } : { color: '#9d9586' }]}>
           {formatMsgTime(msg.createdAt)}
         </Text>
       </View>
@@ -104,7 +104,7 @@ export default function MessageThreadScreen({ navigation, route }: any) {
         <TextInput
           style={styles.input}
           placeholder="Type a message…"
-          placeholderTextColor="#555"
+          placeholderTextColor="#9d9586"
           value={body}
           onChangeText={setBody}
           multiline
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   list: { padding: 16, gap: 8 },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  emptyText: { color: '#555', fontSize: 14 },
+  emptyText: { color: '#9d9586', fontSize: 14 },
   bubble: { maxWidth: '78%', borderRadius: 16, paddingHorizontal: 14, paddingVertical: 10 },
   bubbleMine: { alignSelf: 'flex-end', backgroundColor: GOLD, borderBottomRightRadius: 4 },
   bubbleTheirs: { alignSelf: 'flex-start', backgroundColor: '#1f1f1f', borderBottomLeftRadius: 4 },

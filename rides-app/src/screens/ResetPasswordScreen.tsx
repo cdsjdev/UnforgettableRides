@@ -60,19 +60,19 @@ export default function ResetPasswordScreen({ navigation, route }: any) {
                 <>
                   <Text style={styles.label}>Reset Token</Text>
                   <View style={styles.inputRow}>
-                    <TextInput style={styles.input} placeholder="Paste token from email" placeholderTextColor="#555" value={token} onChangeText={v => { setToken(v); setError(''); }} autoCapitalize="none" editable={!loading} />
+                    <TextInput style={styles.input} placeholder="Paste token from email" placeholderTextColor="#9d9586" value={token} onChangeText={v => { setToken(v); setError(''); }} autoCapitalize="none" editable={!loading} />
                   </View>
                 </>
               )}
 
               <Text style={styles.label}>New Password</Text>
               <View style={styles.inputRow}>
-                <TextInput style={styles.input} placeholder="Min 6 characters" placeholderTextColor="#555" value={password} onChangeText={v => { setPassword(v); setError(''); }} secureTextEntry editable={!loading} />
+                <TextInput style={styles.input} placeholder="Min 6 characters" placeholderTextColor="#9d9586" value={password} onChangeText={v => { setPassword(v); setError(''); }} secureTextEntry editable={!loading} />
               </View>
 
               <Text style={styles.label}>Confirm Password</Text>
               <View style={styles.inputRow}>
-                <TextInput style={styles.input} placeholder="Repeat password" placeholderTextColor="#555" value={confirm} onChangeText={v => { setConfirm(v); setError(''); }} secureTextEntry editable={!loading} />
+                <TextInput style={styles.input} placeholder="Repeat password" placeholderTextColor="#9d9586" value={confirm} onChangeText={v => { setConfirm(v); setError(''); }} secureTextEntry editable={!loading} />
               </View>
 
               <TouchableOpacity style={[styles.btn, loading && styles.btnDisabled]} onPress={handleSubmit} disabled={loading}>

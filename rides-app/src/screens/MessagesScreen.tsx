@@ -47,7 +47,7 @@ export default function MessagesScreen({ navigation }: any) {
   if (!user) {
     return (
       <View style={styles.center}>
-        <Ionicons name="chatbubbles-outline" size={48} color="#333" />
+        <Ionicons name="chatbubbles-outline" size={48} color="#7a7365" />
         <Text style={styles.emptyTitle}>Sign in to view messages</Text>
         <TouchableOpacity style={styles.signInBtn} onPress={() => navigation.navigate('Profile', { screen: 'Login' })}>
           <Text style={styles.signInBtnText}>Sign In</Text>
@@ -95,7 +95,7 @@ export default function MessagesScreen({ navigation }: any) {
     <View style={styles.container}>
       {threads.length === 0 ? (
         <View style={styles.center}>
-          <Ionicons name="chatbubbles-outline" size={48} color="#333" />
+          <Ionicons name="chatbubbles-outline" size={48} color="#7a7365" />
           <Text style={styles.emptyTitle}>No messages yet</Text>
           <Text style={styles.emptySub}>When you message a car owner, it will appear here</Text>
         </View>
@@ -122,15 +122,15 @@ const styles = StyleSheet.create({
   threadHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
   threadName: { color: '#a09070', fontSize: 15, fontWeight: '500' },
   threadNameUnread: { color: '#f0ebe0', fontWeight: '700' },
-  threadTime: { color: '#555', fontSize: 12 },
+  threadTime: { color: '#9d9586', fontSize: 12 },
   threadFooter: { flexDirection: 'row', alignItems: 'center' },
-  threadPreview: { color: '#555', fontSize: 13, flex: 1 },
+  threadPreview: { color: '#9d9586', fontSize: 13, flex: 1 },
   threadPreviewUnread: { color: '#a09070' },
   unreadBadge: { backgroundColor: GOLD, borderRadius: 10, minWidth: 20, height: 20, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
   unreadText: { color: '#0d0d0d', fontSize: 11, fontWeight: '700' },
   separator: { height: StyleSheet.hairlineWidth, backgroundColor: 'rgba(255,255,255,0.06)', marginLeft: 78 },
-  emptyTitle: { color: '#666', fontSize: 16, marginTop: 12, marginBottom: 6 },
-  emptySub: { color: '#444', fontSize: 13, textAlign: 'center' },
+  emptyTitle: { color: '#b1a998', fontSize: 16, marginTop: 12, marginBottom: 6 },
+  emptySub: { color: '#8c8576', fontSize: 13, textAlign: 'center' },
   signInBtn: { backgroundColor: GOLD, borderRadius: 8, paddingHorizontal: 28, paddingVertical: 12, marginTop: 12 },
   signInBtnText: { color: '#0d0d0d', fontWeight: '700', fontSize: 15 },
 });

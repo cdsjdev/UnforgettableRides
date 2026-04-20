@@ -42,7 +42,7 @@ export default function BookingsListScreen({ navigation }: any) {
   if (!user) {
     return (
       <View style={styles.center}>
-        <Ionicons name="calendar-outline" size={48} color="#333" />
+        <Ionicons name="calendar-outline" size={48} color="#7a7365" />
         <Text style={styles.emptyTitle}>Sign in to view bookings</Text>
         <TouchableOpacity style={styles.signInBtn} onPress={() => navigation.navigate('Profile', { screen: 'Login' })}>
           <Text style={styles.signInBtnText}>Sign In</Text>
@@ -86,7 +86,7 @@ export default function BookingsListScreen({ navigation }: any) {
     <View style={styles.container}>
       {bookings.length === 0 ? (
         <View style={styles.center}>
-          <Ionicons name="calendar-outline" size={48} color="#333" />
+          <Ionicons name="calendar-outline" size={48} color="#7a7365" />
           <Text style={styles.emptyTitle}>No bookings yet</Text>
           <TouchableOpacity style={styles.browseBtn} onPress={() => navigation.navigate('Cars')}>
             <Text style={styles.browseBtnText}>Browse Cars</Text>
@@ -116,9 +116,9 @@ const styles = StyleSheet.create({
   statusText: { color: '#fff', fontSize: 11, fontWeight: '700', textTransform: 'capitalize' },
   cardRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
   cardMeta: { color: '#a09070', fontSize: 13 },
-  cardDot: { color: '#555' },
+  cardDot: { color: '#9d9586' },
   cardPrice: { color: GOLD, fontSize: 16, fontWeight: '700', marginTop: 8 },
-  emptyTitle: { color: '#666', fontSize: 16, marginTop: 12, marginBottom: 20 },
+  emptyTitle: { color: '#b1a998', fontSize: 16, marginTop: 12, marginBottom: 20 },
   browseBtn: { backgroundColor: GOLD, borderRadius: 8, paddingHorizontal: 28, paddingVertical: 12 },
   browseBtnText: { color: '#0d0d0d', fontWeight: '700', fontSize: 15 },
   signInBtn: { backgroundColor: GOLD, borderRadius: 8, paddingHorizontal: 28, paddingVertical: 12, marginTop: 12 },

@@ -27,6 +27,7 @@ import NotificationsScreen from '../screens/NotificationsScreen';
 const GOLD = '#c9a84c';
 const BG = '#0d0d0d';
 const SURFACE = '#1a1a1a';
+const INACTIVE_TAB = '#8c8576';
 
 // ---- Param lists ----
 
@@ -119,8 +120,8 @@ function MessagesStackNavigator() {
 function MyListingsPlaceholder({ navigation }: any) {
   return (
     <View style={{ flex: 1, backgroundColor: BG, alignItems: 'center', justifyContent: 'center' }}>
-      <Ionicons name="car-outline" size={48} color="#333" />
-      <Text style={{ color: '#666', fontSize: 16, marginTop: 12 }}>My Listings coming soon</Text>
+      <Ionicons name="car-outline" size={48} color="#7a7365" />
+      <Text style={{ color: '#b1a998', fontSize: 16, marginTop: 12 }}>My Listings coming soon</Text>
     </View>
   );
 }
@@ -145,7 +146,7 @@ function ProfileStackNavigator() {
 // ---- Root Tab Navigator ----
 
 function TabBarLabel({ focused, label }: { focused: boolean; label: string }) {
-  return <Text style={{ color: focused ? GOLD : '#555', fontSize: 11, marginTop: -2 }}>{label}</Text>;
+  return <Text style={{ color: focused ? GOLD : INACTIVE_TAB, fontSize: 11, marginTop: -2 }}>{label}</Text>;
 }
 
 export function AppNavigator() {
@@ -175,14 +176,14 @@ export function AppNavigator() {
           paddingTop: 8,
         },
         tabBarActiveTintColor: GOLD,
-        tabBarInactiveTintColor: '#555',
+        tabBarInactiveTintColor: INACTIVE_TAB,
       }}
     >
       <Tab.Screen
         name="Home"
         component={HomeStackNavigator}
         options={{
-          tabBarIcon: ({ focused, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={focused ? GOLD : '#555'} />,
+          tabBarIcon: ({ focused, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={focused ? GOLD : INACTIVE_TAB} />,
           tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} label="Home" />,
         }}
       />
@@ -190,7 +191,7 @@ export function AppNavigator() {
         name="Cars"
         component={CarsStackNavigator}
         options={{
-          tabBarIcon: ({ focused, size }) => <Ionicons name={focused ? 'car-sport' : 'car-sport-outline'} size={size} color={focused ? GOLD : '#555'} />,
+          tabBarIcon: ({ focused, size }) => <Ionicons name={focused ? 'car-sport' : 'car-sport-outline'} size={size} color={focused ? GOLD : INACTIVE_TAB} />,
           tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} label="Cars" />,
         }}
       />
@@ -200,7 +201,7 @@ export function AppNavigator() {
         options={{
           tabBarIcon: ({ focused, size }) => (
             <View>
-              <Ionicons name={focused ? 'chatbubbles' : 'chatbubbles-outline'} size={size} color={focused ? GOLD : '#555'} />
+              <Ionicons name={focused ? 'chatbubbles' : 'chatbubbles-outline'} size={size} color={focused ? GOLD : INACTIVE_TAB} />
               {unreadCount > 0 && (
                 <View style={styles.badge}>
                   <Text style={styles.badgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
@@ -215,7 +216,7 @@ export function AppNavigator() {
         name="Profile"
         component={ProfileStackNavigator}
         options={{
-          tabBarIcon: ({ focused, size }) => <Ionicons name={focused ? 'person-circle' : 'person-circle-outline'} size={size} color={focused ? GOLD : '#555'} />,
+          tabBarIcon: ({ focused, size }) => <Ionicons name={focused ? 'person-circle' : 'person-circle-outline'} size={size} color={focused ? GOLD : INACTIVE_TAB} />,
           tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} label="Profile" />,
         }}
       />

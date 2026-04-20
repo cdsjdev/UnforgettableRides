@@ -95,11 +95,11 @@ export default function LoginScreen({ navigation }: any) {
 
           <Text style={styles.label}>Email</Text>
           <View style={styles.inputRow}>
-            <Ionicons name="mail-outline" size={18} color="#555" style={styles.inputIcon} />
+            <Ionicons name="mail-outline" size={18} color="#9d9586" style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="you@example.com"
-              placeholderTextColor="#555"
+              placeholderTextColor="#9d9586"
               value={email}
               onChangeText={v => { setEmail(v); setError(''); }}
               keyboardType="email-address"
@@ -113,18 +113,18 @@ export default function LoginScreen({ navigation }: any) {
             <>
               <Text style={styles.label}>Password</Text>
               <View style={styles.inputRow}>
-                <Ionicons name="lock-closed-outline" size={18} color="#555" style={styles.inputIcon} />
+                <Ionicons name="lock-closed-outline" size={18} color="#9d9586" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Password"
-                  placeholderTextColor="#555"
+                  placeholderTextColor="#9d9586"
                   value={password}
                   onChangeText={v => { setPassword(v); setError(''); }}
                   secureTextEntry={!showPassword}
                   editable={!loading}
                 />
                 <TouchableOpacity onPress={() => setShowPassword(v => !v)}>
-                  <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color="#555" />
+                  <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color="#9d9586" />
                 </TouchableOpacity>
               </View>
 
@@ -146,11 +146,11 @@ export default function LoginScreen({ navigation }: any) {
             <>
               <Text style={styles.label}>Verification Code</Text>
               <View style={styles.inputRow}>
-                <Ionicons name="shield-checkmark-outline" size={18} color="#555" style={styles.inputIcon} />
+                <Ionicons name="shield-checkmark-outline" size={18} color="#9d9586" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="6-digit code"
-                  placeholderTextColor="#555"
+                  placeholderTextColor="#9d9586"
                   value={passcode}
                   onChangeText={v => { setPasscode(v.replace(/\D/g, '').slice(0, 6)); setError(''); }}
                   keyboardType="number-pad"
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   linkText: { color: GOLD, fontSize: 13 },
   divider: { flexDirection: 'row', alignItems: 'center', marginVertical: 20 },
   dividerLine: { flex: 1, height: 1, backgroundColor: 'rgba(255,255,255,0.08)' },
-  dividerLabel: { color: '#555', fontSize: 12, marginHorizontal: 10 },
+  dividerLabel: { color: '#9d9586', fontSize: 12, marginHorizontal: 10 },
   outlineBtn: { borderWidth: 1.5, borderColor: GOLD, borderRadius: 10, paddingVertical: 13, alignItems: 'center' },
   outlineBtnText: { color: GOLD, fontWeight: '700', fontSize: 15 },
 });

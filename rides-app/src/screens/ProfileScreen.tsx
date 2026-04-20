@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Alert, TextInput, ActivityIndicator,
@@ -18,7 +18,7 @@ function MenuItem({ icon, label, sub, onPress, danger }: { icon: string; label: 
         <Text style={[styles.menuText, danger && { color: '#ef4444' }]}>{label}</Text>
         {sub ? <Text style={styles.menuSub}>{sub}</Text> : null}
       </View>
-      {!danger ? <Ionicons name="chevron-forward" size={16} color="#444" /> : null}
+      {!danger ? <Ionicons name="chevron-forward" size={16} color="#8c8576" /> : null}
     </TouchableOpacity>
   );
 }
@@ -70,7 +70,7 @@ export default function ProfileScreen({ navigation }: any) {
   if (!user) {
     return (
       <View style={[styles.guestContainer, { paddingTop: Math.max(32, insets.top + 16) }]}>
-        <Ionicons name="person-circle-outline" size={72} color="#333" />
+        <Ionicons name="person-circle-outline" size={72} color="#7a7365" />
         <Text style={styles.guestTitle}>Welcome to UnforgettableRides</Text>
         <Text style={styles.guestSub}>Sign in to manage bookings and messages</Text>
         <TouchableOpacity style={styles.signInBtn} onPress={() => navigation.navigate('Login')}>
@@ -131,8 +131,8 @@ export default function ProfileScreen({ navigation }: any) {
       {changingPw ? (
         <View style={styles.pwForm}>
           <Text style={styles.pwTitle}>Change Password</Text>
-          <TextInput style={styles.pwInput} placeholder="Current password" placeholderTextColor="#555" secureTextEntry value={currentPw} onChangeText={setCurrentPw} />
-          <TextInput style={styles.pwInput} placeholder="New password (min 6 chars)" placeholderTextColor="#555" secureTextEntry value={newPw} onChangeText={setNewPw} />
+          <TextInput style={styles.pwInput} placeholder="Current password" placeholderTextColor="#9d9586" secureTextEntry value={currentPw} onChangeText={setCurrentPw} />
+          <TextInput style={styles.pwInput} placeholder="New password (min 6 chars)" placeholderTextColor="#9d9586" secureTextEntry value={newPw} onChangeText={setNewPw} />
           <View style={styles.pwActions}>
             <TouchableOpacity style={styles.pwSaveBtn} onPress={handleChangePassword} disabled={savingPw}>
               {savingPw ? <ActivityIndicator color="#0d0d0d" size="small" /> : <Text style={styles.pwSaveBtnText}>Update Password</Text>}
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   menuIcon: { width: 30 },
   menuLabel: { flex: 1 },
   menuText: { color: '#f0ebe0', fontSize: 15 },
-  menuSub: { color: '#555', fontSize: 12, marginTop: 2 },
+  menuSub: { color: '#9d9586', fontSize: 12, marginTop: 2 },
   pwForm: { margin: 16, backgroundColor: '#1a1a1a', borderRadius: 12, padding: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
   pwTitle: { color: '#f0ebe0', fontSize: 16, fontWeight: '700', marginBottom: 16 },
   pwInput: { backgroundColor: '#0d0d0d', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderRadius: 8, padding: 14, color: '#f0ebe0', fontSize: 14, marginBottom: 12 },
@@ -186,6 +186,6 @@ const styles = StyleSheet.create({
   pwSaveBtn: { backgroundColor: GOLD, borderRadius: 8, paddingHorizontal: 20, paddingVertical: 10 },
   pwSaveBtnText: { color: '#0d0d0d', fontWeight: '700', fontSize: 14 },
   pwCancelText: { color: '#a09070', fontSize: 14 },
-  footer: { color: '#333', fontSize: 12, textAlign: 'center', marginTop: 32 },
+  footer: { color: '#7a7365', fontSize: 12, textAlign: 'center', marginTop: 32 },
 });
 

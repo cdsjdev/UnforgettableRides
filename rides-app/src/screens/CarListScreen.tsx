@@ -5,10 +5,12 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { carsAPI, getFullImageUrl } from '../services/api';
 import type { ClassicCar } from '../../../shared/types';
 
 const GOLD = '#c9a84c';
+const SEARCH_ICON = '#bfb7a4';
 const TAGS = ['all', 'wedding', 'photoshoot', 'event', 'other'] as const;
 
 export default function CarListScreen({ navigation, route }: any) {
@@ -18,6 +20,7 @@ export default function CarListScreen({ navigation, route }: any) {
   const [search, setSearch] = useState('');
   const [tag, setTag] = useState<string>(initialTag);
   const { width } = useWindowDimensions();
+  const tabBarHeight = useBottomTabBarHeight();
 
   const load = useCallback(() => {
     setLoading(true);
@@ -56,7 +59,7 @@ export default function CarListScreen({ navigation, route }: any) {
           <Image source={{ uri: fullImg }} style={styles.cardImage} resizeMode="cover" />
         ) : (
           <View style={[styles.cardImage, styles.imagePlaceholder]}>
-            <Ionicons name="car-sport-outline" size={40} color="#444" />
+            <Ionicons name="car-sport-outline" size={40} color="#8c8576" />
           </View>
         )}
         <View style={styles.cardBody}>
@@ -88,17 +91,17 @@ export default function CarListScreen({ navigation, route }: any) {
     <View style={styles.container}>
       {/* Search */}
       <View style={styles.searchBar}>
-        <Ionicons name="search-outline" size={16} color="#666" style={{ marginRight: 8 }} />
+        <Ionicons name="search-outline" size={16} color={SEARCH_ICON} style={{ marginRight: 8 }} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search by make, model, location…"
-          placeholderTextColor="#666"
+          placeholderTextColor="#b1a998"
           value={search}
           onChangeText={setSearch}
         />
         {search ? (
           <TouchableOpacity onPress={() => setSearch('')}>
-            <Ionicons name="close-circle" size={16} color="#666" />
+            <Ionicons name="close-circle" size={16} color={SEARCH_ICON} />
           </TouchableOpacity>
         ) : null}
       </View>
@@ -129,7 +132,7 @@ export default function CarListScreen({ navigation, route }: any) {
         </View>
       ) : filtered.length === 0 ? (
         <View style={styles.center}>
-          <Ionicons name="car-sport-outline" size={48} color="#333" />
+          <Ionicons name="car-sport-outline" size={48} color="#7a7365" />
           <Text style={styles.emptyText}>No cars found</Text>
           {search ? <Text style={styles.emptyHint}>Try a different search</Text> : null}
         </View>
@@ -140,7 +143,7 @@ export default function CarListScreen({ navigation, route }: any) {
           renderItem={renderItem}
           numColumns={numCols}
           key={numCols}
-          contentContainerStyle={styles.list}
+          contentContainerStyle={[styles.list, { paddingBottom: tabBarHeight + 24 }]}
           columnWrapperStyle={numCols > 1 ? { gap: 16, paddingHorizontal: 16 } : undefined}
         />
       )}
@@ -171,6 +174,6 @@ const styles = StyleSheet.create({
   tagText: { color: GOLD, fontSize: 10, textTransform: 'capitalize' },
   price: { color: GOLD, fontSize: 13, fontWeight: '700' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  emptyText: { color: '#666', fontSize: 16, marginTop: 12 },
-  emptyHint: { color: '#444', fontSize: 13, marginTop: 4 },
+  emptyText: { color: '#b1a998', fontSize: 16, marginTop: 12 },
+  emptyHint: { color: '#8c8576', fontSize: 13, marginTop: 4 },
 });

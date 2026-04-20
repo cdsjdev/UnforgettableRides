@@ -13,6 +13,7 @@ set -euo pipefail
 
 AWS_IP=""
 PORT="8082"
+API_PORT="8080"
 BACKGROUND="0"
 
 while [[ $# -gt 0 ]]; do
@@ -23,6 +24,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --port)
       PORT="${2:-8082}"
+      shift 2
+      ;;
+    --api-port)
+      API_PORT="${2:-8080}"
       shift 2
       ;;
     --background)
@@ -53,7 +58,7 @@ cd "$ROOT_DIR"
 BUILD_DATE="$(date +%F)"
 GIT_SHA="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
 
-export EXPO_PUBLIC_API_URL="http://${AWS_IP}/api/v1"
+export EXPO_PUBLIC_API_URL="http://${AWS_IP}:${API_PORT}/api/v1"
 export EXPO_PUBLIC_BUILD_DATE="$BUILD_DATE"
 export EXPO_PUBLIC_GIT_SHA="$GIT_SHA"
 

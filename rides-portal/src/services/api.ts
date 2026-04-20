@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { User, LoginResponse, APIResponse, SocialThread, SocialMessage } from '@shared/types';
+import type { User, LoginResponse, APIResponse, SocialThread, SocialMessage, SocialPage } from '@shared/types';
 
 export interface ClassicCar {
   id: string;
@@ -293,21 +293,23 @@ export const quotesAPI = {
 
 // ── Messaging ──────────────────────────────────────────────────
 export const messagingAPI = {
-  getThreads: async (): Promise<SocialThread[]> => {
-    const { data } = await api.get<APIResponse<SocialThread[]>>('/social/threads');
-    return data.data ?? [];
+  getThreads: async (cursor?: string, limit = 30): Promise<SocialPage<SocialThread>> => {
+    const params: Record<string, string | number> = { limit };
+    if (cursor) params.cursor = cursor;
+    const { data } = await api.get<APIResponse<SocialPage<SocialThread>>>('/social/threads', { params });
+    return data.data ?? { items: [], nextCursor: null };
   },
 
-  createThread: async (user_id: string): Promise<SocialThread> => {
-    const { data } = await api.post<APIResponse<SocialThread>>('/social/threads', { user_id });
+  createThread: async (recipient_id: string): Promise<{ threadId: string; created: boolean }> => {
+    const { data } = await api.post<APIResponse<{ threadId: string; created: boolean }>>('/social/threads', { recipient_id });
     return data.data!;
   },
 
-  getMessages: async (threadId: string, before?: string): Promise<SocialMessage[]> => {
-    const params: Record<string, string> = {};
-    if (before) params.before = before;
-    const { data } = await api.get<APIResponse<SocialMessage[]>>(`/social/threads/${threadId}/messages`, { params });
-    return data.data ?? [];
+  getMessages: async (threadId: string, cursor?: string, limit = 50): Promise<SocialPage<SocialMessage>> => {
+    const params: Record<string, string | number> = { limit };
+    if (cursor) params.cursor = cursor;
+    const { data } = await api.get<APIResponse<SocialPage<SocialMessage>>>(`/social/threads/${threadId}/messages`, { params });
+    return data.data ?? { items: [], nextCursor: null };
   },
 
   sendMessage: async (threadId: string, body: string): Promise<SocialMessage> => {
@@ -316,12 +318,12 @@ export const messagingAPI = {
   },
 
   getUnreadCount: async (): Promise<number> => {
-    const { data } = await api.get<APIResponse<{ unread: number }>>('/social/threads/unread-count');
-    return data.data?.unread ?? 0;
+    const { data } = await api.get<APIResponse<{ unread?: number; unread_count?: number; unreadCount?: number }>>('/social/threads/unread-count');
+    return Number(data.data?.unread ?? data.data?.unread_count ?? data.data?.unreadCount ?? 0);
   },
 
-  markRead: async (threadId: string): Promise<void> => {
-    await api.patch(`/social/threads/${threadId}/read`);
+  markRead: async (threadId: string, lastReadMessageId: string): Promise<void> => {
+    await api.patch(`/social/threads/${threadId}/read`, { last_read_message_id: lastReadMessageId });
   },
 };
 

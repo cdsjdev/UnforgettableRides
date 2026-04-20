@@ -16,14 +16,13 @@ test.describe('App auth + navigation regression', () => {
     await expect(page.getByText(/^Sign In$/)).toBeVisible();
   });
 
-  test('register, navigate core tabs, and sign out', async ({ page }) => {
+  test('register, navigate rides tabs, and sign out', async ({ page }) => {
     await registerFreshUser(page);
 
     const tabs = [
-      { label: 'My Dogs', path: /\/dogs/ },
-      { label: 'Social', path: /\/social/ },
-      { label: 'Shop', path: /\/shop/ },
-      { label: 'Care', path: /\/care/ },
+      { label: 'Cars', path: /\/cars/ },
+      { label: 'Messages', path: /\/messages/ },
+      { label: 'Profile', path: /\/profile/ },
       { label: 'Home', path: /\/$/ },
     ];
 
@@ -37,9 +36,6 @@ test.describe('App auth + navigation regression', () => {
     await page.getByText(/^Sign Out$/).click();
     await expect(page.getByText(/Are you sure you want to sign out\?/i)).toBeVisible();
     await page.locator('text=/^Sign Out$/').last().click();
-
-    // Assert auth screen is shown — same anchor registerFreshUser uses, locale-stable
     await expect(page.getByText(/^Sign In$/)).toBeVisible();
   });
 });
-

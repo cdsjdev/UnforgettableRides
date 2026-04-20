@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Modal, Pressable, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useI18n } from '../i18n/I18nContext';
 
 const logoImage = require('../../assets/logo.png');
 
@@ -15,17 +14,14 @@ interface CustomHeaderProps {
 
 export default function CustomHeader({ navigation, subtitle, extraRight, showBackOverride }: CustomHeaderProps) {
   const insets = useSafeAreaInsets();
-  const { t } = useI18n();
   const [menuOpen, setMenuOpen] = useState(false);
   const canGoBackHere = Boolean(navigation?.canGoBack?.());
   const showBack = Platform.OS !== 'web' && (typeof showBackOverride === 'boolean' ? showBackOverride : canGoBackHere);
 
   const navItems = [
-    { screen: 'Advisor',    icon: 'chatbubble-ellipses-outline' as const, color: '#3B82F6', label: t('nav.advisor') },
-    { screen: 'Help',       icon: 'help-circle-outline' as const,    color: '#3B82F6', label: t('header.help')     },
-    { screen: 'Profile',    icon: 'person-circle-outline' as const,  color: '#3B82F6', label: t('header.profile')  },
-    { screen: 'AISettings', icon: 'settings-outline' as const,      color: '#6B7280', label: t('header.settings') },
-    { screen: 'Feedback',   icon: 'chatbox-ellipses-outline' as const, color: '#3B82F6', label: t('nav.feedback')  },
+    { screen: 'Help',       icon: 'help-circle-outline' as const, color: '#3B82F6', label: 'Help' },
+    { screen: 'Profile',    icon: 'person-circle-outline' as const, color: '#3B82F6', label: 'Profile' },
+    { screen: 'Feedback',   icon: 'chatbox-ellipses-outline' as const, color: '#3B82F6', label: 'Feedback' },
   ];
 
   const handleNav = (screen: string) => {
@@ -46,14 +42,14 @@ export default function CustomHeader({ navigation, subtitle, extraRight, showBac
               style={styles.backButton}
               onPress={handleBack}
               accessibilityRole="button"
-              accessibilityLabel={t('common.goBack')}
+              accessibilityLabel="Go back"
             >
               <Ionicons name="chevron-back" size={22} color="#111827" />
             </TouchableOpacity>
           ) : null}
           <Image source={logoImage} style={styles.brandLogo} />
           <View>
-            <Text style={styles.brandText}>{t('header.brand')}</Text>
+            <Text style={styles.brandText}>UnforgettableRides</Text>
             {subtitle ? <Text style={styles.subtitleText}>{subtitle}</Text> : null}
           </View>
         </View>

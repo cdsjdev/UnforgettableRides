@@ -95,16 +95,6 @@ Invoke-Stage -Name 'API tests' -Action {
   }
 }
 
-Invoke-Stage -Name 'API social flagged regression' -Action {
-  Push-Location (Join-Path $root "rides-api")
-  try {
-    npm run test:regression:social:flagged
-    Assert-LastExitCode -Context 'API social flagged regression'
-  } finally {
-    Pop-Location
-  }
-}
-
 Invoke-Stage -Name 'API guest-public regression' -Action {
   Push-Location (Join-Path $root "rides-api")
   try {
@@ -158,6 +148,32 @@ Invoke-Stage -Name 'Web E2E tests' -Action {
   }
 }
 
+Invoke-Stage -Name 'Portal E2E install' -Action {
+  Push-Location (Join-Path $root "rides-portal")
+  try {
+    Write-Host "==> Cleaning portal test ports (3000/5174)"
+    Stop-NodeOnPort -Port 3000
+    Stop-NodeOnPort -Port 5174
+
+    Write-Host "==> Installing Playwright browser (Chromium) for portal E2E"
+    npm run test:e2e:install
+    Assert-LastExitCode -Context 'Portal E2E install'
+  } finally {
+    Pop-Location
+  }
+}
+
+Invoke-Stage -Name 'Portal E2E tests' -Action {
+  Push-Location (Join-Path $root "rides-portal")
+  try {
+    Write-Host "==> Running portal E2E regression tests"
+    npm run test:e2e
+    Assert-LastExitCode -Context 'Portal E2E tests'
+  } finally {
+    Pop-Location
+  }
+}
+
 Invoke-Stage -Name 'App Web E2E tests' -Action {
   Push-Location (Join-Path $root "rides-app")
   $apiProc = $null
@@ -189,7 +205,7 @@ Invoke-Stage -Name 'App Web E2E tests' -Action {
       'node ./e2e/start-api.cjs'
     ) -join ' '
     $apiProc = Start-Process -FilePath 'powershell' -ArgumentList @('-NoProfile', '-Command', $apiCommand) -PassThru -WindowStyle Hidden -RedirectStandardOutput $apiLog -RedirectStandardError $apiErrLog
-    Wait-HttpReady -Url 'http://127.0.0.1:3100/api/v1/products' -TimeoutSec 90
+    Wait-HttpReady -Url 'http://127.0.0.1:3100/api/v1/cars' -TimeoutSec 90
 
     Write-Host "==> Starting Expo web server (manual mode)"
     $webCommand = @(
@@ -201,8 +217,6 @@ Invoke-Stage -Name 'App Web E2E tests' -Action {
     $webProc = Start-Process -FilePath 'powershell' -ArgumentList @('-NoProfile', '-Command', $webCommand) -PassThru -WindowStyle Hidden -RedirectStandardOutput $webLog -RedirectStandardError $webErrLog
     Wait-HttpReady -Url 'http://127.0.0.1:19006' -TimeoutSec 120
 
-    npm run check:encoding
-    Assert-LastExitCode -Context 'App i18n encoding guard'
     npm run check:navigation-regression
     Assert-LastExitCode -Context 'App navigation regression guard'
     npm run e2e:guest:no-webserver

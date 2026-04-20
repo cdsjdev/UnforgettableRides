@@ -25,38 +25,3 @@ export async function registerFreshUser(
   await expect(page.getByText(/^Home$/)).toBeVisible();
   return { email, password };
 }
-
-export async function openSocialMeetupTab(page: Page): Promise<void> {
-  await page.goto('/social');
-  await expect(page).toHaveURL(/\/social/);
-  await page.getByRole('button', { name: /^Meet Up$/i }).click();
-  await expect(page.getByText(/^Discover meetups$/i).first()).toBeVisible();
-}
-
-export async function createMeetupFromDiscover(
-  page: Page,
-  input: { title: string; locationName: string; description?: string },
-): Promise<void> {
-  await page.getByRole('button', { name: /^Create meetup$/i }).click();
-  await expect(page.getByText(/^Create meetup$/i).first()).toBeVisible();
-
-  await page.getByLabel(/^Title$/i).fill(input.title);
-  await page.getByLabel(/^Location name$/i).fill(input.locationName);
-  if (input.description) {
-    await page.getByLabel(/^Description$/i).fill(input.description);
-  }
-
-  await page.getByRole('button', { name: /^Create$/i }).first().click();
-  await expect(page.getByText(input.title)).toBeVisible();
-  await expect(page.getByText(/^Host$/i).first()).toBeVisible();
-}
-
-export async function backToDiscoverFromDetail(page: Page): Promise<void> {
-  await openSocialMeetupTab(page);
-}
-
-export function meetupCardByTitle(page: Page, title: string) {
-  const titleNode = page.getByText(title, { exact: true }).first();
-  return titleNode.locator('xpath=ancestor::*[self::div or self::a][1]');
-}
-

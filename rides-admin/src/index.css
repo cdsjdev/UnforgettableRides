@@ -94,15 +94,10 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Source Han Sans SC', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background: var(--bg-page);
   color: var(--text-primary);
   line-height: 1.6;
-}
-
-html[lang='zh-CN'] body {
-  font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Source Han Sans SC', 'Hiragino Sans GB', 'Segoe UI', sans-serif;
-  font-synthesis: none;
 }
 
 a {

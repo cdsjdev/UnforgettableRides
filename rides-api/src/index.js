@@ -30,10 +30,10 @@ const Database = require('better-sqlite3');
 const app = express();
 
 // Trust reverse proxy only when explicitly configured (prevents X-Forwarded-For spoofing)
-// TRUST_PROXY=true|1 → trust first hop; TRUST_PROXY=loopback → trust loopback; unset/false/0 → disabled
+// TRUST_PROXY=true|1 ? trust first hop; TRUST_PROXY=loopback ? trust loopback; unset/false/0 ? disabled
 const _trustProxy = (process.env.TRUST_PROXY || '').trim().toLowerCase();
 if (_trustProxy && _trustProxy !== 'false' && _trustProxy !== '0') {
-  // 'true' or pure digits → numeric hop count; otherwise pass as subnet/string rule
+  // 'true' or pure digits ? numeric hop count; otherwise pass as subnet/string rule
   const numVal = parseInt(_trustProxy, 10);
   app.set('trust proxy', _trustProxy === 'true' ? 1 : (!isNaN(numVal) && String(numVal) === _trustProxy) ? numVal : _trustProxy);
 }
@@ -119,16 +119,16 @@ app.use(cors(allowedOrigins ? {
   },
   credentials: true,
 } : undefined));
-// Stripe webhook needs raw body � must be before JSON parser
+// Stripe webhook needs raw body ? must be before JSON parser
 app.use('/api/v1/payments/webhook', bodyParser.raw({ type: 'application/json' }));
 app.use(bodyParser.json({ limit: '2mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '2mb' }));
 
-// ── Rate limiter (in-memory sliding window) ──────────────────────────────────
+// -- Rate limiter (in-memory sliding window) ----------------------------------
 const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000); // 15 minutes
 const RATE_LIMIT_MAX_LOGIN = Number(process.env.RATE_LIMIT_MAX_LOGIN || 10);              // max login attempts per IP per window
 const RATE_LIMIT_MAX_SIGNUP = Number(process.env.RATE_LIMIT_MAX_SIGNUP || 5);             // max signup attempts per IP per window
-const rateLimitStore = new Map(); // key → { count, resetAt }
+const rateLimitStore = new Map(); // key ? { count, resetAt }
 
 function rateLimit(key, max, options = {}) {
   const { peek = false, reset = false } = options || {};
@@ -901,9 +901,9 @@ try {
   console.warn('Sample car seed skipped:', e.message);
 }
 
-// Legacy pet/store seed removed — tables dropped in migration 0019
+// Legacy store seed removed — tables dropped in migration 0019
 
-// Legacy dog/analytics/advisor prepared statements — wrapped to avoid crash when tables are dropped
+// Legacy analytics/advisor prepared statements — wrapped to avoid crash when tables are dropped
 let insertDetection = null, insertEntry = null, insertTriggerFrame = null, insertTrackEvent = null;
 let upsertValidationSnapshot = null, deleteValidationSnapshotsOlderThan = null;
 let selectOldTriggerFrames = null, selectTriggerFrameById = null, deleteTriggerFrameById = null;
@@ -913,15 +913,13 @@ let selectAdvisorKnowledgeDocs = null, selectAdvisorKnowledgeDocById = null;
 let selectAdvisorKnowledgeChunks = null, selectAdvisorKnowledgeStats = null;
 let deleteAdvisorKnowledgeChunksByDocId = null, deleteAdvisorKnowledgeDocById = null;
 try {
-  insertDetection = db.prepare("INSERT INTO dog_detections (timestamp, dog_count, detections_json, camera_id, store_id) VALUES (?, ?, ?, ?, ?)");
-  insertEntry = db.prepare("INSERT INTO dog_entries (timestamp, direction, dog_count_before, dog_count_after, confidence, camera_id, store_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
-  insertTrackEvent = db.prepare("INSERT INTO dog_track_events (timestamp, track_id, session_id, event_type, direction, camera_id, store_id, confidence, meta_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))");
-  insertAppointment = db.prepare("INSERT INTO appointments (id, user_id, dog_id, dog_name, customer_name, customer_phone, customer_email, service_type, date, time, duration_minutes, status, notes, booked_via, store_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+  // Legacy analytics prepared statements were removed.
+  // Keep only advisor prepared statements for compatibility with existing admin tools.
   insertAdvisorKnowledgeDoc = db.prepare("INSERT INTO advisor_knowledge_docs (id, store_id, title, source, content, metadata_json, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 1, datetime('now'), datetime('now'))");
   insertAdvisorKnowledgeChunk = db.prepare("INSERT INTO advisor_knowledge_chunks (doc_id, chunk_index, content, content_lower, token_count, created_at) VALUES (?, ?, ?, ?, ?, datetime('now'))");
   deleteAdvisorKnowledgeChunksByDocId = db.prepare("DELETE FROM advisor_knowledge_chunks WHERE doc_id = ?");
   deleteAdvisorKnowledgeDocById = db.prepare("DELETE FROM advisor_knowledge_docs WHERE id = ?");
-} catch(e) { console.warn("Legacy prepared statements skipped:", e.message); }
+} catch(e) { /* best-effort compatibility layer */ }
 const storeTriggerFrame = () => null;
 
 function removeTriggerFrameFileByUrl(frameUrl) {
@@ -1131,17 +1129,6 @@ function appendStoreScope(sql, params, req, column = 'store_id', { includeNullFa
   }
   params.push(...scopedIds);
   return sql;
-}
-
-function getDogProfilesForAdvisorScope(req) {
-  return getDogProfilesForAdvisorScopeService({
-    req,
-    dogs,
-    db,
-    isStaff,
-    requestedStoreId,
-    getUserScopedStoreIds,
-  });
 }
 
 function canAccessStoreScopedRecord(req, recordStoreId, { includeNullFallback = false } = {}) {
@@ -1788,17 +1775,39 @@ const PUBLIC_ROUTES_EXACT = [
 ];
 // Public routes: match with one additional path segment (e.g. /cars/:id)
 const PUBLIC_CARS_PREFIX = 'GET /api/v1/cars';
-// Public routes: match with one additional path segment (e.g. /products/:id)
-const PUBLIC_ROUTES_WITH_ID = [
-  'GET /api/v1/products',
-];
+// Public routes: match with one additional path segment
+const PUBLIC_ROUTES_WITH_ID = [];
 const PUBLIC_ROUTE_SOCIAL_PUBLIC_POSTS_PREFIX = 'GET /api/v1/social/public/posts';
 const INTERNAL_KEY_ROUTES = [
   'POST /api/v1/analytics/detection',
 ];
+const LEGACY_ENDPOINT_PREFIXES = [
+  '/dogs',
+  '/recommendations',
+  '/washes',
+  '/cycles',
+  '/breeds',
+  '/care',
+  '/advisor',
+  '/appointments',
+  '/products',
+  '/orders',
+  '/stores',
+  '/memberships',
+  '/business-memberships',
+];
 
 // Global auth middleware — protects all /api/v1/* routes except PUBLIC_ROUTES
 app.use('/api/v1', (req, res, next) => {
+  const pathOnly = String(req.path || '');
+  const isLegacyEndpoint = LEGACY_ENDPOINT_PREFIXES.some((prefix) => pathOnly === prefix || pathOnly.startsWith(`${prefix}/`));
+  if (isLegacyEndpoint) {
+    return res.status(410).json(apiResponse(null, {
+      code: 'ENDPOINT_REMOVED',
+      message: 'Legacy endpoint removed from UnforgettableRides rides platform.',
+    }));
+  }
+
   const routeKey = `${req.method} ${req.path.startsWith('/') ? '/api/v1' + req.path : req.path}`;
   const normalizedRoute = routeKey.replace(/\/$/, '');
 
@@ -1977,21 +1986,6 @@ const STORE_OPERATIONAL_SETTING_KEYS = [
   'appointment_max_new_per_day',
   'appointment_max_new_per_7d',
   'appointment_min_hours_between',
-  'appointment_service_enabled_wash',
-  'appointment_service_enabled_groom',
-  'appointment_service_enabled_nail_trim',
-  'appointment_service_enabled_full_service',
-  'appointment_service_enabled_other',
-  'appointment_service_max_concurrent_wash',
-  'appointment_service_max_concurrent_groom',
-  'appointment_service_max_concurrent_nail_trim',
-  'appointment_service_max_concurrent_full_service',
-  'appointment_service_max_concurrent_other',
-  'service_price_wash',
-  'service_price_groom',
-  'service_price_nail_trim',
-  'service_price_full_service',
-  'service_price_other',
 ];
 
 const STORE_OPERATIONAL_SETTING_DEFAULTS = {
@@ -2003,21 +1997,6 @@ const STORE_OPERATIONAL_SETTING_DEFAULTS = {
   appointment_max_new_per_day: '3',
   appointment_max_new_per_7d: '5',
   appointment_min_hours_between: '2',
-  appointment_service_enabled_wash: '1',
-  appointment_service_enabled_groom: '1',
-  appointment_service_enabled_nail_trim: '1',
-  appointment_service_enabled_full_service: '1',
-  appointment_service_enabled_other: '1',
-  appointment_service_max_concurrent_wash: '3',
-  appointment_service_max_concurrent_groom: '3',
-  appointment_service_max_concurrent_nail_trim: '3',
-  appointment_service_max_concurrent_full_service: '3',
-  appointment_service_max_concurrent_other: '3',
-  service_price_wash: '699',
-  service_price_groom: '1299',
-  service_price_nail_trim: '299',
-  service_price_full_service: '1699',
-  service_price_other: '500',
 };
 
 const GLOBAL_SECURITY_SETTING_KEYS = [
@@ -2065,21 +2044,6 @@ const STORE_OPERATIONAL_NUMERIC_RULES = {
   appointment_max_new_per_day: { min: 1, max: 20 },
   appointment_max_new_per_7d: { min: 1, max: 50 },
   appointment_min_hours_between: { min: 0, max: 72 },
-  appointment_service_enabled_wash: { min: 0, max: 1 },
-  appointment_service_enabled_groom: { min: 0, max: 1 },
-  appointment_service_enabled_nail_trim: { min: 0, max: 1 },
-  appointment_service_enabled_full_service: { min: 0, max: 1 },
-  appointment_service_enabled_other: { min: 0, max: 1 },
-  appointment_service_max_concurrent_wash: { min: 1, max: 20 },
-  appointment_service_max_concurrent_groom: { min: 1, max: 20 },
-  appointment_service_max_concurrent_nail_trim: { min: 1, max: 20 },
-  appointment_service_max_concurrent_full_service: { min: 1, max: 20 },
-  appointment_service_max_concurrent_other: { min: 1, max: 20 },
-  service_price_wash: { min: 0, max: 100000 },
-  service_price_groom: { min: 0, max: 100000 },
-  service_price_nail_trim: { min: 0, max: 100000 },
-  service_price_full_service: { min: 0, max: 100000 },
-  service_price_other: { min: 0, max: 100000 },
 };
 
 const ANALYTICS_TRACKING_CONFIG_DEFAULTS = {
@@ -3055,21 +3019,6 @@ app.post('/api/v1/stores', roleGuard('admin'), (req, res) => {
     appointment_max_new_per_day: req.body?.appointment_max_new_per_day,
     appointment_max_new_per_7d: req.body?.appointment_max_new_per_7d,
     appointment_min_hours_between: req.body?.appointment_min_hours_between,
-    appointment_service_enabled_wash: req.body?.appointment_service_enabled_wash,
-    appointment_service_enabled_groom: req.body?.appointment_service_enabled_groom,
-    appointment_service_enabled_nail_trim: req.body?.appointment_service_enabled_nail_trim,
-    appointment_service_enabled_full_service: req.body?.appointment_service_enabled_full_service,
-    appointment_service_enabled_other: req.body?.appointment_service_enabled_other,
-    appointment_service_max_concurrent_wash: req.body?.appointment_service_max_concurrent_wash,
-    appointment_service_max_concurrent_groom: req.body?.appointment_service_max_concurrent_groom,
-    appointment_service_max_concurrent_nail_trim: req.body?.appointment_service_max_concurrent_nail_trim,
-    appointment_service_max_concurrent_full_service: req.body?.appointment_service_max_concurrent_full_service,
-    appointment_service_max_concurrent_other: req.body?.appointment_service_max_concurrent_other,
-    service_price_wash: req.body?.service_price_wash,
-    service_price_groom: req.body?.service_price_groom,
-    service_price_nail_trim: req.body?.service_price_nail_trim,
-    service_price_full_service: req.body?.service_price_full_service,
-    service_price_other: req.body?.service_price_other,
   };
 
   if (!name) {
@@ -3160,21 +3109,6 @@ app.put('/api/v1/stores/:id', roleGuard('admin'), (req, res) => {
     appointment_max_new_per_day: req.body?.appointment_max_new_per_day,
     appointment_max_new_per_7d: req.body?.appointment_max_new_per_7d,
     appointment_min_hours_between: req.body?.appointment_min_hours_between,
-    appointment_service_enabled_wash: req.body?.appointment_service_enabled_wash,
-    appointment_service_enabled_groom: req.body?.appointment_service_enabled_groom,
-    appointment_service_enabled_nail_trim: req.body?.appointment_service_enabled_nail_trim,
-    appointment_service_enabled_full_service: req.body?.appointment_service_enabled_full_service,
-    appointment_service_enabled_other: req.body?.appointment_service_enabled_other,
-    appointment_service_max_concurrent_wash: req.body?.appointment_service_max_concurrent_wash,
-    appointment_service_max_concurrent_groom: req.body?.appointment_service_max_concurrent_groom,
-    appointment_service_max_concurrent_nail_trim: req.body?.appointment_service_max_concurrent_nail_trim,
-    appointment_service_max_concurrent_full_service: req.body?.appointment_service_max_concurrent_full_service,
-    appointment_service_max_concurrent_other: req.body?.appointment_service_max_concurrent_other,
-    service_price_wash: req.body?.service_price_wash,
-    service_price_groom: req.body?.service_price_groom,
-    service_price_nail_trim: req.body?.service_price_nail_trim,
-    service_price_full_service: req.body?.service_price_full_service,
-    service_price_other: req.body?.service_price_other,
   }, currentOperational);
   if (validation.error) {
     return res.status(400).json(apiResponse(null, validation.error));
@@ -3770,10 +3704,12 @@ app.get('/api/v1/coupons/me', roleGuard('admin', 'store_manager', 'staff', 'cust
 app.post('/api/v1/memberships/join', roleGuard('admin', 'store_manager', 'staff', 'customer', 'business_member'), (req, res) => {
   const storeId = normalizeStoreId(req.body?.store_id);
   const planId = String(req.body?.plan_id || '').trim();
-  const dogId = normalizeStoreId(req.body?.dog_id);
   const billingPeriod = req.body?.billing_period === 'yearly' ? 'yearly' : 'monthly';
   if (!storeId || !planId) {
     return res.status(400).json(apiResponse(null, { code: 'VALIDATION', message: 'store_id and plan_id are required' }));
+  }
+  if (req.body?.dog_id) {
+    return res.status(400).json(apiResponse(null, { code: 'VALIDATION', message: 'dog_id is no longer supported' }));
   }
   if (!canAccessStoreScopedRecord(req, storeId)) {
     return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Store access denied' }));
@@ -3781,13 +3717,6 @@ app.post('/api/v1/memberships/join', roleGuard('admin', 'store_manager', 'staff'
   const plan = db.prepare('SELECT * FROM store_membership_plans WHERE id = ? AND store_id = ? AND is_active = 1').get(planId, storeId);
   if (!plan) {
     return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Membership plan not found' }));
-  }
-  if (dogId) {
-    const dog = dogs.find((d) => d.id === dogId);
-    if (!dog) return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Dog not found' }));
-    if (req.user.role !== 'admin' && dog.user_id !== req.user.id) {
-      return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Can only assign membership to your own dog' }));
-    }
   }
 
   const duplicate = db.prepare(`
@@ -3802,7 +3731,7 @@ app.post('/api/v1/memberships/join', roleGuard('admin', 'store_manager', 'staff'
         OR dog_id = ?
       )
     LIMIT 1
-  `).get(req.user.id, storeId, planId, dogId, dogId);
+  `).get(req.user.id, storeId, planId, null, null);
   if (duplicate) {
     return res.status(409).json(apiResponse(null, { code: 'ALREADY_JOINED', message: 'Active membership already exists for this scope' }));
   }
@@ -3819,7 +3748,7 @@ app.post('/api/v1/memberships/join', roleGuard('admin', 'store_manager', 'staff'
     INSERT INTO user_memberships
     (id, user_id, dog_id, store_id, plan_id, status, started_at, expires_at, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?, 'active', datetime('now'), ?, datetime('now'), datetime('now'))
-  `).run(id, req.user.id, dogId, storeId, planId, joinExpiresAt);
+  `).run(id, req.user.id, null, storeId, planId, joinExpiresAt);
 
   const row = db.prepare(`
     SELECT um.*, mp.name as plan_name
@@ -3834,11 +3763,13 @@ app.post('/api/v1/memberships/join', roleGuard('admin', 'store_manager', 'staff'
 app.post('/api/v1/memberships/purchase', roleGuard('admin', 'store_manager', 'staff', 'customer', 'business_member'), (req, res) => {
   const storeId = normalizeStoreId(req.body?.store_id);
   const planId = String(req.body?.plan_id || '').trim();
-  const dogId = normalizeStoreId(req.body?.dog_id);
   const paymentMethod = req.body?.payment_method === 'in_store' ? 'in_store' : 'online';
   const billingPeriod = req.body?.billing_period === 'yearly' ? 'yearly' : 'monthly';
   if (!storeId || !planId) {
     return res.status(400).json(apiResponse(null, { code: 'VALIDATION', message: 'store_id and plan_id are required' }));
+  }
+  if (req.body?.dog_id) {
+    return res.status(400).json(apiResponse(null, { code: 'VALIDATION', message: 'dog_id is no longer supported' }));
   }
   if (!canAccessStoreScopedRecord(req, storeId)) {
     return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Store access denied' }));
@@ -3847,14 +3778,6 @@ app.post('/api/v1/memberships/purchase', roleGuard('admin', 'store_manager', 'st
   const plan = db.prepare('SELECT * FROM store_membership_plans WHERE id = ? AND store_id = ? AND is_active = 1').get(planId, storeId);
   if (!plan) {
     return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Membership plan not found' }));
-  }
-
-  if (dogId) {
-    const dog = dogs.find((d) => d.id === dogId);
-    if (!dog) return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Dog not found' }));
-    if (req.user.role !== 'admin' && dog.user_id !== req.user.id) {
-      return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Can only assign membership to your own dog' }));
-    }
   }
 
   const existingMembership = db.prepare(`
@@ -3870,7 +3793,7 @@ app.post('/api/v1/memberships/purchase', roleGuard('admin', 'store_manager', 'st
       )
     ORDER BY datetime(COALESCE(expires_at, created_at)) DESC, created_at DESC
     LIMIT 1
-  `).get(req.user.id, storeId, planId, dogId, dogId);
+  `).get(req.user.id, storeId, planId, null, null);
 
   const monthlyAvailable = Number(plan.price_monthly_cents || 0) > 0;
   const yearlyAvailable = Number(plan.price_yearly_cents || 0) > 0;
@@ -3936,7 +3859,7 @@ app.post('/api/v1/memberships/purchase', roleGuard('admin', 'store_manager', 'st
         INSERT INTO user_memberships
         (id, user_id, dog_id, store_id, plan_id, status, started_at, expires_at, created_at, updated_at)
         VALUES (?, ?, ?, ?, ?, 'active', datetime('now'), ?, datetime('now'), datetime('now'))
-      `).run(membershipId, req.user.id, dogId, storeId, planId, purchaseExpiresAt);
+      `).run(membershipId, req.user.id, null, storeId, planId, purchaseExpiresAt);
     }
 
     db.prepare(`
@@ -4248,122 +4171,6 @@ app.get('/api/v1/health', (req, res) => {
 });
 
 // ============================================================================
-// Dogs API
-// ============================================================================
-
-// Helper: get dog IDs owned by a user (for scoping washes/care)
-function getUserDogIds(userId) {
-  return dogs.filter(d => d.user_id === userId).map(d => d.id);
-}
-
-// Helper: check if user owns a specific dog
-function userOwnsDog(userId, dogId) {
-  const dog = dogs.find(d => d.id === dogId);
-  return dog && dog.user_id === userId;
-}
-
-// List dogs — customers see only their own, staff sees all
-app.get('/api/v1/dogs', (req, res) => {
-  const filtered = isStaff(req.user) ? dogs : dogs.filter(d => d.user_id === req.user.id);
-  res.json(apiResponse(filtered));
-});
-
-app.get('/api/v1/dogs/:id', (req, res) => {
-  const dog = dogs.find(d => d.id === req.params.id);
-  if (!dog) {
-    return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Dog not found' }));
-  }
-  if (!isStaff(req.user) && dog.user_id !== req.user.id) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  res.json(apiResponse(dog));
-});
-
-app.post('/api/v1/dogs', (req, res) => {
-  const { id: _id, user_id: _uid, created_at: _ca, updated_at: _ua, ...safeBody } = req.body;
-  const newDog = {
-    id: uuidv4(),
-    user_id: req.user.id,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    wash_history: [],
-    weight_history: [],
-    vaccinations: [],
-    medications: [],
-    ...safeBody,
-  };
-  dogs.push(newDog);
-  saveJsonFile(dogsFilePath, dogs);
-  res.status(201).json(apiResponse(newDog));
-});
-
-app.put('/api/v1/dogs/:id', (req, res) => {
-  const index = dogs.findIndex(d => d.id === req.params.id);
-  if (index === -1) {
-    return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Dog not found' }));
-  }
-  const isAdmin = req.user?.role === 'admin';
-  if (isStaff(req.user) && !isAdmin) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Only admin can edit dogs from dashboard' }));
-  }
-  if (!isStaff(req.user) && dogs[index].user_id !== req.user.id) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  const { id: _id, user_id: requestedOwnerId, created_at: _ca, ...safeBody } = req.body;
-  const previousOwnerId = dogs[index].user_id || null;
-  let nextOwnerId = previousOwnerId;
-  if (isAdmin && requestedOwnerId !== undefined) {
-    const normalizedOwnerId = String(requestedOwnerId || '').trim();
-    if (!normalizedOwnerId) {
-      nextOwnerId = null;
-    } else {
-      const ownerUser = db.prepare('SELECT id, is_active FROM users WHERE id = ?').get(normalizedOwnerId);
-      if (!ownerUser || !ownerUser.is_active) {
-        return res.status(400).json(apiResponse(null, { code: 'VALIDATION', message: 'user_id must be an active user' }));
-      }
-      nextOwnerId = normalizedOwnerId;
-    }
-  }
-  dogs[index] = {
-    ...dogs[index],
-    ...safeBody,
-    user_id: nextOwnerId,
-    updated_at: new Date().toISOString(),
-  };
-  if (isAdmin) {
-    const ownerChanged = previousOwnerId !== nextOwnerId;
-    if (ownerChanged) {
-      const fromOwner = previousOwnerId || 'unassigned';
-      const toOwner = nextOwnerId || 'unassigned';
-      console.info(`[ADMIN_DOG_OWNER_REASSIGN] actor=${req.user.id} dog_id=${req.params.id} from=${fromOwner} to=${toOwner}`);
-    }
-    console.info(`[ADMIN_DOG_EDIT] actor=${req.user.id} dog_id=${req.params.id}`);
-  }
-  saveJsonFile(dogsFilePath, dogs);
-  res.json(apiResponse(dogs[index]));
-});
-
-app.delete('/api/v1/dogs/:id', (req, res) => {
-  const dog = dogs.find(d => d.id === req.params.id);
-  if (!dog) {
-    return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Dog not found' }));
-  }
-  const isAdmin = req.user?.role === 'admin';
-  if (isStaff(req.user) && !isAdmin) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Only admin can delete dogs from dashboard' }));
-  }
-  if (!isStaff(req.user) && dog.user_id !== req.user.id) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  dogs = dogs.filter(d => d.id !== req.params.id);
-  if (isAdmin) {
-    console.info(`[ADMIN_DOG_DELETE] actor=${req.user.id} dog_id=${req.params.id}`);
-  }
-  saveJsonFile(dogsFilePath, dogs);
-  res.status(204).send();
-});
-
-// ============================================================================
 // Image Upload API
 // ============================================================================
 
@@ -4410,7 +4217,7 @@ const buildFallbackTraits = () => ({
 
 function buildIndeterminateAnalysis({
   subjectType = 'uncertain',
-  note = 'Unable to confidently identify a real dog in the provided images.',
+  note = 'Unable to confidently identify a suitable subject in the provided images.',
   qualityScore = 0.25,
   qualityIssues = ['low_confidence_subject'],
 } = {}) {
@@ -4420,7 +4227,7 @@ function buildIndeterminateAnalysis({
     inference_time_ms: Math.floor(Math.random() * 200) + 400,
     breed_predictions: [
       {
-        breed_name: safeSubject === 'not_a_dog' ? 'Not a dog' : 'Not sure',
+        breed_name: safeSubject === 'not_a_dog' ? 'Unsupported subject' : 'Not sure',
         confidence: 0.0,
         rank: 1,
         akc_group: null,
@@ -4724,7 +4531,7 @@ app.post('/_removed_ml_video_analyze_placeholder', async (req, res) => {
   }
 });
 
-// ML analyze endpoint - hybrid: ML service → LLM vision enhancement → mock fallback
+// ML analyze endpoint - hybrid: ML service ? LLM vision enhancement ? mock fallback
 app.post('/api/v1/ml/analyze', upload.array('images', 5), async (req, res) => {
   // Validate images
   if (!req.files || req.files.length < 2) {
@@ -4822,1673 +4629,7 @@ app.post('/api/v1/ml/analyze', upload.array('images', 5), async (req, res) => {
   return res.json(apiResponse(mockResult));
 });
 
-// ============================================================================
-// Wash Recommendations API
-// ============================================================================
-
-function roundToNearestFive(value) {
-  if (!Number.isFinite(value)) return 5;
-  const rounded = Math.round(value / 5) * 5;
-  return Math.max(5, rounded);
-}
-
-function normalizeDirtLevel(raw) {
-  const value = String(raw || '').trim().toLowerCase();
-  if (value === 'light') return 'light';
-  if (value === 'heavy') return 'heavy';
-  if (value === 'moderate' || value === 'medium') return 'medium';
-  return 'medium';
-}
-
-function normalizeMattingLevel(raw) {
-  const value = String(raw || '').trim().toLowerCase();
-  if (value === 'none') return 'none';
-  if (value === 'light') return 'light';
-  if (value === 'moderate' || value === 'severe' || value === 'heavy') return 'heavy';
-  return 'light';
-}
-
-function mapCoatTypeFromTraits(traits = {}) {
-  if (traits.coat_texture === 'curly') return 'curly';
-  if (traits.coat_texture === 'double' || traits.has_undercoat === true) return 'double';
-  if (traits.coat_length === 'long' || traits.coat_texture === 'silky') return 'long';
-  if (traits.coat_length === 'short' || traits.coat_texture === 'smooth' || traits.coat_texture === 'wire') return 'short';
-  return 'unknown';
-}
-
-function mapDogToRecommendationProfile(dog = {}, currentCondition = {}) {
-  const traits = dog?.traits || {};
-  const grooming = dog?.grooming_preferences || {};
-  const washHistoryCount = Array.isArray(dog?.wash_history) ? dog.wash_history.length : 0;
-  const weightLbs = Number(dog?.weight_lbs);
-  const ageMonths = Number(dog?.age_months);
-  const coatType = mapCoatTypeFromTraits(traits);
-
-  let skinSensitivity = 'none';
-  if (traits.skin_sensitivity === 'high') skinSensitivity = 'high';
-  else if (traits.skin_sensitivity === 'medium') skinSensitivity = 'mild';
-
-  let scentPreference = 'no_preference';
-  if (grooming.fragrance_preference === 'fragrance_free') scentPreference = 'unscented';
-  else if (grooming.fragrance_preference === 'any') scentPreference = 'scented';
-
-  let ageGroup = 'adult';
-  if (Number.isFinite(ageMonths) && ageMonths > 0) {
-    if (ageMonths < 12) ageGroup = 'puppy';
-    else if (ageMonths >= 96) ageGroup = 'senior';
-  }
-
-  const profile = {
-    coat_type: coatType,
-    skin_sensitivity: skinSensitivity,
-    scent_preference: scentPreference,
-    weight_kg: Number.isFinite(weightLbs) && weightLbs > 0 ? Number((weightLbs * 0.45359237).toFixed(1)) : null,
-    age_group: ageGroup,
-    matting_level: normalizeMattingLevel(traits.current_mat_level),
-    wash_history_count: washHistoryCount,
-    dirt_level_today: normalizeDirtLevel(currentCondition?.dirt_level_today || currentCondition?.dirt_level),
-  };
-
-  return profile;
-}
-
-function mapTraitsToRecommendationProfile(traits = {}, currentCondition = {}) {
-  const coatType = mapCoatTypeFromTraits(traits);
-
-  let skinSensitivity = 'none';
-  if (traits.skin_sensitivity === 'high') skinSensitivity = 'high';
-  else if (traits.skin_sensitivity === 'medium') skinSensitivity = 'mild';
-
-  return {
-    coat_type: coatType,
-    skin_sensitivity: skinSensitivity,
-    scent_preference: 'no_preference',
-    weight_kg: Number.isFinite(Number(currentCondition?.weight_kg)) ? Number(currentCondition.weight_kg) : null,
-    age_group: 'adult',
-    matting_level: normalizeMattingLevel(traits.current_mat_level),
-    wash_history_count: 0,
-    dirt_level_today: normalizeDirtLevel(currentCondition?.dirt_level_today || currentCondition?.dirt_level),
-  };
-}
-
-function recommendWashV1(profile) {
-  const reasons = [];
-  const cautions = [];
-
-  const coatType = profile.coat_type || 'unknown';
-  const skin = profile.skin_sensitivity || 'none';
-  const matting = profile.matting_level || 'none';
-  const dirt = profile.dirt_level_today || 'medium';
-  const age = profile.age_group || 'adult';
-  const washHistoryCount = Number(profile.wash_history_count || 0);
-  const weightKg = Number(profile.weight_kg);
-
-  let cycleProgramId = 'balanced_clean';
-  let confidence = 0.86;
-
-  if (coatType === 'unknown') {
-    reasons.push('Coat type is incomplete; using balanced fallback.');
-    cautions.push('Complete dog profile for better wash recommendations.');
-    confidence = 0.72;
-  } else if (coatType === 'curly') {
-    cycleProgramId = 'sensitive_care';
-    reasons.push('Curly coat benefits from gentler brush movement.');
-  } else if (coatType === 'long') {
-    cycleProgramId = 'detangle_care';
-    reasons.push('Long coat has higher tangle risk; detangle-focused cycle is safer.');
-  } else if (coatType === 'double') {
-    cycleProgramId = 'balanced_clean';
-    reasons.push('Double coat responds better to balanced cleaning with sufficient rinse.');
-  } else if (coatType === 'short') {
-    cycleProgramId = 'balanced_clean';
-    reasons.push('Short coat can handle balanced brush motion.');
-  }
-
-  if (coatType === 'short' && dirt === 'heavy' && (skin === 'none' || skin === 'mild')) {
-    cycleProgramId = 'deep_clean';
-    reasons.push('Heavy dirt on short coat allows deeper cleaning motion.');
-  }
-
-  if (coatType === 'curly' && dirt === 'heavy' && matting !== 'heavy' && skin !== 'high') {
-    cycleProgramId = 'detangle_care';
-    reasons.push('Heavy dirt with curly coat prefers detangle-safe cleaning over deep agitation.');
-  }
-
-  if (coatType === 'double' && skin === 'high') {
-    cycleProgramId = 'sensitive_care';
-    reasons.push('High skin sensitivity requires gentler cycle.');
-  }
-
-  const deepCleanBlocked =
-    skin === 'high'
-    || coatType === 'curly'
-    || (coatType === 'long' && matting !== 'none');
-
-  if (cycleProgramId === 'deep_clean' && deepCleanBlocked) {
-    cycleProgramId = coatType === 'long' || coatType === 'curly' ? 'detangle_care' : 'sensitive_care';
-    cautions.push('Deep Clean is blocked due to coat/skin risk; downgraded to safer cycle.');
-  }
-
-  if (matting === 'heavy') {
-    if (cycleProgramId === 'deep_clean') cycleProgramId = 'detangle_care';
-    cautions.push('Manual detangle/groom first before machine wash.');
-  }
-
-  let shampooScent = 'scented';
-  if (profile.scent_preference === 'unscented') {
-    shampooScent = 'unscented';
-    reasons.push('Profile preference is unscented shampoo.');
-  } else if (
-    age === 'puppy'
-    || age === 'senior'
-    || skin === 'mild'
-    || skin === 'high'
-    || (washHistoryCount === 0 && skin === 'none')
-  ) {
-    shampooScent = 'unscented';
-    reasons.push('Unscented is safer for age/sensitivity profile.');
-  } else if (profile.scent_preference === 'scented') {
-    shampooScent = 'scented';
-  }
-
-  let baseDoseMl = 22;
-  if (Number.isFinite(weightKg) && weightKg > 0) {
-    if (weightKg <= 10) baseDoseMl = 12;
-    else if (weightKg <= 25) baseDoseMl = 22;
-    else if (weightKg <= 40) baseDoseMl = 37;
-    else baseDoseMl = 52;
-  } else {
-    cautions.push('Weight is missing; shampoo amount uses default estimate.');
-  }
-
-  let coatMultiplier = 1.0;
-  if (coatType === 'short') coatMultiplier = 0.9;
-  else if (coatType === 'long') coatMultiplier = 1.2;
-  else if (coatType === 'curly') coatMultiplier = 1.15;
-  else if (coatType === 'double') coatMultiplier = 1.3;
-
-  let shampooMl = baseDoseMl * coatMultiplier;
-  if (dirt === 'heavy') shampooMl *= 1.2;
-  if (skin === 'high') shampooMl *= 0.8;
-  shampooMl = Math.min(70, roundToNearestFive(shampooMl));
-
-  const cycleNameById = {
-    sensitive_care: 'Sensitive Care',
-    balanced_clean: 'Balanced Clean',
-    deep_clean: 'Deep Clean',
-    detangle_care: 'Detangle Care',
-  };
-
-  const brushByCycle = {
-    sensitive_care: 'low_short',
-    balanced_clean: 'medium_balanced',
-    deep_clean: 'medium_high',
-    detangle_care: 'low_medium_detangle',
-  };
-
-  return {
-    cycle_program_id: cycleProgramId,
-    cycle_program_name: cycleNameById[cycleProgramId] || 'Balanced Clean',
-    shampoo_scent: shampooScent,
-    shampoo_amount_ml: shampooMl,
-    brush_motion: brushByCycle[cycleProgramId] || 'medium_balanced',
-    reasons,
-    cautions,
-    profile_snapshot: {
-      coat_type: coatType,
-      skin_sensitivity: skin,
-      scent_preference: profile.scent_preference || 'no_preference',
-      weight_kg: Number.isFinite(weightKg) && weightKg > 0 ? Number(weightKg.toFixed(1)) : null,
-      age_group: age,
-      matting_level: matting,
-      wash_history_count: washHistoryCount,
-      dirt_level_today: dirt,
-    },
-    confidence,
-  };
-}
-
-function cycleIdForProgram(programId) {
-  if (programId === 'sensitive_care') return 'sensitive_skin';
-  if (programId === 'deep_clean') return 'heavy_dirt';
-  if (programId === 'detangle_care') return 'curly_coat';
-  return 'safe_standard';
-}
-
-app.post('/api/v1/recommendations', async (req, res) => {
-  const { dog_id, current_condition } = req.body;
-
-  const dog = dogs.find(d => d.id === dog_id);
-  if (!dog) {
-    return res.status(404).json(apiResponse(null, {
-      code: 'NOT_FOUND',
-      message: 'Dog not found',
-    }));
-  }
-
-  const profile = mapDogToRecommendationProfile(dog, current_condition);
-  const plan = recommendWashV1(profile);
-  const recommendedCycle = cycles.find(c => c.id === cycleIdForProgram(plan.cycle_program_id))
-    || cycles.find(c => c.id === 'safe_standard');
-
-  const qrData = {
-    version: '1.0',
-    cycle_id: recommendedCycle.id,
-    custom: false,
-    parameters: recommendedCycle.parameters,
-    prep_complete: false,
-    timestamp: new Date().toISOString(),
-    dog_name: dog.name,
-    dog_weight_lbs: dog.weight_lbs,
-    recommendation_program: plan,
-  };
-
-  const qrCodeUrl = await QRCode.toDataURL(JSON.stringify(qrData));
-
-  const recommendation = {
-    id: uuidv4(),
-    dog_id,
-    created_at: new Date().toISOString(),
-    recommended_cycle: recommendedCycle,
-    confidence: plan.confidence,
-    recommended_program: plan,
-    alternative_cycles: [
-      {
-        cycle: cycles.find(c => c.id === 'safe_standard'),
-        confidence: 0.62,
-        reason: 'Safe fallback option',
-      },
-    ],
-    why_recommended: Array.from(new Set([...(recommendedCycle.why_this_cycle || []), ...(plan.reasons || [])])),
-    prep_required: recommendedCycle.prep_steps.map(step => ({
-      step,
-      required: step.includes('CRITICAL'),
-      completed: false,
-    })),
-    safety_warnings: Array.from(new Set([...(recommendedCycle.cautions || []), ...(plan.cautions || [])])),
-    safety_blocks: [],
-    qr_code_data: JSON.stringify(qrData),
-    qr_code_url: qrCodeUrl,
-  };
-
-  recommendations.push(recommendation);
-  res.json(apiResponse(recommendation));
-});
-
-app.post('/api/v1/recommendations/quick', async (req, res) => {
-  const { traits, current_condition } = req.body;
-
-  const profile = mapTraitsToRecommendationProfile(traits || {}, current_condition);
-  const plan = recommendWashV1(profile);
-  const recommendedCycle = cycles.find(c => c.id === cycleIdForProgram(plan.cycle_program_id))
-    || cycles.find(c => c.id === 'safe_standard');
-
-  const qrData = {
-    version: '1.0',
-    cycle_id: recommendedCycle.id,
-    custom: false,
-    parameters: recommendedCycle.parameters,
-    prep_complete: false,
-    timestamp: new Date().toISOString(),
-    recommendation_program: plan,
-  };
-
-  const qrCodeUrl = await QRCode.toDataURL(JSON.stringify(qrData));
-
-  const recommendation = {
-    id: uuidv4(),
-    dog_id: null,
-    created_at: new Date().toISOString(),
-    recommended_cycle: recommendedCycle,
-    confidence: plan.confidence,
-    recommended_program: plan,
-    alternative_cycles: [],
-    why_recommended: Array.from(new Set(['Based on provided traits', ...(plan.reasons || [])])),
-    prep_required: recommendedCycle.prep_steps.map(step => ({
-      step,
-      required: step.includes('CRITICAL'),
-      completed: false,
-    })),
-    safety_warnings: Array.from(new Set([...(recommendedCycle.cautions || []), ...(plan.cautions || [])])),
-    safety_blocks: [],
-    qr_code_data: JSON.stringify(qrData),
-    qr_code_url: qrCodeUrl,
-  };
-
-  res.json(apiResponse(recommendation));
-});
-
-// ============================================================================
-// Wash Cycles API
-// ============================================================================
-
-app.get('/api/v1/cycles', (req, res) => {
-  const { suitable_for } = req.query;
-
-  let filteredCycles = cycles;
-  if (suitable_for) {
-    filteredCycles = cycles.filter(c => c.suitable_for.includes(suitable_for));
-  }
-
-  res.json(apiResponse(filteredCycles));
-});
-
-app.get('/api/v1/cycles/:id', (req, res) => {
-  const cycle = cycles.find(c => c.id === req.params.id);
-  if (!cycle) {
-    return res.status(404).json(apiResponse(null, {
-      code: 'NOT_FOUND',
-      message: 'Cycle not found',
-    }));
-  }
-  res.json(apiResponse(cycle));
-});
-
-// ============================================================================
-// Wash History API
-// ============================================================================
-
-// List washes — customers see only washes for their dogs, staff sees all
-app.get('/api/v1/washes', (req, res) => {
-  const { dog_id, start_date, end_date } = req.query;
-
-  let filteredWashes = washes;
-  // Scope to user's dogs for customers
-  if (!isStaff(req.user)) {
-    const myDogIds = getUserDogIds(req.user.id);
-    filteredWashes = filteredWashes.filter(w => myDogIds.includes(w.dog_id));
-  }
-  if (dog_id) {
-    filteredWashes = filteredWashes.filter(w => w.dog_id === dog_id);
-  }
-  if (start_date) {
-    const startDay = start_date.slice(0, 10);
-    filteredWashes = filteredWashes.filter(w => w.wash_date && w.wash_date.slice(0, 10) >= startDay);
-  }
-  if (end_date) {
-    const endDay = end_date.slice(0, 10);
-    filteredWashes = filteredWashes.filter(w => w.wash_date && w.wash_date.slice(0, 10) <= endDay);
-  }
-
-  res.json(apiResponse(filteredWashes));
-});
-
-app.post('/api/v1/washes', (req, res) => {
-  // Verify customer owns the dog
-  if (!isStaff(req.user) && req.body.dog_id && !userOwnsDog(req.user.id, req.body.dog_id)) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  const { id: _id, ...safeBody } = req.body;
-  const newWash = {
-    was_recommended: true,
-    ...safeBody,
-    id: uuidv4(),
-    wash_date: req.body.wash_date || new Date().toISOString(),
-  };
-  washes.push(newWash);
-  saveJsonFile(washesFilePath, washes);
-  res.status(201).json(apiResponse(newWash));
-});
-
-app.put('/api/v1/washes/:id', (req, res) => {
-  const index = washes.findIndex(w => w.id === req.params.id);
-  if (index === -1) {
-    return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Wash record not found' }));
-  }
-  // Verify customer owns the dog associated with this wash
-  if (!isStaff(req.user) && washes[index].dog_id && !userOwnsDog(req.user.id, washes[index].dog_id)) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  // If body tries to change dog_id, verify customer owns the NEW target dog too
-  if (!isStaff(req.user) && req.body.dog_id && req.body.dog_id !== washes[index].dog_id && !userOwnsDog(req.user.id, req.body.dog_id)) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  const { id: _id, ...safeBody } = req.body;
-  washes[index] = {
-    ...washes[index],
-    ...safeBody,
-  };
-  saveJsonFile(washesFilePath, washes);
-  res.json(apiResponse(washes[index]));
-});
-
-// ============================================================================
-// Breeds API
-// ============================================================================
-
-app.get('/api/v1/breeds', (req, res) => {
-  const { search } = req.query;
-
-  let filteredBreeds = breeds;
-  if (search) {
-    const lowerSearch = search.toLowerCase();
-    filteredBreeds = breeds.filter(b =>
-      b.name.toLowerCase().includes(lowerSearch)
-    );
-  }
-
-  res.json(apiResponse(filteredBreeds));
-});
-
-app.get('/api/v1/breeds/:name', (req, res) => {
-  const breed = breeds.find(b => b.name === req.params.name);
-  if (!breed) {
-    return res.status(404).json(apiResponse(null, {
-      code: 'NOT_FOUND',
-      message: 'Breed not found',
-    }));
-  }
-  res.json(apiResponse(breed));
-});
-
-// ============================================================================
-// QR Code API
-// ============================================================================
-
-app.post('/api/v1/qr/generate', async (req, res) => {
-  const { cycle_id, dog_name, dog_weight_lbs, prep_complete } = req.body;
-
-  const cycle = cycles.find(c => c.id === cycle_id);
-  if (!cycle) {
-    return res.status(404).json(apiResponse(null, {
-      code: 'NOT_FOUND',
-      message: 'Cycle not found',
-    }));
-  }
-
-  const qrData = {
-    version: '1.0',
-    cycle_id,
-    custom: false,
-    parameters: cycle.parameters,
-    prep_complete: prep_complete || false,
-    timestamp: new Date().toISOString(),
-    dog_name,
-    dog_weight_lbs,
-  };
-
-  const qrCodeUrl = await QRCode.toDataURL(JSON.stringify(qrData));
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 minutes
-
-  res.json(apiResponse({
-    qr_code_data: JSON.stringify(qrData),
-    qr_code_url: qrCodeUrl,
-    expires_at: expiresAt,
-  }));
-});
-
-// ============================================================================
-// Care API
-// ============================================================================
-
-// Smart care suggestions based on dog traits
-app.get('/api/v1/care/suggestions', (req, res) => {
-  const { dog_id } = req.query;
-
-  const dog = dogs.find(d => d.id === dog_id);
-  if (!dog) {
-    return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Dog not found' }));
-  }
-  // Verify customer owns the dog
-  if (!isStaff(req.user) && dog.user_id !== req.user.id) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-
-  const now = new Date();
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  const traits = { ...dog.traits, ...(dog.confirmed_traits || {}) };
-  const health = dog.health || {};
-  const suggestions = [];
-
-  // --- Brushing ---
-  let brushingPriority = 'low';
-  let brushingDesc = 'Weekly brushing keeps coat clean and healthy';
-  if (traits.coat_texture === 'double' || traits.shedding_level === 'high' || traits.coat_length === 'long') {
-    brushingPriority = 'high';
-    brushingDesc = 'Daily brushing recommended for ' +
-      (traits.coat_texture === 'double' ? 'double coat' : traits.shedding_level === 'high' ? 'high shedding' : 'long coat');
-  } else if (traits.shedding_level === 'medium' || traits.coat_length === 'medium') {
-    brushingPriority = 'medium';
-    brushingDesc = 'Brush every 2-3 days for medium-length coat';
-  }
-  suggestions.push({
-    category: 'brushing', priority: brushingPriority, title: 'Brush coat',
-    description: brushingDesc, action_required: brushingPriority !== 'low', completed: false,
-    reason: `${traits.coat_length || 'unknown'} ${traits.coat_texture || 'unknown'} coat, ${traits.shedding_level || 'unknown'} shedding`,
-    learn_more_url: null,
-  });
-
-  // --- Exercise ---
-  let exercisePriority = 'medium';
-  let exerciseDesc = '30 minutes of moderate activity';
-  if (traits.size_class === 'L' || traits.size_class === 'XL') {
-    exercisePriority = 'high';
-    exerciseDesc = '45-60 minutes of vigorous exercise for large dogs';
-  } else if (traits.size_class === 'XS' || traits.size_class === 'S') {
-    exercisePriority = 'low';
-    exerciseDesc = '20-30 minutes of light activity';
-  }
-  suggestions.push({
-    category: 'exercise', priority: exercisePriority, title: 'Daily exercise',
-    description: exerciseDesc, action_required: true, completed: false,
-    reason: `${traits.size_class || 'unknown'} size`, learn_more_url: null,
-  });
-
-  // --- Ear Care ---
-  let earPriority = 'low';
-  let earDesc = 'Check ears for debris or irritation';
-  if (traits.ear_type === 'floppy' || health.prone_to_ear_infections) {
-    earPriority = 'high';
-    earDesc = 'Inspect and clean ears — ' +
-      (health.prone_to_ear_infections ? 'prone to infections' : 'floppy ears trap moisture');
-  }
-  suggestions.push({
-    category: 'ear_care', priority: earPriority, title: 'Ear check',
-    description: earDesc, action_required: earPriority !== 'low', completed: false,
-    reason: traits.ear_type ? `${traits.ear_type} ears` : 'Routine ear care',
-    learn_more_url: null,
-  });
-
-  // --- Nail Trim ---
-  suggestions.push({
-    category: 'nail_care', priority: 'medium', title: 'Check nails',
-    description: 'Trim nails if they click on hard floors (every 2-3 weeks)',
-    action_required: false, completed: false,
-    reason: 'Regular nail maintenance', learn_more_url: null,
-  });
-
-  // --- Teeth Brushing ---
-  suggestions.push({
-    category: 'teeth_brushing', priority: 'low', title: 'Brush teeth',
-    description: 'Daily dental care prevents tartar and gum disease',
-    action_required: false, completed: false,
-    reason: 'Daily dental hygiene', learn_more_url: null,
-  });
-
-  // --- Skin Check (only for dogs with skin issues) ---
-  if (health.has_skin_conditions || traits.skin_sensitivity === 'high' || health.has_allergies) {
-    suggestions.push({
-      category: 'skin_check', priority: 'high', title: 'Skin inspection',
-      description: 'Check for redness, hot spots, or irritation' +
-        (health.has_allergies ? ' (allergy-prone)' : ''),
-      action_required: true, completed: false,
-      reason: health.has_skin_conditions ? 'Has skin conditions' :
-              health.has_allergies ? 'Has allergies' : 'High skin sensitivity',
-      learn_more_url: null,
-    });
-  }
-
-  // --- General Health Check ---
-  suggestions.push({
-    category: 'health_check', priority: 'low', title: 'General health check',
-    description: 'Observe energy, appetite, and behavior for changes',
-    action_required: false, completed: false,
-    reason: 'Routine wellness monitoring', learn_more_url: null,
-  });
-
-  // Mark tasks completed if care events exist for today
-  const todaysEvents = careEvents.filter(e =>
-    e.dog_id === dog_id && e.date && e.date.slice(0, 10) === today
-  );
-  for (const suggestion of suggestions) {
-    if (todaysEvents.some(e => e.category === suggestion.category)) {
-      suggestion.completed = true;
-    }
-  }
-
-  // Sort by priority: high first, then medium, then low
-  const priorityOrder = { high: 0, medium: 1, low: 2 };
-  suggestions.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-
-  res.json(apiResponse({
-    id: uuidv4(),
-    dog_id,
-    date: today,
-    suggestions,
-  }));
-});
-
-// Complete a care suggestion (also logs a care event)
-app.put('/api/v1/care/suggestions/:id/complete', (req, res) => {
-  const { dog_id, category } = req.body;
-  // Verify customer owns the dog
-  if (!isStaff(req.user) && dog_id && !userOwnsDog(req.user.id, dog_id)) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  if (dog_id && category) {
-    const newEvent = {
-      id: uuidv4(),
-      dog_id,
-      category,
-      date: new Date().toISOString(),
-      notes: null,
-      duration_minutes: null,
-      source: 'task_complete',
-    };
-    careEvents.push(newEvent);
-    saveJsonFile(careEventsFilePath, careEvents);
-  }
-  res.json(apiResponse({ id: req.params.id, completed: true }));
-});
-
-// Undo a completed care suggestion (removes today's related care events for that task)
-app.put('/api/v1/care/suggestions/:id/uncomplete', (req, res) => {
-  const { dog_id, category } = req.body || {};
-  if (!dog_id || !category) {
-    return res.status(400).json(apiResponse(null, { code: 'INVALID_REQUEST', message: 'dog_id and category are required' }));
-  }
-  // Verify customer owns the dog
-  if (!isStaff(req.user) && !userOwnsDog(req.user.id, dog_id)) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-
-  const today = new Date().toISOString().slice(0, 10);
-  const beforeCount = careEvents.length;
-  careEvents = careEvents.filter((event) => {
-    const isToday = event.date && event.date.slice(0, 10) === today;
-    const isMatch = event.dog_id === dog_id && event.category === category;
-    return !(isToday && isMatch);
-  });
-
-  const removedCount = beforeCount - careEvents.length;
-  if (removedCount > 0) {
-    saveJsonFile(careEventsFilePath, careEvents);
-  }
-
-  res.json(apiResponse({
-    id: req.params.id,
-    completed: false,
-    removed_events: removedCount,
-  }));
-});
-
-// Care events history — customers see only their dogs' events
-app.get('/api/v1/care/events', (req, res) => {
-  const { dog_id, start_date, end_date, category } = req.query;
-  let filtered = careEvents;
-  // Scope to user's dogs for customers
-  if (!isStaff(req.user)) {
-    const myDogIds = getUserDogIds(req.user.id);
-    filtered = filtered.filter(e => myDogIds.includes(e.dog_id));
-  }
-  if (dog_id) filtered = filtered.filter(e => e.dog_id === dog_id);
-  if (start_date) {
-    const startDay = start_date.slice(0, 10);
-    filtered = filtered.filter(e => e.date && e.date.slice(0, 10) >= startDay);
-  }
-  if (end_date) {
-    const endDay = end_date.slice(0, 10);
-    filtered = filtered.filter(e => e.date && e.date.slice(0, 10) <= endDay);
-  }
-  if (category) filtered = filtered.filter(e => e.category === category);
-  // Sort newest first
-  filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  res.json(apiResponse(filtered));
-});
-
-// Delete a single care event
-app.delete('/api/v1/care/events/:id', (req, res) => {
-  const index = careEvents.findIndex(e => e.id === req.params.id);
-  if (index === -1) {
-    return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'Care event not found' }));
-  }
-  // Verify customer owns the dog
-  if (!isStaff(req.user) && careEvents[index].dog_id && !userOwnsDog(req.user.id, careEvents[index].dog_id)) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  careEvents.splice(index, 1);
-  saveJsonFile(careEventsFilePath, careEvents);
-  return res.json(apiResponse({ id: req.params.id, deleted: true }));
-});
-
-// Clear care events (supports optional filters; no filters = clear all)
-app.delete('/api/v1/care/events', (req, res) => {
-  const { dog_id, start_date, end_date, category } = req.query;
-  const startDay = start_date ? start_date.slice(0, 10) : null;
-  const endDay = end_date ? end_date.slice(0, 10) : null;
-  // Customers can only clear events for their own dogs
-  const myDogIds = isStaff(req.user) ? null : getUserDogIds(req.user.id);
-
-  const shouldRemove = (event) => {
-    // Enforce ownership for customers
-    if (myDogIds && !myDogIds.includes(event.dog_id)) return false;
-    if (dog_id && event.dog_id !== dog_id) return false;
-    if (category && event.category !== category) return false;
-    if (startDay && (!event.date || event.date.slice(0, 10) < startDay)) return false;
-    if (endDay && (!event.date || event.date.slice(0, 10) > endDay)) return false;
-    return true;
-  };
-
-  const beforeCount = careEvents.length;
-  careEvents = careEvents.filter(event => !shouldRemove(event));
-  const removedCount = beforeCount - careEvents.length;
-
-  if (removedCount > 0) {
-    saveJsonFile(careEventsFilePath, careEvents);
-  }
-
-  return res.json(apiResponse({
-    removed_count: removedCount,
-    remaining_count: careEvents.length,
-  }));
-});
-
-// Log a care event
-app.post('/api/v1/care/events', (req, res) => {
-  // Verify customer owns the dog
-  if (!isStaff(req.user) && req.body.dog_id && !userOwnsDog(req.user.id, req.body.dog_id)) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  const { id: _id, ...safeBody } = req.body;
-  const newEvent = {
-    ...safeBody,
-    id: uuidv4(),
-    date: req.body.date || new Date().toISOString(),
-  };
-  careEvents.push(newEvent);
-  saveJsonFile(careEventsFilePath, careEvents);
-  res.status(201).json(apiResponse(newEvent));
-});
-
-// Care streak — customers can only check streak for their own dogs
-app.get('/api/v1/care/streak', (req, res) => {
-  const { dog_id } = req.query;
-  if (!isStaff(req.user) && dog_id && !userOwnsDog(req.user.id, dog_id)) {
-    return res.status(403).json(apiResponse(null, { code: 'FORBIDDEN', message: 'Access denied' }));
-  }
-  let streak = 0;
-  const now = new Date();
-  const toLocal = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  const todayStr = toLocal(now);
-
-  // Check if today has events
-  const todayEvents = careEvents.filter(e =>
-    e.dog_id === dog_id && e.date && e.date.slice(0, 10) === todayStr
-  );
-  if (todayEvents.length > 0) streak++;
-
-  // Count consecutive days backwards from yesterday
-  for (let i = 1; i <= 365; i++) {
-    const checkDate = new Date(now);
-    checkDate.setDate(now.getDate() - i);
-    const dateStr = toLocal(checkDate);
-    const dayEvents = careEvents.filter(e =>
-      e.dog_id === dog_id && e.date && e.date.slice(0, 10) === dateStr
-    );
-    if (dayEvents.length > 0) {
-      streak++;
-    } else {
-      break;
-    }
-  }
-
-  res.json(apiResponse({
-    dog_id,
-    current_streak: streak,
-    last_completed_date: todayEvents.length > 0 ? todayStr : null,
-  }));
-});
-
-// ============================================================================
-// AI Advisor - LLM Provider Functions
-// ============================================================================
-
-function parseDateSafe(value) {
-  if (!value || typeof value !== 'string') return null;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-function formatDateYYYYMMDD(value) {
-  const date = parseDateSafe(value);
-  return date ? date.toISOString().slice(0, 10) : null;
-}
-
-function summarizeRecentCareEvents(dogId, maxItems = 5) {
-  const events = (Array.isArray(careEvents) ? careEvents : [])
-    .filter(e => e && e.dog_id === dogId && parseDateSafe(e.date))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, maxItems);
-
-  if (events.length === 0) return 'No recent care events logged.';
-
-  return events.map(e => {
-    const date = formatDateYYYYMMDD(e.date) || 'unknown date';
-    const category = (e.category || 'other').replace(/_/g, ' ');
-    const notes = e.notes ? ` (${String(e.notes).slice(0, 60)})` : '';
-    return `${date}: ${category}${notes}`;
-  }).join('; ');
-}
-
-function summarizeWeightTrend(dog) {
-  const history = Array.isArray(dog.weight_history) ? dog.weight_history : [];
-  const validHistory = history
-    .filter(entry => entry && typeof entry.weight_lbs === 'number' && parseDateSafe(entry.date))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-  if (validHistory.length === 0) return 'No weight history logged.';
-  if (validHistory.length === 1) {
-    return `Only one entry: ${validHistory[0].weight_lbs} lbs on ${formatDateYYYYMMDD(validHistory[0].date)}.`;
-  }
-
-  const latest = validHistory[validHistory.length - 1];
-  const previous = validHistory[validHistory.length - 2];
-  const delta = latest.weight_lbs - previous.weight_lbs;
-  const latestDate = formatDateYYYYMMDD(latest.date) || 'unknown date';
-  let trend = 'stable';
-  if (delta > 0.2) trend = `up by ${delta.toFixed(1)} lbs`;
-  if (delta < -0.2) trend = `down by ${Math.abs(delta).toFixed(1)} lbs`;
-  return `Latest: ${latest.weight_lbs} lbs (${latestDate}); recent trend: ${trend}.`;
-}
-
-function summarizeVaccinationStatus(dog) {
-  const vaccinations = Array.isArray(dog.vaccinations) ? dog.vaccinations : [];
-  if (vaccinations.length === 0) {
-    return 'No vaccination records logged.';
-  }
-
-  const now = new Date();
-  const dueSoonThreshold = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
-  const overdue = [];
-  const dueSoon = [];
-
-  vaccinations.forEach(vax => {
-    const dueDate = parseDateSafe(vax?.next_due_date);
-    if (!dueDate) return;
-    const label = `${vax.name || 'Unknown vaccine'} (${formatDateYYYYMMDD(vax.next_due_date)})`;
-    if (dueDate < now) {
-      overdue.push(label);
-    } else if (dueDate <= dueSoonThreshold) {
-      dueSoon.push(label);
-    }
-  });
-
-  const overdueText = overdue.length ? overdue.join(', ') : 'none';
-  const dueSoonText = dueSoon.length ? dueSoon.join(', ') : 'none';
-  return `Overdue: ${overdueText}. Due in next 30 days: ${dueSoonText}.`;
-}
-
-async function callClaude(systemPrompt, messages, model, apiKey) {
-  const key = apiKey || process.env.ANTHROPIC_API_KEY;
-  const response = await axios.post('https://api.anthropic.com/v1/messages', {
-    model,
-    max_tokens: 1024,
-    system: systemPrompt,
-    messages: messages.map(m => ({ role: m.role, content: m.content })),
-  }, {
-    headers: {
-      'x-api-key': key,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    timeout: 30000,
-  });
-  return response.data.content[0].text;
-}
-
-async function callChatGPT(systemPrompt, messages, model, apiKey) {
-  const key = apiKey || process.env.OPENAI_API_KEY;
-  const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-    model,
-    messages: [
-      { role: 'system', content: systemPrompt },
-      ...messages.map(m => ({ role: m.role, content: m.content })),
-    ],
-    max_tokens: 1024,
-  }, {
-    headers: {
-      'Authorization': `Bearer ${key}`,
-      'Content-Type': 'application/json',
-    },
-    timeout: 30000,
-  });
-  return response.data.choices[0].message.content;
-}
-
-async function callGemini(systemPrompt, messages, model, apiKey) {
-  const key = apiKey || process.env.GOOGLE_AI_API_KEY;
-  const response = await axios.post(
-    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
-    {
-      system_instruction: { parts: [{ text: systemPrompt }] },
-      contents: messages.map(m => ({
-        role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: m.content }],
-      })),
-    },
-    {
-      headers: { 'Content-Type': 'application/json' },
-      timeout: 30000,
-    }
-  );
-  return response.data.candidates[0].content.parts[0].text;
-}
-
-// ============================================================================
-// LLM Vision Breed Analysis
-// ============================================================================
-
-const BREED_ANALYSIS_PROMPT = `You are a dog breed identification expert. Analyze the provided photo(s).
-
-Return ONLY a valid JSON object (no markdown, no code fences) with this exact structure:
-{
-  "subject_type": "real_dog",
-  "analysis_note": "short explanation",
-  "breed_predictions": [
-    { "breed_name": "Breed Name", "confidence": 0.85, "rank": 1, "akc_group": "Group Name" },
-    { "breed_name": "Second Breed", "confidence": 0.10, "rank": 2, "akc_group": "Group Name" }
-  ],
-  "is_purebred_probability": 0.8,
-  "predicted_traits": {
-    "size_class": "M",
-    "height_inches": 20,
-    "coat_length": "medium",
-    "coat_texture": "smooth",
-    "has_undercoat": false,
-    "shedding_level": "medium",
-    "mat_risk": "low",
-    "current_mat_level": "none",
-    "skin_sensitivity": "low",
-    "is_brachycephalic": false,
-    "ear_type": "floppy"
-  },
-  "image_quality": {
-    "overall_score": 0.9,
-    "issues": []
-  }
-}
-
-Rules:
-- First classify subject_type as one of: real_dog, not_a_dog, uncertain.
-- A toy/plush/statue/cartoon/drawing is NOT a real dog.
-- If not_a_dog: set breed_predictions to [] and explain in analysis_note.
-- If uncertain: keep confidence values low.
-- size_class must be one of: XS, S, M, L, XL
-- coat_length: short, medium, long
-- coat_texture: smooth, double, curly, wiry, silky
-- shedding_level: low, medium, high
-- mat_risk: low, medium, high
-- ear_type: erect, floppy, semi-erect, drop
-- akc_group: Sporting, Hound, Working, Terrier, Toy, Non-Sporting, Herding, Foundation Stock Service, Miscellaneous Class
-- Provide 0-3 breed predictions ordered by confidence.
-- Be honest about confidence; if the image is unclear, use lower values.
-- If multiple images show the same subject, use all images together.`;
-
-async function callClaudeVision(imageBuffers, apiKey, timeoutMs = 20000) {
-  const key = apiKey || process.env.ANTHROPIC_API_KEY;
-  const imageContent = imageBuffers.map(buf => ({
-    type: 'image',
-    source: {
-      type: 'base64',
-      media_type: 'image/jpeg',
-      data: buf.toString('base64'),
-    },
-  }));
-
-  const response = await axios.post('https://api.anthropic.com/v1/messages', {
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1024,
-    system: BREED_ANALYSIS_PROMPT,
-    messages: [{
-      role: 'user',
-      content: [
-        ...imageContent,
-        { type: 'text', text: 'Identify this dog\'s breed and traits. Return JSON only.' },
-      ],
-    }],
-  }, {
-    headers: {
-      'x-api-key': key,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    timeout: timeoutMs,
-  });
-  return response.data.content[0].text;
-}
-
-async function callChatGPTVision(imageBuffers, apiKey, timeoutMs = 20000) {
-  const key = apiKey || process.env.OPENAI_API_KEY;
-  const imageContent = imageBuffers.map(buf => ({
-    type: 'image_url',
-    image_url: {
-      url: `data:image/jpeg;base64,${buf.toString('base64')}`,
-      detail: 'high',
-    },
-  }));
-
-  const response = await axios.post('https://api.openai.com/v1/chat/completions', {
-    model: 'gpt-4o-mini',
-    messages: [
-      { role: 'system', content: BREED_ANALYSIS_PROMPT },
-      {
-        role: 'user',
-        content: [
-          ...imageContent,
-          { type: 'text', text: 'Identify this dog\'s breed and traits. Return JSON only.' },
-        ],
-      },
-    ],
-    max_tokens: 1024,
-  }, {
-    headers: {
-      'Authorization': `Bearer ${key}`,
-      'Content-Type': 'application/json',
-    },
-    timeout: timeoutMs,
-  });
-  return response.data.choices[0].message.content;
-}
-
-async function callGeminiVision(imageBuffers, apiKey, timeoutMs = 20000) {
-  const key = apiKey || process.env.GOOGLE_AI_API_KEY;
-  const imageParts = imageBuffers.map(buf => ({
-    inline_data: {
-      mime_type: 'image/jpeg',
-      data: buf.toString('base64'),
-    },
-  }));
-
-  const response = await axios.post(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-    {
-      system_instruction: { parts: [{ text: BREED_ANALYSIS_PROMPT }] },
-      contents: [{
-        role: 'user',
-        parts: [
-          ...imageParts,
-          { text: 'Identify this dog\'s breed and traits. Return JSON only.' },
-        ],
-      }],
-    },
-    {
-      headers: { 'Content-Type': 'application/json' },
-      timeout: timeoutMs,
-    }
-  );
-  return response.data.candidates[0].content.parts[0].text;
-}
-
-const VISION_PROVIDERS = {
-  claude: callClaudeVision,
-  chatgpt: callChatGPTVision,
-  gemini: callGeminiVision,
-};
-
-const LLM_TOTAL_BUDGET_MS = 25000; // Total time budget for all LLM attempts combined
-
-function normalizeVisionResult(rawResult) {
-  const result = rawResult && typeof rawResult === 'object' ? rawResult : {};
-  const subjectRaw = String(result.subject_type || '').trim().toLowerCase();
-  const subjectType = subjectRaw === 'real_dog' || subjectRaw === 'not_a_dog' || subjectRaw === 'uncertain'
-    ? subjectRaw
-    : 'uncertain';
-  const topConfidence = Number(result?.breed_predictions?.[0]?.confidence || 0);
-  const qualityScore = Number(result?.image_quality?.overall_score || 0.25);
-
-  if (subjectType === 'not_a_dog') {
-    return buildIndeterminateAnalysis({
-      subjectType: 'not_a_dog',
-      note: String(result.analysis_note || 'No real dog detected in the provided images.'),
-      qualityScore: Math.min(0.35, Math.max(0.05, qualityScore)),
-      qualityIssues: ['subject_not_real_dog'],
-    });
-  }
-
-  if (!Array.isArray(result.breed_predictions) || result.breed_predictions.length === 0 || topConfidence < 0.35) {
-    return buildIndeterminateAnalysis({
-      subjectType: 'uncertain',
-      note: String(result.analysis_note || 'Breed could not be determined confidently from these images.'),
-      qualityScore: Math.min(0.45, Math.max(0.1, qualityScore)),
-      qualityIssues: ['low_confidence_breed_detection'],
-    });
-  }
-
-  return {
-    ...result,
-    subject_type: 'real_dog',
-    analysis_note: result.analysis_note ? String(result.analysis_note) : null,
-  };
-}
-
-async function analyzeBreedWithLLM(imageBuffers, requestKeys = {}) {
-  // Respect per-request preferred provider order while keeping auto-fallback.
-  const availableProviders = getAvailableProviders(requestKeys);
-
-  if (availableProviders.length === 0) {
-    return null;
-  }
-
-  const budgetStart = Date.now();
-
-  for (const provider of availableProviders) {
-    // Check total budget before trying next provider
-    const elapsed = Date.now() - budgetStart;
-    if (elapsed >= LLM_TOTAL_BUDGET_MS) {
-      console.warn(`LLM total budget exhausted (${elapsed}ms), skipping remaining providers`);
-      break;
-    }
-
-    const visionFn = VISION_PROVIDERS[provider];
-    if (!visionFn) continue;
-
-    try {
-      const effectiveKey = requestKeys[provider] || process.env[LLM_PROVIDERS[provider].keyEnv];
-      const remaining = LLM_TOTAL_BUDGET_MS - (Date.now() - budgetStart);
-      const callTimeout = Math.min(20000, remaining);
-      console.log(`Trying LLM vision analysis with ${provider}... (${remaining}ms budget remaining, timeout ${callTimeout}ms)`);
-      const rawResponse = await visionFn(imageBuffers, effectiveKey, callTimeout);
-
-      // Parse JSON from response (handle markdown code fences)
-      let jsonStr = rawResponse.trim();
-      const fenceMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
-      if (fenceMatch) jsonStr = fenceMatch[1].trim();
-
-      const parsed = JSON.parse(jsonStr);
-      const result = normalizeVisionResult(parsed);
-
-      // Add metadata
-      result.model_version = `llm-vision-${provider}`;
-      result.inference_time_ms = 0; // Will be set by caller
-      result._analysis_source = 'llm_vision';
-      result._llm_provider = provider;
-
-      return result;
-    } catch (error) {
-      console.warn(`LLM vision analysis failed with ${provider}: ${error.message}`);
-      continue;
-    }
-  }
-
-  return null;
-}
-
-const LLM_PROVIDERS = {
-  claude: {
-    call: callClaude,
-    keyEnv: 'ANTHROPIC_API_KEY',
-    headerKey: 'x-anthropic-key',
-    modelEnv: 'ANTHROPIC_MODEL',
-    defaultModel: 'claude-sonnet-4-20250514',
-  },
-  chatgpt: {
-    call: callChatGPT,
-    keyEnv: 'OPENAI_API_KEY',
-    headerKey: 'x-openai-key',
-    modelEnv: 'OPENAI_MODEL',
-    defaultModel: 'gpt-4o-mini',
-  },
-  gemini: {
-    call: callGemini,
-    keyEnv: 'GOOGLE_AI_API_KEY',
-    headerKey: 'x-gemini-key',
-    modelEnv: 'GEMINI_MODEL',
-    defaultModel: 'gemini-2.0-flash',
-  },
-};
-
-const ADVISOR_DEFAULT_PROVIDER = process.env.ADVISOR_DEFAULT_PROVIDER || '';
-const ADVISOR_PROVIDER_ORDER = (process.env.ADVISOR_PROVIDER_ORDER || 'claude,chatgpt,gemini')
-  .split(',')
-  .map(p => p.trim().toLowerCase())
-  .filter(Boolean);
-
-// Extract per-request API keys from headers
-function getRequestKeys(req) {
-  const keys = {};
-  for (const [provider, config] of Object.entries(LLM_PROVIDERS)) {
-    const headerVal = req.headers[config.headerKey];
-    if (headerVal) keys[provider] = headerVal;
-  }
-  // Also check for OpenAI key for Whisper transcription
-  keys._openai = req.headers['x-openai-key'] || null;
-  // Preferred provider selection from client
-  keys._preferred = req.headers['x-preferred-provider'] || null;
-  return keys;
-}
-
-function getProviderModel(provider) {
-  const config = LLM_PROVIDERS[provider];
-  return process.env[config.modelEnv] || config.defaultModel;
-}
-
-function getProviderOrder() {
-  const knownProviders = Object.keys(LLM_PROVIDERS);
-  const preferred = ADVISOR_PROVIDER_ORDER.filter(p => knownProviders.includes(p));
-  const remainder = knownProviders.filter(p => !preferred.includes(p));
-  return [...preferred, ...remainder];
-}
-
-// Returns available providers considering both server .env keys and per-request keys
-// If requestKeys._preferred is set, that provider is moved to the front
-function getAvailableProviders(requestKeys = {}) {
-  const available = getProviderOrder().filter(provider => {
-    const config = LLM_PROVIDERS[provider];
-    return !!requestKeys[provider] || !!process.env[config.keyEnv];
-  });
-  const preferred = requestKeys._preferred;
-  if (preferred && available.includes(preferred)) {
-    return [preferred, ...available.filter(p => p !== preferred)];
-  }
-  return available;
-}
-
-function getDefaultProvider(availableProviders) {
-  if (availableProviders.length === 0) return null;
-  const preferred = ADVISOR_DEFAULT_PROVIDER.toLowerCase();
-  if (preferred && availableProviders.includes(preferred)) return preferred;
-  return availableProviders[0];
-}
-
-// Get the effective API key for a provider (per-request takes priority)
-function getEffectiveKey(provider, requestKeys = {}) {
-  return requestKeys[provider] || process.env[LLM_PROVIDERS[provider].keyEnv] || null;
-}
-
-function getProviderKeySource(provider, requestKeys = {}) {
-  if (requestKeys[provider]) return 'user_key';
-  if (process.env[LLM_PROVIDERS[provider].keyEnv]) return 'server_fallback';
-  return 'missing';
-}
-
-function normalizeRagText(input) {
-  return String(input || '')
-    .replace(/\r\n/g, '\n')
-    .replace(/\u0000/g, '')
-    .trim();
-}
-
-function tokenizeRagText(input) {
-  const text = normalizeRagText(input).toLowerCase();
-  const latinTokens = text.match(/[a-z0-9]{2,}/g) || [];
-  const cjkSegments = text.match(/[\u3400-\u4dbf\u4e00-\u9fff]{2,}/g) || [];
-  const cjkTokens = [];
-  for (const segment of cjkSegments) {
-    // Generate overlapping bigrams so Chinese text can be matched without whitespace tokenization.
-    for (let i = 0; i < segment.length - 1; i += 1) {
-      cjkTokens.push(segment.slice(i, i + 2));
-    }
-  }
-  const merged = [...latinTokens, ...cjkTokens];
-  if (merged.length === 0) {
-    const singleCjk = text.match(/[\u3400-\u4dbf\u4e00-\u9fff]/);
-    return singleCjk ? [singleCjk[0]] : [];
-  }
-  return Array.from(new Set(merged));
-}
-
-function escapeSqlLikePattern(raw) {
-  return String(raw || '').replace(/[\\%_]/g, '\\$&');
-}
-
-function chunkRagDocument(content, targetSize = 700, overlap = 140) {
-  const text = normalizeRagText(content);
-  if (!text) return [];
-  const chunks = [];
-  let start = 0;
-  while (start < text.length) {
-    let end = Math.min(text.length, start + targetSize);
-    if (end < text.length) {
-      const nearestBreak = Math.max(
-        text.lastIndexOf('\n', end),
-        text.lastIndexOf('. ', end),
-        text.lastIndexOf(' ', end)
-      );
-      if (nearestBreak > start + Math.floor(targetSize * 0.55)) {
-        end = nearestBreak + 1;
-      }
-    }
-    const chunkText = text.slice(start, end).trim();
-    if (chunkText) chunks.push(chunkText);
-    if (end >= text.length) break;
-    start = Math.max(0, end - overlap);
-  }
-  return chunks;
-}
-
-function scoreRagChunk(queryTokens, chunkLower, tokenCount) {
-  if (!queryTokens || queryTokens.length === 0) return 0;
-  let matches = 0;
-  const seen = new Set();
-  for (const token of queryTokens) {
-    if (seen.has(token)) continue;
-    seen.add(token);
-    if (chunkLower.includes(token)) matches += 1;
-  }
-  if (matches === 0) return 0;
-  const coverage = matches / Math.max(1, seen.size);
-  const shortChunkPenalty = Math.min(1, Math.max(0.25, tokenCount / 60));
-  const longChunkPenalty = tokenCount <= 450 ? 1 : Math.max(0.55, 1 - ((tokenCount - 450) / 900));
-  const lengthQuality = shortChunkPenalty * longChunkPenalty;
-  return Math.round((coverage * 0.9 + lengthQuality * 0.1) * 1000) / 1000;
-}
-
-function retrieveRagContext(query, topK = 4, req = null) {
-  const queryText = normalizeRagText(query);
-  if (!queryText) return [];
-  const queryTokens = tokenizeRagText(queryText);
-  if (queryTokens.length === 0) return [];
-  const filteredTokens = [...new Set(queryTokens)].slice(0, RAG_MAX_SQL_TOKEN_FILTERS);
-  const scopeParams = [];
-  const scopeClause = req
-    ? appendStoreScope('', scopeParams, req, 'd.store_id', { includeNullFallback: true })
-    : '';
-  let candidates = [];
-  if (filteredTokens.length === 0) {
-    const sql = `
-      SELECT c.id, c.doc_id, c.chunk_index, c.content, c.content_lower, c.token_count, d.title, d.source
-      FROM advisor_knowledge_chunks c
-      JOIN advisor_knowledge_docs d ON d.id = c.doc_id
-      WHERE d.is_active = 1${scopeClause}
-      LIMIT ?
-    `;
-    candidates = db.prepare(sql).all(...scopeParams, RAG_MAX_CANDIDATE_CHUNKS);
-  } else {
-    const likeClause = filteredTokens.map(() => 'c.content_lower LIKE ? ESCAPE \'\\\'').join(' OR ');
-    const sql = `
-      SELECT c.id, c.doc_id, c.chunk_index, c.content, c.content_lower, c.token_count, d.title, d.source
-      FROM advisor_knowledge_chunks c
-      JOIN advisor_knowledge_docs d ON d.id = c.doc_id
-      WHERE d.is_active = 1
-        ${scopeClause}
-        AND (${likeClause})
-      LIMIT ?
-    `;
-    const params = filteredTokens.map((token) => `%${escapeSqlLikePattern(token)}%`);
-    params.push(RAG_MAX_CANDIDATE_CHUNKS);
-    candidates = db.prepare(sql).all(...scopeParams, ...params);
-  }
-  const scored = candidates
-    .map((row) => {
-      const score = scoreRagChunk(queryTokens, String(row.content_lower || ''), Number(row.token_count) || 0);
-      return {
-        chunk_id: row.id,
-        doc_id: row.doc_id,
-        doc_title: row.title,
-        doc_source: row.source,
-        chunk_index: row.chunk_index,
-        content: row.content,
-        token_count: row.token_count,
-        score,
-      };
-    })
-    .filter((row) => row.score > 0)
-    .sort((a, b) => b.score - a.score || a.chunk_index - b.chunk_index);
-  return scored.slice(0, Math.min(Math.max(1, topK), 12));
-}
-
-function formatRagContextForPrompt(retrievedChunks = []) {
-  if (!Array.isArray(retrievedChunks) || retrievedChunks.length === 0) return '';
-  const lines = [];
-  lines.push('\n\nKnowledge snippets (RAG):');
-  retrievedChunks.forEach((chunk, i) => {
-    lines.push(`\n[Doc ${i + 1}] ${chunk.doc_title || 'Untitled'}${chunk.doc_source ? ` (${chunk.doc_source})` : ''}`);
-    lines.push(`Chunk #${chunk.chunk_index} | score=${chunk.score}`);
-    lines.push(chunk.content);
-  });
-  lines.push('\nWhen using these snippets, cite the doc title in plain text (for example: "Based on Grooming SOP v2...").');
-  return lines.join('\n');
-}
-
-function buildSystemPrompt(dogProfiles, ragContext = '') {
-  let prompt = `You are UnforgettableRides Advisor, an AI assistant for dog care in the UnforgettableRides app.
-
-Guidelines:
-- Give practical, actionable advice that is personalized to the app data below.
-- Do NOT claim to be a veterinarian. Your guidance is educational and not a diagnosis.
-- For emergencies or severe symptoms (trouble breathing, collapse, seizures, severe bleeding, suspected poisoning), tell the user to contact an emergency veterinarian immediately.
-- If app data is missing, say what is unknown instead of guessing.
-- Keep responses concise (usually 1-3 short paragraphs + bullets when helpful).
-- You may use light Markdown for readability:
-  - **bold** for key points
-  - bullet lists using "-" or "*"
-  - no headings or code fences
-- If the user asks about a specific dog, reference that dog's profile and recent records below.`;
-
-  if (dogProfiles.length > 0) {
-    prompt += '\n\nThe user has the following dog(s) registered in the app:\n';
-    dogProfiles.forEach((dog, i) => {
-      const breed = dog.breed_info?.user_confirmed_breed
-        || (dog.breed_info?.predictions && dog.breed_info.predictions[0]?.breed_name)
-        || 'Unknown breed';
-      const traits = { ...dog.traits, ...(dog.confirmed_traits || {}) };
-      prompt += `\n--- Dog ${i + 1}: ${dog.name} ---`;
-      prompt += `\n- Dog ID: ${dog.id}`;
-      prompt += `\n- Breed: ${breed}${dog.breed_info?.is_mix ? ' (mix)' : ''}`;
-      prompt += `\n- Size: ${traits.size_class || 'unknown'}${dog.weight_lbs ? `, ${dog.weight_lbs} lbs` : ''}`;
-      prompt += `\n- Coat: ${traits.coat_length || '?'} length, ${traits.coat_texture || '?'} texture${traits.has_undercoat ? ', has undercoat' : ''}`;
-      prompt += `\n- Shedding: ${traits.shedding_level || 'unknown'}`;
-      prompt += `\n- Skin sensitivity: ${traits.skin_sensitivity || 'unknown'}`;
-      if (dog.health) {
-        prompt += `\n- Allergies: ${dog.health.has_allergies ? 'yes' : 'no'}${dog.health.allergy_notes ? ` (${dog.health.allergy_notes})` : ''}`;
-        prompt += `\n- Skin conditions: ${dog.health.has_skin_conditions ? 'yes' : 'no'}`;
-      }
-      if (dog.age_months) prompt += `\n- Age: ~${Math.round(dog.age_months / 12)} years`;
-      prompt += `\n- Weight trend: ${summarizeWeightTrend(dog)}`;
-      prompt += `\n- Vaccination status: ${summarizeVaccinationStatus(dog)}`;
-      prompt += `\n- Recent care events: ${summarizeRecentCareEvents(dog.id)}`;
-    });
-  }
-
-  prompt += `\n\nAction suggestion rules:
-- If the user clearly asks you to perform an app action, you may suggest ONE action.
-- Keep normal user-facing response text first, then append an action block at the very end.
-- If no action is needed, do not append any action block.
-
-Allowed action types and payloads:
-1) log_care_event
-{
-  "type": "log_care_event",
-  "title": "Short action title",
-  "reason": "Why this action helps",
-  "payload": {
-    "dog_id": "dog-id",
-    "category": "brushing|ear_care|nail_care|exercise|health_check|wash_reminder|teeth_brushing|skin_check|medication|vet_visit|other",
-    "notes": "optional text",
-    "duration_minutes": 15
-  }
-}
-2) add_weight_entry
-{
-  "type": "add_weight_entry",
-  "title": "Short action title",
-  "reason": "Why this action helps",
-  "payload": {
-    "dog_id": "dog-id",
-    "date": "YYYY-MM-DD optional",
-    "weight_lbs": 42.5
-  }
-}
-3) add_medication_record
-{
-  "type": "add_medication_record",
-  "title": "Short action title",
-  "reason": "Why this action helps",
-  "payload": {
-    "dog_id": "dog-id",
-    "name": "Medication name",
-    "dosage": "optional",
-    "frequency": "optional",
-    "start_date": "YYYY-MM-DD optional",
-    "end_date": "YYYY-MM-DD optional",
-    "notes": "optional"
-  }
-}
-
-Action block format (must match exactly):
-[[ACTION]]
-{valid JSON object for one action}
-[[/ACTION]]`;
-
-  prompt += '\n\nSafety disclaimer to include when giving medical guidance: "I can share general classic car information, but this is not veterinary medical advice."';
-  if (ragContext) {
-    prompt += ragContext;
-    prompt += '\nIf user question conflicts with snippets, explicitly say what is uncertain.';
-  }
-
-  return prompt;
-}
-
-function resolveDogIdFromPayload(payload, dogProfiles = dogs) {
-  if (!payload || typeof payload !== 'object') return null;
-  if (payload.dog_id) {
-    const found = dogProfiles.find(d => d.id === payload.dog_id);
-    return found ? found.id : null;
-  }
-  if (payload.dog_name && typeof payload.dog_name === 'string') {
-    const name = payload.dog_name.trim().toLowerCase();
-    const found = dogProfiles.find(d => d.name && d.name.trim().toLowerCase() === name);
-    return found ? found.id : null;
-  }
-  return null;
-}
-
-function validateAction(action, dogProfiles = dogs) {
-  if (!action || typeof action !== 'object') {
-    return { valid: false, message: 'Action is required' };
-  }
-  const { type, payload } = action;
-  if (!type || typeof type !== 'string') {
-    return { valid: false, message: 'Action type is required' };
-  }
-  if (!payload || typeof payload !== 'object') {
-    return { valid: false, message: 'Action payload is required' };
-  }
-
-  const resolvedDogId = resolveDogIdFromPayload(payload, dogProfiles);
-  if (!resolvedDogId) {
-    return { valid: false, message: 'Valid dog_id (or dog_name) is required in payload' };
-  }
-
-  if (type === 'log_care_event') {
-    const validCategories = new Set([
-      'brushing', 'ear_care', 'nail_care', 'exercise', 'health_check', 'wash_reminder',
-      'teeth_brushing', 'skin_check', 'medication', 'vet_visit', 'other',
-    ]);
-    if (!validCategories.has(payload.category)) {
-      return { valid: false, message: 'Invalid care category' };
-    }
-    return { valid: true, resolvedDogId };
-  }
-
-  if (type === 'add_weight_entry') {
-    const weight = Number(payload.weight_lbs);
-    if (!Number.isFinite(weight) || weight <= 0) {
-      return { valid: false, message: 'weight_lbs must be a positive number' };
-    }
-    return { valid: true, resolvedDogId };
-  }
-
-  if (type === 'add_medication_record') {
-    if (!payload.name || !String(payload.name).trim()) {
-      return { valid: false, message: 'Medication name is required' };
-    }
-    return { valid: true, resolvedDogId };
-  }
-
-  return { valid: false, message: 'Unsupported action type' };
-}
-
-function parseSuggestedActionFromText(rawText, dogProfiles = dogs) {
-  const text = String(rawText || '');
-  const match = text.match(/\[\[ACTION\]\]\s*([\s\S]*?)\s*\[\[\/ACTION\]\]/);
-  if (!match) {
-    return { content: text.trim(), suggestedAction: null };
-  }
-
-  let suggestedAction = null;
-  try {
-    const parsed = JSON.parse(match[1]);
-    const result = validateAction(parsed, dogProfiles);
-    if (result.valid) {
-      const normalizedPayload = { ...parsed.payload, dog_id: result.resolvedDogId };
-      delete normalizedPayload.dog_name;
-      suggestedAction = {
-        ...parsed,
-        payload: normalizedPayload,
-      };
-    }
-  } catch (err) {
-    // Ignore malformed action blocks; keep text response only.
-  }
-
-  const content = text.replace(match[0], '').trim();
-  return { content, suggestedAction };
-}
-
-function executeAdvisorAction(action, dogProfiles = dogs) {
-  const validation = validateAction(action, dogProfiles);
-  if (!validation.valid) {
-    return { ok: false, error: validation.message };
-  }
-
-  const type = action.type;
-  const payload = { ...action.payload, dog_id: validation.resolvedDogId };
-  const dog = dogs.find(d => d.id === payload.dog_id);
-  if (!dog) {
-    return { ok: false, error: 'Dog not found' };
-  }
-
-  if (type === 'log_care_event') {
-    const event = {
-      id: uuidv4(),
-      dog_id: payload.dog_id,
-      category: payload.category,
-      // Advisor actions are immediate confirmations, so always log at "now".
-      date: new Date().toISOString(),
-      notes: payload.notes || null,
-      duration_minutes: payload.duration_minutes ?? null,
-      source: 'advisor_action',
-    };
-    careEvents.push(event);
-    saveJsonFile(careEventsFilePath, careEvents);
-    return {
-      ok: true,
-      summary: `Logged ${String(payload.category).replace(/_/g, ' ')} for ${dog.name}.`,
-    };
-  }
-
-  if (type === 'add_weight_entry') {
-    const entry = {
-      date: payload.date || new Date().toISOString().slice(0, 10),
-      weight_lbs: Number(payload.weight_lbs),
-    };
-    const history = Array.isArray(dog.weight_history) ? [...dog.weight_history] : [];
-    history.push(entry);
-    history.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    dog.weight_history = history;
-    dog.weight_lbs = entry.weight_lbs;
-    dog.updated_at = new Date().toISOString();
-    saveJsonFile(dogsFilePath, dogs);
-    return {
-      ok: true,
-      summary: `Added weight entry (${entry.weight_lbs} lbs) for ${dog.name}.`,
-    };
-  }
-
-  if (type === 'add_medication_record') {
-    const medList = Array.isArray(dog.medications) ? [...dog.medications] : [];
-    const medication = {
-      id: uuidv4(),
-      name: String(payload.name).trim(),
-      dosage: payload.dosage ? String(payload.dosage).trim() : null,
-      frequency: payload.frequency ? String(payload.frequency).trim() : null,
-      start_date: payload.start_date || new Date().toISOString().slice(0, 10),
-      end_date: payload.end_date ? String(payload.end_date).trim() : null,
-      notes: payload.notes ? String(payload.notes).trim() : null,
-    };
-    medList.push(medication);
-    dog.medications = medList;
-    dog.updated_at = new Date().toISOString();
-    saveJsonFile(dogsFilePath, dogs);
-    return {
-      ok: true,
-      summary: `Added medication "${medication.name}" for ${dog.name}.`,
-    };
-  }
-
-  return { ok: false, error: 'Unsupported action type' };
-}
+// Legacy recommendation/wash/care/advisor helper routes removed.
 
 // ============================================================================
 // AI Advisor Endpoints
@@ -6605,8 +4746,11 @@ if (require.main === module) {
   });
 }
 
-// Export internals for testing — _dogs getter returns a reference to the live in-memory array
+// Export internals for testing.
 module.exports = { app, db };
+
+
+
 
 
 

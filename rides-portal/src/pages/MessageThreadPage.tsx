@@ -13,22 +13,25 @@ export default function MessageThreadPage() {
   const [body, setBody] = useState('');
   const listRef = useRef<HTMLDivElement>(null);
 
-  const { data: threads = [] } = useQuery({
+  const { data: threadsPage } = useQuery({
     queryKey: ['threads'],
-    queryFn: messagingAPI.getThreads,
+    queryFn: () => messagingAPI.getThreads(),
     enabled: !!user,
   });
+  const threads = threadsPage?.items ?? [];
 
-  const { data: messages = [], isLoading } = useQuery({
+  const { data: messagesPage, isLoading } = useQuery({
     queryKey: ['messages', threadId],
     queryFn: () => messagingAPI.getMessages(threadId!),
     enabled: !!threadId && !!user,
     refetchInterval: 8000,
   });
+  const messages = (messagesPage?.items ?? []).slice().reverse();
 
   useEffect(() => {
-    if (threadId) messagingAPI.markRead(threadId).catch(() => {});
-  }, [threadId, messages.length]);
+    const latest = messagesPage?.items?.[0];
+    if (threadId && latest?.id) messagingAPI.markRead(threadId, latest.id).catch(() => {});
+  }, [threadId, messagesPage?.items?.[0]?.id]);
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
@@ -48,9 +51,7 @@ export default function MessageThreadPage() {
   );
 
   const thread = threads.find((t: SocialThread) => t.id === threadId);
-  const members: any[] = (thread as any)?.members ?? [];
-  const other = members.find((m: any) => m.user_id !== user.id);
-  const otherName = other?.user?.name ?? 'Conversation';
+  const otherName = thread?.otherUser?.displayName ?? 'Conversation';
 
   function initials(name?: string) {
     if (!name) return '?';
@@ -71,9 +72,7 @@ export default function MessageThreadPage() {
         <div className="threads-sidebar">
           <div className="threads-header">Messages</div>
           {threads.map((t: SocialThread) => {
-            const m: any[] = (t as any).members ?? [];
-            const o = m.find((x: any) => x.user_id !== user.id);
-            const name = o?.user?.name ?? 'Unknown';
+            const name = t.otherUser?.displayName ?? 'Unknown';
             return (
               <div
                 key={t.id}
@@ -83,7 +82,7 @@ export default function MessageThreadPage() {
                 <div className="thread-av">{initials(name)}</div>
                 <div className="thread-info">
                   <div className="thread-name">{name}</div>
-                  <div className="thread-preview">{(t as any).last_message?.body ?? ''}</div>
+                  <div className="thread-preview">{t.lastMessagePreview ?? ''}</div>
                 </div>
               </div>
             );

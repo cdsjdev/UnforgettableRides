@@ -300,8 +300,8 @@ function registerMessagingRoutes({
     try {
       db.prepare(`
         INSERT INTO social_users
-        (user_id, message_privacy, profile_visibility, dog_profile_visibility, is_messaging_enabled, created_at, updated_at)
-        VALUES (?, 'everyone', 'public', 'followers_only', 1, datetime('now'), datetime('now'))
+        (user_id, message_privacy, profile_visibility, is_messaging_enabled, created_at, updated_at)
+        VALUES (?, 'everyone', 'public', 1, datetime('now'), datetime('now'))
         ON CONFLICT(user_id) DO NOTHING
       `).run(userId);
       return next();
@@ -319,19 +319,6 @@ function registerMessagingRoutes({
       LIMIT 1
     `).get(a, b, b, a);
     return Boolean(row?.hit);
-  };
-
-  const isMutualFollow = (userAId, userBId) => {
-    if (!userAId || !userBId) return false;
-    const a = db.prepare(`
-      SELECT 1 AS hit FROM social_follows
-      WHERE follower_user_id = ? AND followed_user_id = ? AND status = 'active' LIMIT 1
-    `).get(userAId, userBId);
-    const b = db.prepare(`
-      SELECT 1 AS hit FROM social_follows
-      WHERE follower_user_id = ? AND followed_user_id = ? AND status = 'active' LIMIT 1
-    `).get(userBId, userAId);
-    return Boolean(a?.hit) && Boolean(b?.hit);
   };
 
   const mapProfileFor = (viewerUserId, userId) => {
@@ -400,7 +387,8 @@ function registerMessagingRoutes({
           AND t.last_message_id IS NOT NULL
           AND (m.last_read_message_id IS NULL OR m.last_read_message_id != t.last_message_id)
       `).get(req.user.id);
-      return res.json(apiResponse({ unread_count: Number(row?.unread_count || 0) }));
+      const unreadCount = Number(row?.unread_count || 0);
+      return res.json(apiResponse({ unread_count: unreadCount, unreadCount, unread: unreadCount }));
     } catch (err) {
       return res.status(500).json(apiResponse(null, { code: 'DB_ERROR', message: err.message }));
     }
@@ -419,7 +407,8 @@ function registerMessagingRoutes({
           AND t.last_message_id IS NOT NULL
           AND (m.last_read_message_id IS NULL OR m.last_read_message_id != t.last_message_id)
       `).get(req.user.id);
-      return res.json(apiResponse({ unread_count: Number(row?.unread_count || 0) }));
+      const unreadCount = Number(row?.unread_count || 0);
+      return res.json(apiResponse({ unread_count: unreadCount, unreadCount, unread: unreadCount }));
     } catch (err) {
       return res.status(500).json(apiResponse(null, { code: 'DB_ERROR', message: err.message }));
     }
@@ -508,7 +497,14 @@ function registerMessagingRoutes({
   // ── POST /api/v1/social/threads ───────────────────────────────
   // Create or find a direct thread (previously POST /threads/direct)
   router.post('/threads', (req, res) => {
-    const otherUserId = String(req.body?.other_user_id || '').trim();
+    const otherUserId = String(
+      req.body?.recipient_id
+      || req.body?.other_user_id
+      || req.body?.member_user_id
+      || req.body?.user_id
+      || ''
+    ).trim();
+    const initialMessage = String(req.body?.initial_message || '').trim();
     if (!otherUserId || otherUserId === req.user.id) {
       return res.status(400).json(apiResponse(null, { code: 'VALIDATION', message: 'Invalid target user' }));
     }
@@ -521,13 +517,6 @@ function registerMessagingRoutes({
       const targetUser = db.prepare('SELECT id FROM users WHERE id = ? AND is_active = 1 LIMIT 1').get(otherUserId);
       if (!targetUser) {
         return res.status(404).json(apiResponse(null, { code: 'NOT_FOUND', message: 'User not found' }));
-      }
-
-      if (!isMutualFollow(req.user.id, otherUserId)) {
-        return res.status(403).json(apiResponse(null, {
-          code: 'FORBIDDEN',
-          message: 'Mutual follow is required to message this user',
-        }));
       }
 
       const settings = db.prepare(`
@@ -549,6 +538,32 @@ function registerMessagingRoutes({
       `).get(req.user.id, otherUserId);
 
       if (existing?.id) {
+        if (initialMessage) {
+          const messageId = uuidv4();
+          const txExisting = db.transaction(() => {
+            db.prepare(`
+              INSERT INTO social_messages
+              (id, thread_id, sender_user_id, message_type, body, media_url, client_msg_id, created_at)
+              VALUES (?, ?, ?, 'text', ?, NULL, NULL, datetime('now'))
+            `).run(messageId, existing.id, req.user.id, initialMessage);
+
+            db.prepare(`
+              UPDATE social_threads
+              SET last_message_id = ?,
+                  last_message_at = datetime('now'),
+                  updated_at = datetime('now')
+              WHERE id = ?
+            `).run(messageId, existing.id);
+
+            db.prepare(`
+              UPDATE social_thread_members
+              SET last_read_message_id = ?,
+                  last_read_at = datetime('now')
+              WHERE thread_id = ? AND user_id = ?
+            `).run(messageId, existing.id, req.user.id);
+          });
+          txExisting();
+        }
         return res.json(apiResponse({ threadId: existing.id, created: false }));
       }
 
@@ -565,6 +580,33 @@ function registerMessagingRoutes({
         `).run(threadId, req.user.id, threadId, otherUserId);
       });
       tx();
+
+      if (initialMessage) {
+        const messageId = uuidv4();
+        const txInitial = db.transaction(() => {
+          db.prepare(`
+            INSERT INTO social_messages
+            (id, thread_id, sender_user_id, message_type, body, media_url, client_msg_id, created_at)
+            VALUES (?, ?, ?, 'text', ?, NULL, NULL, datetime('now'))
+          `).run(messageId, threadId, req.user.id, initialMessage);
+
+          db.prepare(`
+            UPDATE social_threads
+            SET last_message_id = ?,
+                last_message_at = datetime('now'),
+                updated_at = datetime('now')
+            WHERE id = ?
+          `).run(messageId, threadId);
+
+          db.prepare(`
+            UPDATE social_thread_members
+            SET last_read_message_id = ?,
+                last_read_at = datetime('now')
+            WHERE thread_id = ? AND user_id = ?
+          `).run(messageId, threadId, req.user.id);
+        });
+        txInitial();
+      }
 
       return res.status(201).json(apiResponse({ threadId, created: true }));
     } catch (err) {
@@ -671,13 +713,6 @@ function registerMessagingRoutes({
         WHERE t.id = ?
         LIMIT 1
       `).get(req.user.id, req.threadId);
-
-      if (threadMeta?.thread_type === 'direct' && threadMeta?.other_user_id && !isMutualFollow(req.user.id, threadMeta.other_user_id)) {
-        return res.status(403).json(apiResponse(null, {
-          code: 'FORBIDDEN',
-          message: 'Mutual follow is required to message this user',
-        }));
-      }
 
       const userSettings = db.prepare(`
         SELECT is_messaging_enabled, suspended_until

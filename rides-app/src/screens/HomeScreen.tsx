@@ -1,9 +1,10 @@
-import React, { useCallback, useRef, useState } from 'react';
+﻿import React, { useCallback, useRef, useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ScrollView,
   Image, ActivityIndicator, FlatList, useWindowDimensions,
 } from 'react-native';
 import { useFocusEffect, useScrollToTop } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { carsAPI, getFullImageUrl } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -46,6 +47,7 @@ function CarCard({ car, onPress }: { car: ClassicCar; onPress: () => void }) {
 export default function HomeScreen({ navigation }: any) {
   const { user } = useAuth();
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
   useScrollToTop(scrollRef);
   const [featured, setFeatured] = useState<ClassicCar[]>([]);
@@ -67,7 +69,7 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <ScrollView ref={scrollRef} style={styles.container} contentContainerStyle={styles.content}>
       {/* Hero */}
-      <View style={styles.hero}>
+      <View style={[styles.hero, { paddingTop: Math.max(32, insets.top + 20) }]}>
         <Text style={styles.heroSub}>Premium Classic Car Hire</Text>
         <Text style={styles.heroTitle}>Arrive in{'\n'}Timeless Style</Text>
         <TouchableOpacity style={styles.heroBtn} onPress={() => navigation.navigate('Cars')}>
@@ -109,7 +111,7 @@ export default function HomeScreen({ navigation }: any) {
         )}
         {featured.length > 0 && (
           <TouchableOpacity style={styles.viewAllBtn} onPress={() => navigation.navigate('Cars')}>
-            <Text style={styles.viewAllText}>View All Cars →</Text>
+            <Text style={styles.viewAllText}>View All Cars {'->'}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -132,7 +134,16 @@ export default function HomeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0d0d0d' },
   content: { paddingBottom: 40 },
-  hero: { minHeight: 260, backgroundColor: '#1a1a1a', alignItems: 'center', justifyContent: 'center', padding: 32, borderBottomWidth: 1, borderBottomColor: 'rgba(201,168,76,0.2)' },
+  hero: {
+    minHeight: 260,
+    backgroundColor: '#1a1a1a',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    paddingBottom: 32,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(201,168,76,0.2)',
+  },
   heroSub: { color: GOLD, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 },
   heroTitle: { color: '#f0ebe0', fontSize: 34, fontWeight: '700', textAlign: 'center', marginBottom: 24, lineHeight: 42 },
   heroBtn: { backgroundColor: GOLD, paddingHorizontal: 32, paddingVertical: 14, borderRadius: 8 },
@@ -161,3 +172,4 @@ const styles = StyleSheet.create({
   ownerBtn: { borderWidth: 1.5, borderColor: GOLD, borderRadius: 8, paddingHorizontal: 28, paddingVertical: 12 },
   ownerBtnText: { color: GOLD, fontWeight: '700', fontSize: 15 },
 });
+

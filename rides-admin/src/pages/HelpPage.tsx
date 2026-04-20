@@ -1,5 +1,4 @@
-import { useI18n } from '../i18n/I18nContext';
-import { useQuery } from '@tanstack/react-query';
+ï»¿import { useQuery } from '@tanstack/react-query';
 import { systemAPI } from '../services/api';
 import { WEB_APP_VERSION, WEB_BUILD_NUMBER, WEB_BUILD_DATE, WEB_BUILD_SHA } from '../version';
 
@@ -9,7 +8,6 @@ type Section = {
 };
 
 export default function HelpPage() {
-  const { t, lang } = useI18n();
   const { data: health } = useQuery({
     queryKey: ['help-api-health-version'],
     queryFn: systemAPI.health,
@@ -21,58 +19,52 @@ export default function HelpPage() {
   const apiBuildSha = health?.build?.commit || 'unknown';
 
   const webBuildInfo = WEB_BUILD_NUMBER !== 'unknown' || WEB_BUILD_DATE !== 'unknown' || WEB_BUILD_SHA !== 'unknown'
-    ? lang === 'zh'
-      ? `(?? ${WEB_BUILD_NUMBER} ${WEB_BUILD_DATE} ${WEB_BUILD_SHA})`
-      : ` (build ${WEB_BUILD_NUMBER} ${WEB_BUILD_DATE} ${WEB_BUILD_SHA})`
+    ? ` (build ${WEB_BUILD_NUMBER} ${WEB_BUILD_DATE} ${WEB_BUILD_SHA})`
     : '';
 
   const apiBuildInfo = apiBuildNumber !== 'unknown' || apiBuildDate !== 'unknown' || apiBuildSha !== 'unknown'
-    ? lang === 'zh'
-      ? `(?? ${apiBuildNumber} ${apiBuildDate} ${apiBuildSha})`
-      : ` (build ${apiBuildNumber} ${apiBuildDate} ${apiBuildSha})`
+    ? ` (build ${apiBuildNumber} ${apiBuildDate} ${apiBuildSha})`
     : '';
 
-  const versionLabel = lang === 'zh'
-    ? `??:Web v${WEB_APP_VERSION}${webBuildInfo} · API v${apiVersion}${apiBuildInfo}`
-    : `Version: Web v${WEB_APP_VERSION}${webBuildInfo} · API v${apiVersion}${apiBuildInfo}`;
+  const versionLabel = `Version: Web v${WEB_APP_VERSION}${webBuildInfo} | API v${apiVersion}${apiBuildInfo}`;
 
   const sections: Section[] = [
     {
-      title: t('help.roles.title'),
+      title: 'Roles & Access',
       items: [
-        t('help.roles.admin'),
-        t('help.roles.manager'),
-        t('help.roles.staff'),
-        t('help.roles.business'),
+        'Admin: full access to all stores, users, and business member approvals.',
+        'Store Manager: access assigned stores and manage day-to-day operations.',
+        'Staff: operational pages for assigned store scope only.',
+        'Business Member: uses My Business page, not staff management pages.',
       ],
     },
     {
-      title: t('help.stores.title'),
+      title: 'Store Scope',
       items: [
-        t('help.stores.admin'),
-        t('help.stores.manager'),
-        t('help.stores.staff'),
+        'Admins can switch store context from the sidebar store selector.',
+        'Managers can switch only among stores assigned to them.',
+        'Staff are auto-scoped by assignment and do not switch store in UI.',
       ],
     },
     {
-      title: t('help.workflows.title'),
+      title: 'Daily Workflows',
       items: [
-        t('help.workflows.operations'),
-        t('help.workflows.storeMgmt'),
-        t('help.workflows.userAssignments'),
-        t('help.workflows.businessReview'),
-        t('help.workflows.feedback'),
-        t('help.workflows.settings'),
+        'Operations: manage appointments, charges, orders, and products.',
+        'Store Management (admin): add/edit/deactivate stores in Configuration -> Stores.',
+        'Members (admin): assign Store Manager / Staff to one or multiple stores.',
+        'Business Members: review pending applications inside Business Members page.',
+        'Feedback (admin): review member suggestions in Configuration -> Feedback.',
+        'Configuration: set services and store settings by current store context.',
       ],
     },
     {
-      title: t('help.rag.title'),
+      title: 'Advisor RAG (Demo)',
       items: [
-        t('help.rag.what'),
-        t('help.rag.demoMobile'),
-        t('help.rag.demoApi'),
-        t('help.rag.scope'),
-        t('help.rag.limit'),
+        'What it does: advisor answers from your own uploaded documents, not only from generic model memory.',
+        'Where to try it: Web -> Analysis -> RAG Demo page, or rides-app -> Advisor chat.',
+        'How to test: 1) Ingest a doc, 2) Run Retrieve to see matched snippets, 3) Run Ask to get grounded answer.',
+        'Safety: manager/staff only see data in their store scope.',
+        'Current quality: keyword match (good for clear SOP/FAQ text). Embeddings can be added later.',
       ],
     },
   ];
@@ -80,8 +72,8 @@ export default function HelpPage() {
   return (
     <div>
       <div className="page-header">
-        <h1>{t('help.title')}</h1>
-        <p>{t('help.subtitle')}</p>
+        <h1>Dashboard Help</h1>
+        <p>Quick guide for roles, store scope, and daily workflows.</p>
       </div>
 
       <div className="panel">

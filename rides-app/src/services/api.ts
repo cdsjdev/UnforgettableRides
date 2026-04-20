@@ -36,7 +36,7 @@ if (!isDevRuntime) {
 export const API_BASE_URL = rawApiBaseUrl || FALLBACK_LOCAL_API_URL;
 const SERVER_BASE_URL = API_BASE_URL.replace(/\/api\/v\d+$/, '');
 
-export const getFullImageUrl = (url: string | undefined): string | undefined => {
+export const getFullImageUrl = (url: string | null | undefined): string | undefined => {
   if (!url) return undefined;
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   return `${SERVER_BASE_URL}${url}`;
@@ -120,6 +120,12 @@ export const authAPI = {
 
   deleteAccount: async (currentPassword: string): Promise<void> => {
     await api.delete('/auth/account', { data: { current_password: currentPassword } });
+  },
+
+  becomeOwner: async (): Promise<User> => {
+    const response = await api.post<APIResponse<User>>('/auth/role/become-owner');
+    if (!response.data.data) throw new Error('Failed to enable owner access');
+    return response.data.data;
   },
 };
 
@@ -272,12 +278,26 @@ export const messagingAPI = {
   },
 
   createThread: async (otherUserId: string, message: string): Promise<{ thread: SocialThread; message: SocialMessage }> => {
-    const response = await api.post<APIResponse<{ thread: SocialThread; message: SocialMessage }>>('/social/threads', {
-      member_user_id: otherUserId,
+    const response = await api.post<APIResponse<any>>('/social/threads', {
+      recipient_id: otherUserId,
       initial_message: message,
     });
-    if (!response.data.data) throw new Error('Failed to create thread');
-    return response.data.data;
+    const payload = response.data.data;
+    if (payload?.thread && payload?.message) {
+      return payload;
+    }
+    if (!payload?.threadId) throw new Error('Failed to create thread');
+
+    // Backward-compatible fallback when API returns only { threadId, created }.
+    const threads = await messagingAPI.getThreads({ limit: 50 });
+    const thread = threads.items.find((t) => t.id === payload.threadId);
+    if (!thread) throw new Error('Thread created but not retrievable');
+
+    const messages = await messagingAPI.getMessages(payload.threadId, { limit: 20 });
+    const createdMessage = messages.items.find((m) => m.body === message && m.senderUserId) || messages.items[0];
+    if (!createdMessage) throw new Error('Thread created but message not found');
+
+    return { thread, message: createdMessage };
   },
 
   markRead: async (threadId: string, lastReadMessageId: string): Promise<void> => {
@@ -285,8 +305,8 @@ export const messagingAPI = {
   },
 
   getUnreadCount: async (): Promise<number> => {
-    const response = await api.get<APIResponse<{ unreadCount: number }>>('/social/threads/unread-count');
-    return response.data.data?.unreadCount ?? 0;
+    const response = await api.get<APIResponse<{ unreadCount?: number; unread_count?: number; unread?: number }>>('/social/threads/unread-count');
+    return Number(response.data.data?.unreadCount ?? response.data.data?.unread_count ?? response.data.data?.unread ?? 0);
   },
 };
 

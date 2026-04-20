@@ -155,6 +155,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   text-transform: uppercase;
   font-size: 0.75rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .nav-links a:hover { color: var(--text); }
@@ -170,6 +171,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-size: 0.85rem;
   padding: 0;
   transition: color var(--t);
+  white-space: nowrap;
 }
 
 .link-btn:hover { color: var(--gold-bright); }
@@ -193,9 +195,39 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 @media (max-width: 768px) {
-  .navbar { padding: 0 16px; }
-  .nav-links { gap: 14px; }
-  .nav-links .nav-hide-mobile { display: none; }
+  :root { --nav-h: 118px; }
+
+  .navbar {
+    height: var(--nav-h);
+    padding: 10px 12px 8px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 8px;
+  }
+
+  .nav-brand {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .nav-links {
+    width: 100%;
+    margin-left: 0;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-links a,
+  .link-btn {
+    font-size: 0.7rem;
+  }
+
+  .nav-user {
+    display: none;
+  }
 }
 
 /* ── Buttons ─────────────────────────────────────────────────── */

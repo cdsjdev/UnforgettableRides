@@ -25,6 +25,7 @@ function NavBar() {
   const location = useLocation();
   const [solid, setSolid] = useState(false);
   const isHome = location.pathname === '/';
+  const ownerNavLabel = user && (user.role === 'owner' || user.role === 'admin') ? 'My Listings' : 'Become Owner';
 
   useEffect(() => {
     if (!isHome) { setSolid(true); return; }
@@ -44,7 +45,7 @@ function NavBar() {
         {user ? (
           <>
             <Link to="/bookings">My Bookings</Link>
-            <Link to="/owner">My Listings</Link>
+            <Link to="/owner">{ownerNavLabel}</Link>
             <Link to="/messages">Messages</Link>
             <span className="nav-user">{user.name}</span>
             <button className="link-btn" onClick={logout}>Sign Out</button>

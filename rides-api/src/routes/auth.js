@@ -696,7 +696,7 @@
   });
   
   // POST /api/v1/auth/signup (public self-registration, creates customer user + returns JWT)
-  // Customer role has access to C-end features only (shop, appointments, dogs, care)
+  // Customer role has access to customer-facing marketplace features.
   // Staff/manager/admin accounts must be created by an admin via /auth/register
   app.post('/api/v1/auth/signup', (req, res) => {
     // Rate limit by IP

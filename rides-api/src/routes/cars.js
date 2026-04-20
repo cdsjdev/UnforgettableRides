@@ -473,7 +473,7 @@ function registerCarsRoutes({
         'SELECT * FROM car_availability WHERE car_id = ? ORDER BY blocked_date ASC'
       ).all(car.id);
 
-      return res.json(apiResponse({ blocked_dates: rows }));
+      return res.json(apiResponse({ blocked_dates: rows.map((r) => r.blocked_date) }));
     } catch (err) {
       return res.status(500).json(apiResponse(null, { code: 'DB_ERROR', message: err.message }));
     }

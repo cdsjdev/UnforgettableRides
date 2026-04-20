@@ -100,6 +100,9 @@ export default function OwnerDashboardPage() {
         <div className="section-eyebrow">Owner Portal</div>
         <h1 className="page-title" style={{ marginBottom: 8 }}>My Dashboard</h1>
         <p className="page-subtitle">Manage your listings, bookings, and enquiries.</p>
+        <p className="page-subtitle" style={{ marginTop: 6, fontSize: '0.9rem' }}>
+          This account can still book cars as a customer.
+        </p>
       </div>
 
       {/* Stats row */}

@@ -5,7 +5,6 @@ import { NavigationContainer, LinkingOptions } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppNavigator, RootTabParamList } from './src/navigation/AppNavigator';
 import { AuthProvider, useAuth } from './src/contexts/AuthContext';
-import { I18nProvider } from './src/i18n/I18nContext';
 
 /**
  * Convert replaceState → pushState when the URL pathname actually changes so
@@ -125,11 +124,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <WebGlobalStyles />
-      <I18nProvider>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </I18nProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

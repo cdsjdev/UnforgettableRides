@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   Alert, TextInput, ActivityIndicator,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { authAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -23,11 +24,13 @@ function MenuItem({ icon, label, sub, onPress, danger }: { icon: string; label: 
 }
 
 export default function ProfileScreen({ navigation }: any) {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
+  const insets = useSafeAreaInsets();
   const [changingPw, setChangingPw] = useState(false);
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
   const [savingPw, setSavingPw] = useState(false);
+  const [enablingOwner, setEnablingOwner] = useState(false);
 
   const handleLogout = () => {
     Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
@@ -51,9 +54,22 @@ export default function ProfileScreen({ navigation }: any) {
     }
   };
 
+  const handleEnableOwner = async () => {
+    setEnablingOwner(true);
+    try {
+      await authAPI.becomeOwner();
+      await refreshUser();
+      Alert.alert('Owner access enabled', 'You can now list cars while still booking as a customer.');
+    } catch (e: any) {
+      Alert.alert('Error', e.response?.data?.error?.message || e.message || 'Failed to enable owner access');
+    } finally {
+      setEnablingOwner(false);
+    }
+  };
+
   if (!user) {
     return (
-      <View style={styles.guestContainer}>
+      <View style={[styles.guestContainer, { paddingTop: Math.max(32, insets.top + 16) }]}>
         <Ionicons name="person-circle-outline" size={72} color="#333" />
         <Text style={styles.guestTitle}>Welcome to UnforgettableRides</Text>
         <Text style={styles.guestSub}>Sign in to manage bookings and messages</Text>
@@ -64,7 +80,7 @@ export default function ProfileScreen({ navigation }: any) {
           <Text style={styles.registerBtnText}>Create Account</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.ownerLink} onPress={() => navigation.navigate('Register', { role: 'owner' })}>
-          <Text style={styles.ownerLinkText}>List your classic car →</Text>
+          <Text style={styles.ownerLinkText}>List your classic car {'->'}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -74,7 +90,7 @@ export default function ProfileScreen({ navigation }: any) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: Math.max(32, insets.top + 16) }]}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{user.name.charAt(0).toUpperCase()}</Text>
         </View>
@@ -90,6 +106,20 @@ export default function ProfileScreen({ navigation }: any) {
         <MenuItem icon="calendar-outline" label="My Bookings" sub="View booking requests" onPress={() => navigation.navigate('BookingsList')} />
         {isOwner ? <MenuItem icon="car-outline" label="My Listings" sub="Manage your classic cars" onPress={() => navigation.navigate('MyListings')} /> : null}
       </View>
+
+      {!isOwner ? (
+        <>
+          <Text style={styles.sectionHeader}>Role Access</Text>
+          <View style={styles.menuGroup}>
+            <MenuItem
+              icon="car-sport-outline"
+              label={enablingOwner ? 'Enabling Owner Access...' : 'Enable Owner Access'}
+              sub="Use the same account for both booking and listing cars"
+              onPress={handleEnableOwner}
+            />
+          </View>
+        </>
+      ) : null}
 
       <Text style={styles.sectionHeader}>Account</Text>
       <View style={styles.menuGroup}>
@@ -118,7 +148,7 @@ export default function ProfileScreen({ navigation }: any) {
         <MenuItem icon="log-out-outline" label="Sign Out" onPress={handleLogout} danger />
       </View>
 
-      <Text style={styles.footer}>UnforgettableRides · Premium Classic Car Hire</Text>
+      <Text style={styles.footer}>UnforgettableRides - Premium Classic Car Hire</Text>
     </ScrollView>
   );
 }
@@ -158,3 +188,4 @@ const styles = StyleSheet.create({
   pwCancelText: { color: '#a09070', fontSize: 14 },
   footer: { color: '#333', fontSize: 12, textAlign: 'center', marginTop: 32 },
 });
+

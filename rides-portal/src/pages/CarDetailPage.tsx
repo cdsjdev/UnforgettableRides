@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { carsAPI, quotesAPI, type ClassicCar, type Review } from '../services/api';
+import { carsAPI, quotesAPI, messagingAPI, type ClassicCar, type Review } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
 const FALLBACK = 'https://images.pexels.com/photos/8867048/pexels-photo-8867048.jpeg?auto=compress&cs=tinysrgb&w=1200';
@@ -46,6 +46,15 @@ export default function CarDetailPage() {
   const quoteMutation = useMutation({
     mutationFn: () => quotesAPI.create({ car_id: id!, message: quoteMsg }),
     onSuccess: () => setQuoteSent(true),
+  });
+
+  const startThreadMutation = useMutation({
+    mutationFn: async (ownerId: string) => messagingAPI.createThread(ownerId),
+    onSuccess: (result) => {
+      if (result?.threadId) navigate(`/messages/${result.threadId}`);
+      else navigate('/messages');
+    },
+    onError: () => navigate('/messages'),
   });
 
   if (isLoading) return <div className="container" style={{ paddingTop: 120 }}><p className="loading">Loading<span className="loading-dots" /></p></div>;
@@ -125,9 +134,9 @@ export default function CarDetailPage() {
                   {user ? (
                     <button
                       className="btn btn-outline btn-sm"
-                      onClick={() => navigate('/messages')}
+                      onClick={() => car.owner?.id && startThreadMutation.mutate(car.owner.id)}
                     >
-                      Message Owner
+                      {startThreadMutation.isPending ? 'Opening...' : 'Message Owner'}
                     </button>
                   ) : (
                     <Link to="/login" className="btn btn-outline btn-sm">Sign In to Message</Link>

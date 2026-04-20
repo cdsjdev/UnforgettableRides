@@ -8,12 +8,13 @@ export default function MessagesPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const { data: threads = [], isLoading } = useQuery({
+  const { data: threadsPage, isLoading } = useQuery({
     queryKey: ['threads'],
-    queryFn: messagingAPI.getThreads,
+    queryFn: () => messagingAPI.getThreads(),
     enabled: !!user,
     refetchInterval: 15000,
   });
+  const threads = threadsPage?.items ?? [];
 
   if (!user) {
     return (
@@ -21,11 +22,6 @@ export default function MessagesPage() {
         <p>Please <Link to="/login">sign in</Link> to view messages.</p>
       </div>
     );
-  }
-
-  function otherMember(thread: SocialThread) {
-    const members: any[] = (thread as any).members ?? [];
-    return members.find((m: any) => m.user_id !== user!.id) || null;
   }
 
   function initials(name?: string) {
@@ -47,9 +43,8 @@ export default function MessagesPage() {
             </div>
           ) : (
             threads.map((thread: SocialThread) => {
-              const other = otherMember(thread);
-              const name = other?.user?.name ?? 'Unknown';
-              const lastMsg = (thread as any).last_message?.body ?? '';
+              const name = thread.otherUser?.displayName ?? 'Unknown';
+              const lastMsg = thread.lastMessagePreview ?? '';
               const isUnread = thread.unreadCount > 0;
               return (
                 <div

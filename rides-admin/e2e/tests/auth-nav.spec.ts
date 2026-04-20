@@ -1,13 +1,7 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 import { loginAsAdmin } from './helpers';
 
 test.describe('Dashboard auth + navigation regression', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
-      localStorage.removeItem('web_lang');
-    });
-  });
-
   test('login/logout and critical navigation paths', async ({ page }) => {
     await loginAsAdmin(page);
 
@@ -35,13 +29,7 @@ test.describe('Dashboard auth + navigation regression', () => {
     await expect(page).toHaveURL(/\/help$/);
     await expect(page.getByRole('heading', { name: /Dashboard Help/i })).toBeVisible();
     await expect(page.getByText(/Version/i)).toBeVisible();
-
-    await page.locator('.sidebar-lang-toggle').click();
-    await expect(page.locator('html')).toHaveAttribute('lang', /zh/i);
-    await expect(page.getByRole('heading', { name: '后台帮助' })).toBeVisible();
-    await page.locator('.sidebar-lang-toggle').click();
     await expect(page.locator('html')).toHaveAttribute('lang', /en/i);
-    await expect(page.getByRole('heading', { name: /Dashboard Help/i })).toBeVisible();
 
     await page.locator('.sidebar-logout').click();
     await expect(page).toHaveURL(/\/login$/);

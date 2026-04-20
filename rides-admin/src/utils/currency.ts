@@ -1,16 +1,14 @@
-import type { Language } from '../i18n/translations';
-
-export function getCurrencyForLang(lang: Language): 'USD' | 'CNY' {
-  return lang === 'zh' ? 'CNY' : 'USD';
+﻿export function getCurrencyForLang(_lang?: string): 'USD' {
+  return 'USD';
 }
 
 /**
  * Format an amount as a locale-aware currency string.
  * @param amount - value in major units (e.g. dollars, not cents)
  */
-export function formatCurrencyByLang(lang: Language, amount: number): string {
+export function formatCurrencyByLang(lang: string | undefined, amount: number): string {
   const currency = getCurrencyForLang(lang);
-  const locale = lang === 'zh' ? 'zh-CN' : 'en-US';
+  const locale = 'en-US';
   const safeAmount = Number.isFinite(amount) ? amount : 0;
   try {
     return new Intl.NumberFormat(locale, {
@@ -28,4 +26,3 @@ export function formatCurrencyByLang(lang: Language, amount: number): string {
 export function centsToMajor(cents: number): number {
   return (Number.isFinite(cents) ? cents : 0) / 100;
 }
-

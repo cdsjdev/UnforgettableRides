@@ -1,12 +1,10 @@
 ﻿import { useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { useI18n } from '../i18n/I18nContext';
 import { useTheme } from '../hooks/useTheme';
 
 export default function LoginPage() {
   const { login, verifyDeviceLogin } = useAuth();
-  const { t } = useI18n();
   const { dark, toggle: toggleTheme } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,10 +22,10 @@ export default function LoginPage() {
       const result = await login(email, password);
       if (result.challenge_required && result.challenge_id) {
         setChallengeId(result.challenge_id);
-        setError(result.message || t('login.challengeSent'));
+        setError(result.message || 'We sent a 6-digit code to your email. Enter it to continue.');
       }
     } catch (err: any) {
-      setError(err.response?.data?.error?.message || err.message || t('login.failed'));
+      setError(err.response?.data?.error?.message || err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -39,7 +37,7 @@ export default function LoginPage() {
     try {
       await verifyDeviceLogin(challengeId, verificationCode);
     } catch (err: any) {
-      setError(err.response?.data?.error?.message || err.message || t('login.failed'));
+      setError(err.response?.data?.error?.message || err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -50,15 +48,15 @@ export default function LoginPage() {
       <div className="login-card">
         <div className="login-header">
           <img src="/logo.svg" alt="UnforgettableRides" className="login-logo" />
-          <h1>{t('login.title')}</h1>
-          <p>{t('login.subtitle')}</p>
+          <h1>{'UnforgettableRides'}</h1>
+          <p>{'Sign in to the management dashboard'}</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           {error && <div className="login-error">{error}</div>}
 
           <div className="login-field">
-            <label htmlFor="email">{t('login.email')}</label>
+            <label htmlFor="email">{'Email'}</label>
             <input
               id="email"
               type="email"
@@ -72,14 +70,14 @@ export default function LoginPage() {
           </div>
 
           <div className="login-field">
-            <label htmlFor="password">{t('login.password')}</label>
+            <label htmlFor="password">{'Password'}</label>
             <div className="password-input-wrap">
               <input
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder={t('login.passwordPlaceholder')}
+                placeholder={'Enter your password'}
                 required
                 disabled={loading}
               />
@@ -87,8 +85,8 @@ export default function LoginPage() {
                 type="button"
                 className="password-toggle"
                 onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
-                title={showPassword ? t('login.hidePassword') : t('login.showPassword')}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                title={showPassword ? 'Hide password' : 'Show password'}
                 disabled={loading}
               >
                 {showPassword ? (
@@ -110,13 +108,13 @@ export default function LoginPage() {
 
           {challengeId && (
             <div className="login-field">
-              <label htmlFor="verificationCode">{t('login.verificationCode')}</label>
+              <label htmlFor="verificationCode">{'Verification Code'}</label>
               <input
                 id="verificationCode"
                 type="text"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
-                placeholder={t('login.verificationCodePlaceholder')}
+                placeholder={'6-digit code'}
                 required
                 disabled={loading}
               />
@@ -125,7 +123,7 @@ export default function LoginPage() {
 
           {!challengeId ? (
             <button type="submit" className="login-button" disabled={loading}>
-              {loading ? t('login.signingIn') : t('login.signIn')}
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           ) : (
             <button
@@ -134,11 +132,11 @@ export default function LoginPage() {
               onClick={handleVerifyDevice}
               disabled={loading || verificationCode.trim().length < 6}
             >
-              {loading ? t('login.verifying') : t('login.verifyAndSignIn')}
+              {loading ? 'Verifying...' : 'Verify & Sign In'}
             </button>
           )}
           <div className="login-footer-link">
-            <Link to="/forgot-password" className="inline-link">{t('login.forgotPassword')}</Link>
+            <Link to="/forgot-password" className="inline-link">{'Forgot password?'}</Link>
           </div>
         </form>
 
@@ -146,7 +144,7 @@ export default function LoginPage() {
           type="button"
           className="login-theme-toggle"
           onClick={toggleTheme}
-          title={dark ? t('app.theme.light') : t('app.theme.dark')}
+          title={dark ? 'Light mode' : 'Dark mode'}
         >
           {dark ? (
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -161,7 +159,7 @@ export default function LoginPage() {
               <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
             </svg>
           )}
-          <span>{dark ? t('app.theme.light') : t('app.theme.dark')}</span>
+          <span>{dark ? 'Light mode' : 'Dark mode'}</span>
         </button>
       </div>
     </div>

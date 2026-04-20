@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { feedbackAPI } from '../services/api';
-import { useI18n } from '../i18n/I18nContext';
 import type { FeedbackItem } from '@shared/types';
 
 type RowDraft = {
@@ -10,9 +9,21 @@ type RowDraft = {
 };
 
 const STATUS_OPTIONS: Array<'all' | FeedbackItem['status']> = ['all', 'new', 'reviewed', 'resolved'];
+const STATUS_LABELS: Record<'all' | FeedbackItem['status'], string> = {
+  all: 'All Status',
+  new: 'New',
+  reviewed: 'Reviewed',
+  resolved: 'Resolved',
+};
+const CATEGORY_LABELS: Record<string, string> = {
+  general: 'General',
+  bug: 'Bug',
+  improvement: 'Improvement',
+  feature: 'Feature Request',
+  other: 'Other',
+};
 
 export default function FeedbackPage() {
-  const { t, lang } = useI18n();
   const queryClient = useQueryClient();
   const [statusFilter, setStatusFilter] = useState<'all' | FeedbackItem['status']>('new');
   const [search, setSearch] = useState('');
@@ -36,7 +47,7 @@ export default function FeedbackPage() {
     },
     onError: (err: any) => {
       setSavingId(null);
-      setErrorText(err?.response?.data?.error?.message || err?.message || t('fb.saveFailed'));
+      setErrorText(err?.response?.data?.error?.message || err?.message || 'Failed to update feedback');
     },
   });
 
@@ -78,13 +89,13 @@ export default function FeedbackPage() {
     if (!v) return '-';
     const d = new Date(v);
     if (Number.isNaN(d.getTime())) return '-';
-    return d.toLocaleString(lang === 'zh' ? 'zh-CN' : 'en-US');
+    return d.toLocaleString('en-US');
   };
 
   return (
     <div>
       <div className="page-title-bar">
-        <h1>{t('fb.title')}</h1>
+        <h1>Member Feedback</h1>
       </div>
 
       {errorText ? (
@@ -92,41 +103,41 @@ export default function FeedbackPage() {
       ) : null}
 
       <div className="panel">
-        <div className="panel-header">{t('fb.panelTitle')}</div>
+        <div className="panel-header">Feedback Inbox</div>
         <div className="panel-body">
           <div className="filter-bar">
             <input
-              placeholder={t('fb.search')}
+              placeholder="Search by message/name/email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{ minWidth: 260 }}
             />
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}>
               {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s}>{t(`fb.status.${s}`)}</option>
+                <option key={s} value={s}>{STATUS_LABELS[s]}</option>
               ))}
             </select>
           </div>
 
           {isLoading ? (
-            <div className="loading">{t('fb.loading')}</div>
+            <div className="loading">Loading feedback...</div>
           ) : displayRows.length === 0 ? (
             <div className="empty-state">
               <div className="icon">&#128172;</div>
-              <p>{t('fb.empty')}</p>
+              <p>No feedback found</p>
             </div>
           ) : (
             <div className="table-wrapper">
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>{t('fb.time')}</th>
-                    <th>{t('fb.user')}</th>
-                    <th>{t('fb.category')}</th>
-                    <th>{t('fb.message')}</th>
-                    <th>{t('fb.statusLabel')}</th>
-                    <th>{t('fb.adminNote')}</th>
-                    <th>{t('fb.actions')}</th>
+                    <th>Submitted At</th>
+                    <th>Member</th>
+                    <th>Category</th>
+                    <th>Suggestion</th>
+                    <th>Status</th>
+                    <th>Admin Note</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -140,16 +151,16 @@ export default function FeedbackPage() {
                           <div style={{ fontWeight: 600 }}>{row.user_name || '-'}</div>
                           <div style={{ fontSize: 12, color: '#64748B' }}>{row.user_email || '-'}</div>
                         </td>
-                        <td>{t(`fb.category.${row.category}`)}</td>
+                        <td>{CATEGORY_LABELS[row.category] || row.category}</td>
                         <td style={{ maxWidth: 380, whiteSpace: 'pre-wrap' }}>{row.message}</td>
                         <td>
                           <select
                             value={row.draftStatus}
                             onChange={(e) => setDraft(row.id, { status: e.target.value as FeedbackItem['status'] }, row)}
                           >
-                            <option value="new">{t('fb.status.new')}</option>
-                            <option value="reviewed">{t('fb.status.reviewed')}</option>
-                            <option value="resolved">{t('fb.status.resolved')}</option>
+                            <option value="new">New</option>
+                            <option value="reviewed">Reviewed</option>
+                            <option value="resolved">Resolved</option>
                           </select>
                         </td>
                         <td>
@@ -158,12 +169,12 @@ export default function FeedbackPage() {
                             onChange={(e) => setDraft(row.id, { admin_note: e.target.value }, row)}
                             rows={2}
                             style={{ width: 280, resize: 'vertical' }}
-                            placeholder={t('fb.adminNotePlaceholder')}
+                            placeholder="Add review note (optional)"
                           />
                         </td>
                         <td>
                           <button className="btn btn-primary" disabled={!changed || rowSaving} onClick={() => onSave(row)}>
-                            {rowSaving ? t('fb.saving') : t('fb.save')}
+                            {rowSaving ? 'Saving...' : 'Save'}
                           </button>
                         </td>
                       </tr>

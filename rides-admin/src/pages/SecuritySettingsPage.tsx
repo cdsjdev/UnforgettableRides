@@ -1,11 +1,8 @@
 ﻿import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authAPI, settingsAPI } from '../services/api';
-import { useI18n } from '../i18n/I18nContext';
 
-function SecuritySettingsPage() {
-  const { t } = useI18n();
-  const queryClient = useQueryClient();
+function SecuritySettingsPage() {  const queryClient = useQueryClient();
   const [showSecurityPanel, setShowSecurityPanel] = useState(false);
   const [securityError, setSecurityError] = useState('');
   const [securitySuccess, setSecuritySuccess] = useState('');
@@ -63,7 +60,7 @@ function SecuritySettingsPage() {
       setUnlockPassword('');
     },
     onError: (err: any) => {
-      setSecurityError(err?.response?.data?.error?.message || err?.message || t('common.actionFailed'));
+      setSecurityError(err?.response?.data?.error?.message || err?.message || 'Operation failed. Please try again.');
     },
   });
 
@@ -105,7 +102,7 @@ function SecuritySettingsPage() {
       queryClient.invalidateQueries({ queryKey: ['global-settings'] });
     },
     onError: (err: any) => {
-      setSecurityError(err?.response?.data?.error?.message || err?.message || t('common.actionFailed'));
+      setSecurityError(err?.response?.data?.error?.message || err?.message || 'Operation failed. Please try again.');
     },
   });
 
@@ -113,25 +110,25 @@ function SecuritySettingsPage() {
     mutationFn: () => settingsAPI.sendEmailTest(emailTestTo.trim() || undefined),
     onSuccess: (data) => {
       setSecurityError('');
-      setSecuritySuccess(t('stores.emailTestSent', { to: data.to }));
+      setSecuritySuccess(`Test email sent to ${data.to}.`);
     },
     onError: (err: any) => {
       setSecuritySuccess('');
-      setSecurityError(err?.response?.data?.error?.message || err?.message || t('common.actionFailed'));
+      setSecurityError(err?.response?.data?.error?.message || err?.message || 'Operation failed. Please try again.');
     },
   });
 
   return (
     <div>
       <div className="page-title-bar">
-        <h1>{t('app.nav.settings')}</h1>
+        <h1>{'Settings'}</h1>
       </div>
 
       <div className="panel stores-security-panel">
         <div className="panel-header stores-security-panel-header">
           <div className="stores-security-title-wrap">
-            <h3>{t('stores.securitySettings')}</h3>
-            <p>{t('stores.securitySettingsHint')}</p>
+            <h3>{'Security Settings'}</h3>
+            <p>{'Global security controls for account sign-in.'}</p>
           </div>
           <button
             type="button"
@@ -166,7 +163,7 @@ function SecuritySettingsPage() {
                     onClick={() => unlockMutation.mutate()}
                     disabled={unlockMutation.isPending || !unlockPassword.trim()}
                   >
-                    {unlockMutation.isPending ? t('stores.saving') : 'Unlock'}
+                    {unlockMutation.isPending ? 'Saving...' : 'Unlock'}
                   </button>
                 </div>
               </div>
@@ -182,7 +179,7 @@ function SecuritySettingsPage() {
                         onChange={(e) => setDeviceChallengeEnabled(e.target.checked)}
                         disabled={saveSecurityMutation.isPending}
                       />
-                      <span>{t('stores.newDeviceChallenge')}</span>
+                      <span>{'Require email code on new device login'}</span>
                     </label>
                     <label htmlFor="stores-sensitive-verify" className="stores-check-label">
                       <input
@@ -192,37 +189,37 @@ function SecuritySettingsPage() {
                         onChange={(e) => setRequireVerifiedEmailForSensitive(e.target.checked)}
                         disabled={saveSecurityMutation.isPending}
                       />
-                      <span>{t('stores.requireVerifiedForSensitive')}</span>
+                      <span>{'Require verified email for sensitive actions'}</span>
                     </label>
                   </div>
 
                   <div>
-                    <label htmlFor="stores-public-app-base-url">{t('stores.publicAppBaseUrl')}</label>
+                    <label htmlFor="stores-public-app-base-url">{'Public App Base URL'}</label>
                     <input
                       id="stores-public-app-base-url"
                       value={publicAppBaseUrl}
                       onChange={(e) => setPublicAppBaseUrl(e.target.value)}
-                      placeholder={t('stores.publicAppBaseUrlPlaceholder')}
+                      placeholder={'https://app.unforgettablerides.com'}
                       disabled={saveSecurityMutation.isPending}
                     />
-                    <small className="stores-security-hint">{t('stores.publicAppBaseUrlHint')}</small>
+                    <small className="stores-security-hint">{'Used for email verification links and redirect target (for example https://app.unforgettablerides.com).'}</small>
                   </div>
 
                   <div>
-                    <label htmlFor="stores-email-mode">{t('stores.emailDeliveryMode')}</label>
+                    <label htmlFor="stores-email-mode">{'Email Delivery Mode'}</label>
                     <select
                       id="stores-email-mode"
                       value={emailDeliveryMode}
                       onChange={(e) => setEmailDeliveryMode(e.target.value)}
                       disabled={saveSecurityMutation.isPending}
                     >
-                      <option value="">{t('stores.emailModeAuto')}</option>
-                      <option value="smtp">{t('stores.emailModeSmtp')}</option>
-                      <option value="webhook">{t('stores.emailModeWebhook')}</option>
+                      <option value="">{'Auto (Webhook -> SMTP)'}</option>
+                      <option value="smtp">{'SMTP Only'}</option>
+                      <option value="webhook">{'Webhook Only'}</option>
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="stores-email-webhook">{t('stores.emailWebhookUrl')}</label>
+                    <label htmlFor="stores-email-webhook">{'Email Webhook URL'}</label>
                     <input
                       id="stores-email-webhook"
                       value={emailWebhookUrl}
@@ -233,7 +230,7 @@ function SecuritySettingsPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="stores-smtp-host">{t('stores.smtpHost')}</label>
+                    <label htmlFor="stores-smtp-host">{'SMTP Host'}</label>
                     <input
                       id="stores-smtp-host"
                       value={smtpHost}
@@ -242,7 +239,7 @@ function SecuritySettingsPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="stores-smtp-port">{t('stores.smtpPort')}</label>
+                    <label htmlFor="stores-smtp-port">{'SMTP Port'}</label>
                     <input
                       id="stores-smtp-port"
                       value={smtpPort}
@@ -251,7 +248,7 @@ function SecuritySettingsPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="stores-smtp-user">{t('stores.smtpUser')}</label>
+                    <label htmlFor="stores-smtp-user">{'SMTP User'}</label>
                     <input
                       id="stores-smtp-user"
                       value={smtpUser}
@@ -260,25 +257,25 @@ function SecuritySettingsPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="stores-smtp-pass">{t('stores.smtpPassword')}</label>
+                    <label htmlFor="stores-smtp-pass">{'SMTP Password'}</label>
                     <div className="password-input-wrap">
                       <input
                         id="stores-smtp-pass"
                         type={showSmtpPassword ? 'text' : 'password'}
                         value={smtpPassword}
                         onChange={(e) => setSmtpPassword(e.target.value)}
-                        placeholder={smtpPasswordConfigured ? t('stores.smtpPasswordConfigured') : t('stores.smtpPasswordNotSet')}
+                        placeholder={smtpPasswordConfigured ? 'Configured (leave blank to keep unchanged)' : 'Not configured yet'}
                         disabled={saveSecurityMutation.isPending}
                       />
                       <button
                         type="button"
                         className="password-toggle"
                         onClick={() => setShowSmtpPassword((v) => !v)}
-                        aria-label={showSmtpPassword ? t('login.hidePassword') : t('login.showPassword')}
-                        title={showSmtpPassword ? t('login.hidePassword') : t('login.showPassword')}
+                        aria-label={showSmtpPassword ? 'Hide password' : 'Show password'}
+                        title={showSmtpPassword ? 'Hide password' : 'Show password'}
                         disabled={saveSecurityMutation.isPending}
                       >
-                        {showSmtpPassword ? t('login.hidePassword') : t('login.showPassword')}
+                        {showSmtpPassword ? 'Hide password' : 'Show password'}
                       </button>
                     </div>
                   </div>
@@ -291,7 +288,7 @@ function SecuritySettingsPage() {
                         onChange={(e) => setSmtpUseTls(e.target.checked)}
                         disabled={saveSecurityMutation.isPending}
                       />
-                      <span>{t('stores.smtpUseTls')}</span>
+                      <span>{'Use TLS'}</span>
                     </label>
                     <label className="stores-check-label">
                       <input
@@ -300,12 +297,12 @@ function SecuritySettingsPage() {
                         onChange={(e) => setSmtpUseSsl(e.target.checked)}
                         disabled={saveSecurityMutation.isPending}
                       />
-                      <span>{t('stores.smtpUseSsl')}</span>
+                      <span>{'Use SSL'}</span>
                     </label>
                   </div>
 
                   <div>
-                    <label htmlFor="stores-from-name">{t('stores.emailFromName')}</label>
+                    <label htmlFor="stores-from-name">{'From Name'}</label>
                     <input
                       id="stores-from-name"
                       value={emailFromName}
@@ -314,7 +311,7 @@ function SecuritySettingsPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="stores-from-address">{t('stores.emailFromAddress')}</label>
+                    <label htmlFor="stores-from-address">{'From Email'}</label>
                     <input
                       id="stores-from-address"
                       value={emailFromAddress}
@@ -327,7 +324,7 @@ function SecuritySettingsPage() {
                     <input
                       value={emailTestTo}
                       onChange={(e) => setEmailTestTo(e.target.value)}
-                      placeholder={t('stores.emailTestRecipientPlaceholder')}
+                      placeholder={'Test recipient (optional, default current admin email)'}
                       disabled={testEmailMutation.isPending || saveSecurityMutation.isPending}
                     />
                     <button
@@ -336,7 +333,7 @@ function SecuritySettingsPage() {
                       onClick={() => testEmailMutation.mutate()}
                       disabled={testEmailMutation.isPending || saveSecurityMutation.isPending}
                     >
-                      {testEmailMutation.isPending ? t('stores.sendingTestEmail') : t('stores.sendTestEmail')}
+                      {testEmailMutation.isPending ? 'Sending...' : 'Send Test Email'}
                     </button>
                   </div>
 
@@ -361,12 +358,12 @@ function SecuritySettingsPage() {
                       })}
                       disabled={saveSecurityMutation.isPending}
                     >
-                      {saveSecurityMutation.isPending ? t('stores.saving') : t('common.save')}
+                      {saveSecurityMutation.isPending ? 'Saving...' : 'Save'}
                     </button>
                   </div>
                 </div>
-                <small className="stores-security-hint">{t('stores.newDeviceChallengeHint')}</small>
-                <small className="stores-security-hint">{t('stores.requireVerifiedForSensitiveHint')}</small>
+                <small className="stores-security-hint">{'When enabled, users must verify by email code on untrusted devices.'}</small>
+                <small className="stores-security-hint">{'When disabled, users can checkout/save appointments without email verification (temporary mode).'}</small>
               </>
             )}
             {securityError && (

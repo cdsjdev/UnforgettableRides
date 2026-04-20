@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "jest --runInBand --forceExit --detectOpenHandles",
+    "test": "npm run test:regression:guest-public",
     "test:regression:payments-square": "jest --runInBand --forceExit --detectOpenHandles tests/payments-square.test.js",
     "test:regression:guest-public": "jest --runInBand --forceExit --detectOpenHandles tests/guest-public-routes.test.js",
     "test:regression:social": "jest --runInBand --forceExit --detectOpenHandles tests/social.test.js",

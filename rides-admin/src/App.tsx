@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage';
@@ -26,7 +26,7 @@ function ThemeBootstrap() {
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: 18, color: '#6B7280' }}>Loading…</div>;
+  if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: 18, color: '#6B7280' }}>Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
@@ -111,7 +111,7 @@ function DashboardLayout() {
           onClick={() => setMobileNavOpen(v => !v)}
           aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
         >
-          {mobileNavOpen ? '×' : '☰'}
+          {mobileNavOpen ? 'X' : 'Menu'}
         </button>
         <Routes>
           <Route path="/" element={<DashboardPage />} />
@@ -137,7 +137,7 @@ function DashboardLayout() {
 
 function AppRoutes() {
   const { user, loading } = useAuth();
-  if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: 18, color: '#6B7280' }}>Loading…</div>;
+  if (loading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: 18, color: '#6B7280' }}>Loading...</div>;
 
   return (
     <Routes>
@@ -159,3 +159,4 @@ export default function App() {
     </BrowserRouter>
   );
 }
+

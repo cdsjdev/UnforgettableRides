@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { feedbackAPI } from '../services/api';
-import { useI18n } from '../i18n/I18nContext';
 import { useWebLayout } from '../utils/webStyles';
 import type { FeedbackItem } from '../../../shared/types';
 
@@ -22,7 +21,6 @@ type FeedbackCategory = FeedbackItem['category'];
 const CATEGORY_OPTIONS: FeedbackCategory[] = ['general', 'bug', 'improvement', 'feature', 'other'];
 
 export default function FeedbackScreen() {
-  const { t } = useI18n();
   const { containerStyle } = useWebLayout('content');
   const [category, setCategory] = useState<FeedbackCategory>('general');
   const [message, setMessage] = useState('');
@@ -34,15 +32,15 @@ export default function FeedbackScreen() {
   const handleSubmit = async () => {
     const trimmed = message.trim();
     if (!trimmed) {
-      const msg = t('feedback.messageRequired');
+      const msg = 'Please enter your feedback message.';
       setErrorText(msg);
-      if (Platform.OS !== 'web') Alert.alert(t('common.error'), msg);
+      if (Platform.OS !== 'web') Alert.alert('Error', msg);
       return;
     }
     if (trimmed.length > maxLen) {
-      const msg = t('feedback.messageTooLong', { max: String(maxLen) });
+      const msg = `Message cannot exceed ${maxLen} characters.`;
       setErrorText(msg);
-      if (Platform.OS !== 'web') Alert.alert(t('common.error'), msg);
+      if (Platform.OS !== 'web') Alert.alert('Error', msg);
       return;
     }
 
@@ -53,15 +51,15 @@ export default function FeedbackScreen() {
       setMessage('');
       setCategory('general');
       setErrorText('');
-      setSuccessText(t('feedback.submitSuccess'));
+      setSuccessText('Thanks for your feedback.');
       if (Platform.OS !== 'web') {
-        Alert.alert(t('common.success'), t('feedback.submitSuccess'));
+        Alert.alert('Success', 'Thanks for your feedback.');
       }
     } catch (err: any) {
-      const msg = err?.response?.data?.error?.message || err?.message || t('feedback.submitFailed');
+      const msg = err?.response?.data?.error?.message || err?.message || 'Unable to submit feedback right now.';
       setSuccessText('');
       setErrorText(msg);
-      if (Platform.OS !== 'web') Alert.alert(t('common.error'), msg);
+      if (Platform.OS !== 'web') Alert.alert('Error', msg);
     } finally {
       setSubmitting(false);
     }
@@ -72,15 +70,15 @@ export default function FeedbackScreen() {
     <ScrollView style={styles.container} contentContainerStyle={[styles.content, containerStyle]} keyboardShouldPersistTaps="handled">
       <View style={styles.headerCard}>
         <Ionicons name="chatbubbles-outline" size={30} color="#3B82F6" />
-        <Text style={styles.title}>{t('feedback.title')}</Text>
-        <Text style={styles.subtitle}>{t('feedback.subtitle')}</Text>
+        <Text style={styles.title}>Feedback</Text>
+        <Text style={styles.subtitle}>Tell us what is working and what we should improve.</Text>
       </View>
 
       <View style={styles.card}>
         {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
         {successText ? <Text style={styles.successText}>{successText}</Text> : null}
 
-        <Text style={styles.label}>{t('feedback.category')}</Text>
+        <Text style={styles.label}>Category</Text>
         <View style={styles.chipsRow}>
           {CATEGORY_OPTIONS.map((opt) => (
             <TouchableOpacity
@@ -90,18 +88,18 @@ export default function FeedbackScreen() {
               disabled={submitting}
             >
               <Text style={[styles.chipText, category === opt && styles.chipTextActive]}>
-                {t(`feedback.category.${opt}`)}
+                {opt}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        <Text style={styles.label}>{t('feedback.message')}</Text>
+        <Text style={styles.label}>Message</Text>
         <TextInput
           style={styles.textArea}
           value={message}
           onChangeText={setMessage}
-          placeholder={t('feedback.messagePlaceholder')}
+          placeholder="Describe your issue or suggestion"
           placeholderTextColor="#9CA3AF"
           multiline
           numberOfLines={6}
@@ -115,7 +113,7 @@ export default function FeedbackScreen() {
           onPress={handleSubmit}
           disabled={submitting}
         >
-          {submitting ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.submitBtnText}>{t('feedback.submit')}</Text>}
+          {submitting ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.submitBtnText}>Submit</Text>}
         </TouchableOpacity>
       </View>
     </ScrollView>

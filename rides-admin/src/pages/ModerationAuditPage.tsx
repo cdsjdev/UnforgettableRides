@@ -1,21 +1,19 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
-import { useI18n } from '../i18n/I18nContext';
 import { socialModerationAPI } from '../services/api';
 
 const ACTION_LABELS: Record<string, string> = {
-  warn: 'moderation.action.warn',
-  mute: 'moderation.action.mute',
-  suspend: 'moderation.action.suspend',
-  ban: 'moderation.action.ban',
-  remove_meetup: 'moderation.action.removeMeetup',
+  warn: 'Warn',
+  mute: 'Mute (messaging)',
+  suspend: 'Suspend account',
+  ban: 'Permanent ban',
+  remove_meetup: 'Remove meetup',
 };
 
 export default function ModerationAuditPage() {
   const { user } = useAuth();
-  const { t, lang } = useI18n();
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [history, setHistory] = useState<string[]>([]);
 
@@ -28,8 +26,8 @@ export default function ModerationAuditPage() {
   if (user?.role !== 'admin') {
     return (
       <div>
-        <div className="page-title-bar"><h1>{t('moderation.auditTitle')}</h1></div>
-        <div className="panel"><div className="panel-body"><p>{t('moderation.adminRequired')}</p></div></div>
+        <div className="page-title-bar"><h1>Moderation Audit Log</h1></div>
+        <div className="panel"><div className="panel-body"><p>Admin access required.</p></div></div>
       </div>
     );
   }
@@ -49,23 +47,23 @@ export default function ModerationAuditPage() {
   return (
     <div>
       <div className="page-title-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1>{t('moderation.auditTitle')}</h1>
+        <h1>Moderation Audit Log</h1>
         <div style={{ display: 'flex', gap: 8 }}>
-          <Link to="/moderation" className="btn btn-secondary">{'<-'} {t('moderation.queueTitle')}</Link>
-          <Link to="/moderation/abuse-stats" className="btn btn-secondary">{t('moderation.abuseTitle')}</Link>
+          <Link to="/moderation" className="btn btn-secondary">{'<-'} {'Moderation Queue'}</Link>
+          <Link to="/moderation/abuse-stats" className="btn btn-secondary">Abuse Stats</Link>
         </div>
       </div>
 
-      <p className="page-description">{t('moderation.auditDescription')}</p>
+      <p className="page-description">A full history of moderation actions taken by admins. Use this to review past decisions and maintain accountability.</p>
 
       <div className="panel">
         <div className="panel-body">
           {isLoading ? (
-            <div className="loading">{t('moderation.loadingActions')}</div>
+            <div className="loading">Loading actions...</div>
           ) : !data?.items.length ? (
             <div className="empty-state">
               <div className="icon">&#128203;</div>
-              <p>{t('moderation.noActions')}</p>
+              <p>No moderation actions recorded yet.</p>
             </div>
           ) : (
             <>
@@ -73,20 +71,20 @@ export default function ModerationAuditPage() {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>{t('moderation.col.date')}</th>
-                      <th>{t('moderation.col.action')}</th>
-                      <th>{t('moderation.col.target')}</th>
-                      <th>{t('moderation.col.duration')}</th>
-                      <th>{t('moderation.col.by')}</th>
-                      <th>{t('moderation.col.note')}</th>
-                      <th>{t('moderation.col.report')}</th>
+                      <th>Date</th>
+                      <th>Action</th>
+                      <th>Target</th>
+                      <th>Duration</th>
+                      <th>By</th>
+                      <th>Note</th>
+                      <th>Report</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.items.map((action) => (
                       <tr key={action.id}>
-                        <td>{new Date(action.createdAt).toLocaleString(lang === 'zh' ? 'zh-CN' : 'en-US')}</td>
-                        <td><span className={`badge badge-${action.actionType}`}>{t(ACTION_LABELS[action.actionType] || action.actionType)}</span></td>
+                        <td>{new Date(action.createdAt).toLocaleString('en-US')}</td>
+                        <td><span className={`badge badge-${action.actionType}`}>{ACTION_LABELS[action.actionType] || action.actionType}</span></td>
                         <td>
                           {action.targetDisplayName
                             || (action.targetMeetupId ? `meetup/${action.targetMeetupId.slice(0, 8)}` : null)
@@ -102,8 +100,8 @@ export default function ModerationAuditPage() {
                 </table>
               </div>
               <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-                {history.length > 0 && <button className="btn btn-secondary" onClick={loadPrev}>{'<-'} {t('common.previous')}</button>}
-                {data.nextCursor && <button className="btn btn-secondary" onClick={loadNext}>{t('common.next')} {'->'}</button>}
+                {history.length > 0 && <button className="btn btn-secondary" onClick={loadPrev}>{'<-'} {'Previous'}</button>}
+                {data.nextCursor && <button className="btn btn-secondary" onClick={loadNext}>{'Next'} {'->'}</button>}
               </div>
             </>
           )}

@@ -30,9 +30,9 @@ export function formatCurrency(amount: number, currency = defaultCurrency, local
 }
 
 export function getCurrencyForLanguage(lang?: string): string {
-  return String(lang || '').toLowerCase().startsWith('zh') ? 'CNY' : 'USD';
+  return 'USD';
 }
 
 export function getLocaleForLanguage(lang?: string): string {
-  return String(lang || '').toLowerCase().startsWith('zh') ? 'zh-CN' : 'en-US';
+  return 'en-US';
 }

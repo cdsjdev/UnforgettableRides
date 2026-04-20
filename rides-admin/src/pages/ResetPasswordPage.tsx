@@ -1,10 +1,8 @@
 ﻿import { FormEvent, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { authAPI } from '../services/api';
-import { useI18n } from '../i18n/I18nContext';
 
 export default function ResetPasswordPage() {
-  const { t } = useI18n();
   const [params] = useSearchParams();
   const token = useMemo(() => params.get('token') || '', [params]);
   const returnTo = useMemo(() => {
@@ -26,15 +24,15 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setError('');
     if (!token) {
-      setError(t('auth.invalidResetLink'));
+      setError('Invalid or expired reset link.');
       return;
     }
     if (newPassword.length < 6) {
-      setError(t('auth.passwordMin'));
+      setError('Password must be at least 6 characters.');
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError(t('auth.passwordMismatch'));
+      setError('Passwords do not match.');
       return;
     }
     setLoading(true);
@@ -42,7 +40,7 @@ export default function ResetPasswordPage() {
       await authAPI.resetPassword(token, newPassword);
       setDone(true);
     } catch (err: any) {
-      setError(err.response?.data?.error?.message || t('auth.resetFailed'));
+      setError(err.response?.data?.error?.message || 'Failed to reset password');
     } finally {
       setLoading(false);
     }
@@ -53,40 +51,40 @@ export default function ResetPasswordPage() {
       <div className="login-card">
         <div className="login-header">
           <img src="/logo.svg" alt="UnforgettableRides" className="login-logo" />
-          <h1>{t('auth.resetTitle')}</h1>
-          <p>{t('auth.resetSubtitle')}</p>
+          <h1>{'Reset Password'}</h1>
+          <p>{'Set a new password for your account.'}</p>
         </div>
 
         {error && <div className="login-error">{error}</div>}
         {done ? (
           <div className="login-success">
-            <p>{t('auth.resetDone')}</p>
-            <Link to={returnTo} className="inline-link">{t('auth.backToLogin')}</Link>
+            <p>{'Password reset successful. You can sign in now.'}</p>
+            <Link to={returnTo} className="inline-link">{'Back to Sign In'}</Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            {!token && <div className="login-error">{t('auth.invalidResetLink')}</div>}
+            {!token && <div className="login-error">{'Invalid or expired reset link.'}</div>}
             <div className="login-field">
-              <label htmlFor="new-password">{t('auth.newPassword')}</label>
+              <label htmlFor="new-password">{'New Password'}</label>
               <input
                 id="new-password"
                 type={showPassword ? 'text' : 'password'}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder={t('users.passwordPlaceholder')}
+                placeholder={'Min 6 characters'}
                 required
                 minLength={6}
                 disabled={loading}
               />
             </div>
             <div className="login-field">
-              <label htmlFor="confirm-password">{t('auth.confirmPassword')}</label>
+              <label htmlFor="confirm-password">{'Confirm Password'}</label>
               <input
                 id="confirm-password"
                 type={showPassword ? 'text' : 'password'}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder={t('auth.confirmPassword')}
+                placeholder={'Confirm Password'}
                 required
                 minLength={6}
                 disabled={loading}
@@ -94,14 +92,14 @@ export default function ResetPasswordPage() {
             </div>
             <div className="login-footer-link" style={{ marginBottom: 10 }}>
               <button type="button" className="text-link-btn" onClick={() => setShowPassword(v => !v)}>
-                {showPassword ? t('login.hidePassword') : t('login.showPassword')}
+                {showPassword ? 'Hide password' : 'Show password'}
               </button>
             </div>
             <button type="submit" className="login-button" disabled={loading || !token}>
-              {loading ? t('auth.resetting') : t('auth.resetAction')}
+              {loading ? 'Resetting...' : 'Reset Password'}
             </button>
             <div className="login-footer-link">
-              <Link to={returnTo} className="inline-link">{t('auth.backToLogin')}</Link>
+              <Link to={returnTo} className="inline-link">{'Back to Sign In'}</Link>
             </div>
           </form>
         )}

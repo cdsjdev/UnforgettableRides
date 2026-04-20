@@ -40,9 +40,6 @@ const JWT_SECRET = process.env.JWT_SECRET || 'rides-dev-secret-change-in-product
 // Unique email per test run to avoid collisions
 const RUN_ID = Date.now().toString(36);
 
-// Snapshot original dogs so we can restore after tests
-const _originalDogs = JSON.parse(JSON.stringify(appModule._dogs));
-
 /**
  * Create a user directly in the DB and return { user, token }.
  */
@@ -77,12 +74,8 @@ function cleanupTestUsers() {
   db.prepare("DELETE FROM users WHERE email LIKE '%@unforgettablerides.test'").run();
 }
 
-/** Restore dogs array and file to pre-test state (prevents test artifacts in dogs.json). */
 function restoreDogs() {
-  appModule._dogs = JSON.parse(JSON.stringify(_originalDogs));
-  // Also restore the JSON file on disk
-  const dogsFilePath = path.join(__dirname, '..', 'src', 'data', 'dogs.json');
-  fs.writeFileSync(dogsFilePath, JSON.stringify(_originalDogs, null, 2), 'utf8');
+  // Legacy no-op: dog fixtures were removed from rides domain.
 }
 
 module.exports = { app, db, request, createTestUser, createAllRoles, cleanupTestUsers, restoreDogs };

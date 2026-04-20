@@ -24,9 +24,10 @@ ARG EXPO_PUBLIC_BUILD_DATE=unknown
 ENV EXPO_PUBLIC_BUILD_DATE=$EXPO_PUBLIC_BUILD_DATE
 ARG EXPO_PUBLIC_GIT_SHA=unknown
 ENV EXPO_PUBLIC_GIT_SHA=$EXPO_PUBLIC_GIT_SHA
+ARG EXPO_EXPORT_MAX_OLD_SPACE=768
 
 # Export static web bundle
-RUN npx expo export --platform web --output-dir dist
+RUN NODE_OPTIONS="--max-old-space-size=${EXPO_EXPORT_MAX_OLD_SPACE}" npx expo export --platform web --output-dir dist
 
 # ---- Serve with nginx ----
 FROM nginx:alpine

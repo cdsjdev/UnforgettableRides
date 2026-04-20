@@ -1,0 +1,12 @@
+# Keep root-context builds (rides-admin / rides-app-web) small and deterministic.
+# Include only directories needed by Dockerfiles that use `context: .`.
+*
+
+!rides-admin/
+!rides-admin/**
+!rides-app/
+!rides-app/**
+!rides-portal/
+!rides-portal/**
+!shared/
+!shared/**

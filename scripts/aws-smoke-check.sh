@@ -11,8 +11,9 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 HOST="${HOST:-127.0.0.1}"
-API_BASE="http://${HOST}/api/v1"
-DASHBOARD_URL="${DASHBOARD_URL:-http://${HOST}}"
+ADMIN_PORT="${ADMIN_PORT:-8080}"
+DASHBOARD_URL="${DASHBOARD_URL:-http://${HOST}:${ADMIN_PORT}}"
+API_BASE="${API_BASE:-${DASHBOARD_URL}/api/v1}"
 APP_WEB_URL="${APP_WEB_URL:-http://${HOST}:8081}"
 
 if [[ -n "${COMPOSE_FILE:-}" ]]; then

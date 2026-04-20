@@ -126,7 +126,11 @@ if (-not $fastDeploy) {
   }
   foreach ($svc in $services) {
     Resource-Guard -MinRequiredMB $minAvailableMB
-    Invoke-Checked -Label "building $svc" -Action { docker compose -f $composeFile build $svc }
+    if ($svc -eq 'rides-admin' -or $svc -eq 'rides-portal') {
+      Invoke-Checked -Label "building $svc (no-cache)" -Action { docker compose -f $composeFile build --no-cache $svc }
+    } else {
+      Invoke-Checked -Label "building $svc" -Action { docker compose -f $composeFile build $svc }
+    }
     Invoke-Checked -Label "restarting $svc" -Action { docker compose -f $composeFile up -d --no-deps $svc }
   }
   Invoke-Checked -Label 'bringing all services up' -Action { docker compose -f $composeFile up -d --remove-orphans @services }
@@ -139,7 +143,16 @@ if (-not $fastDeploy) {
   } else {
     Write-Host '[deploy-auto] ml-models directory not found -> skipping ml-service'
   }
-  Invoke-Checked -Label 'parallel compose up' -Action { docker compose -f $composeFile up -d --build --remove-orphans @services }
+
+  Invoke-Checked -Label 'building rides-admin (no-cache)' -Action { docker compose -f $composeFile build --no-cache rides-admin }
+  Invoke-Checked -Label 'building rides-portal (no-cache)' -Action { docker compose -f $composeFile build --no-cache rides-portal }
+
+  foreach ($svc in $services) {
+    if ($svc -eq 'rides-admin' -or $svc -eq 'rides-portal') { continue }
+    Invoke-Checked -Label "building $svc" -Action { docker compose -f $composeFile build $svc }
+  }
+
+  Invoke-Checked -Label 'parallel compose up' -Action { docker compose -f $composeFile up -d --remove-orphans @services }
 }
 
 Invoke-Checked -Label 'compose ps' -Action { docker compose -f $composeFile ps }

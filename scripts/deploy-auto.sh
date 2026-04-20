@@ -117,7 +117,11 @@ if [[ "${FAST_DEPLOY:-0}" != "1" ]]; then
   for svc in "${services[@]}"; do
     resource_guard "$MIN_AVAILABLE_MB"
     echo "[deploy-auto] building ${svc}..."
-    docker compose -f "$compose_file" build "$svc"
+    if [[ "$svc" == "rides-admin" || "$svc" == "rides-portal" ]]; then
+      docker compose -f "$compose_file" build --no-cache "$svc"
+    else
+      docker compose -f "$compose_file" build "$svc"
+    fi
     echo "[deploy-auto] restarting ${svc}..."
     docker compose -f "$compose_file" up -d --no-deps "$svc"
   done
@@ -131,7 +135,16 @@ else
   else
     echo "[deploy-auto] ml-models directory not found -> skipping ml-service"
   fi
-  docker compose -f "$compose_file" up -d --build --remove-orphans "${services[@]}" "$@"
+
+  # Force fresh web bundles even in fast mode, while keeping cached builds for other services.
+  docker compose -f "$compose_file" build --no-cache rides-admin rides-portal
+  for svc in "${services[@]}"; do
+    if [[ "$svc" == "rides-admin" || "$svc" == "rides-portal" ]]; then
+      continue
+    fi
+    docker compose -f "$compose_file" build "$svc"
+  done
+  docker compose -f "$compose_file" up -d --remove-orphans "${services[@]}" "$@"
 fi
 
 docker compose -f "$compose_file" ps

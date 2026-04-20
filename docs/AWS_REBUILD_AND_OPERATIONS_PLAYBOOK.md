@@ -1,6 +1,35 @@
 ﻿# UnforgettableRides — Operations Playbook
 
-*Last updated: 2026-04-19*
+*Last updated: 2026-04-20*
+
+---
+
+## Server Access (Canonical)
+
+Use this host for UnforgettableRides operations:
+- Public IP: `44.245.183.72`
+- Expected hostname after login: `ip-172-26-14-6`
+- Expected app path: `~/UnforgettableRides`
+
+Windows/PowerShell example:
+```powershell
+ssh -i "$HOME/.ssh/LightsailDefaultKey-us-west-2 cdsjdev.pem" ubuntu@44.245.183.72
+```
+
+macOS/Linux example:
+```bash
+ssh -i ~/.ssh/LightsailDefaultKey-us-west-2\ cdsjdev.pem ubuntu@44.245.183.72
+```
+
+After login, verify:
+```bash
+hostname
+pwd
+ls -la ~/UnforgettableRides
+```
+
+Important:
+- `34.211.20.239` is a different server and should not be used for UnforgettableRides deploy/update work.
 
 ---
 

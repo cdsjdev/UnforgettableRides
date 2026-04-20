@@ -55,16 +55,6 @@ export default function HelpPage() {
         'Configuration: set services and store settings by current store context.',
       ],
     },
-    {
-      title: 'Advisor RAG (Demo)',
-      items: [
-        'What it does: advisor answers from your own uploaded documents, not only from generic model memory.',
-        'Where to try it: Web -> Analysis -> RAG Demo page, or rides-app -> Advisor chat.',
-        'How to test: 1) Ingest a doc, 2) Run Retrieve to see matched snippets, 3) Run Ask to get grounded answer.',
-        'Safety: manager/staff only see data in their store scope.',
-        'Current quality: keyword match (good for clear SOP/FAQ text). Embeddings can be added later.',
-      ],
-    },
   ];
 
   return (

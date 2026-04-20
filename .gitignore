@@ -72,6 +72,7 @@ nul
 *.tar
 check_scope.sh
 query_appts.js
+.deploy-compose
 
 # Python
 __pycache__/

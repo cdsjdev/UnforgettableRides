@@ -1,0 +1,11 @@
+{
+  "name": "admin-entry",
+  "private": true,
+  "scripts": {
+    "install:admin": "npm --prefix ../rides-admin install",
+    "dev": "npm --prefix ../rides-admin run dev",
+    "build": "npm --prefix ../rides-admin run build",
+    "preview": "npm --prefix ../rides-admin run preview",
+    "test:e2e": "npm --prefix ../rides-admin run test:e2e"
+  }
+}

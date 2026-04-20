@@ -1,6 +1,14 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function HowItWorksPage() {
+  const { user } = useAuth();
+  const ownerCtaHref = !user
+    ? '/register?role=owner'
+    : (user.role === 'owner' || user.role === 'admin')
+      ? '/owner/cars/new'
+      : '/owner';
+
   return (
     <>
       <div className="page-header">
@@ -103,7 +111,7 @@ export default function HowItWorksPage() {
         <div style={{ textAlign: 'center', marginTop: 72 }}>
           <Link to="/cars" className="btn btn-primary btn-lg">Browse Classic Cars</Link>
           <span style={{ margin: '0 16px', color: 'var(--text-muted)' }}>or</span>
-          <Link to="/register?role=owner" className="btn btn-outline btn-lg">List Your Car</Link>
+          <Link to={ownerCtaHref} className="btn btn-outline btn-lg">List Your Car</Link>
         </div>
       </div>
     </>

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { carsAPI, type ClassicCar } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 // Royalty-free (Pexels) vintage classic car photo for hero background.
 const HERO_IMAGE = 'https://images.pexels.com/photos/5505825/pexels-photo-5505825.jpeg?auto=compress&cs=tinysrgb&w=1800';
@@ -50,10 +51,16 @@ function CarCard({ car }: { car: ClassicCar }) {
 }
 
 export default function HomePage() {
+  const { user } = useAuth();
   const { data: featured = [], isLoading } = useQuery({
     queryKey: ['cars', 'featured'],
     queryFn: () => carsAPI.getFeatured(),
   });
+  const ownerCtaHref = !user
+    ? '/register?role=owner'
+    : (user.role === 'owner' || user.role === 'admin')
+      ? '/owner/cars/new'
+      : '/owner';
 
   return (
     <>
@@ -200,7 +207,7 @@ export default function HomePage() {
           <div className="cta-banner">
             <h2>Own a Classic Car?</h2>
             <p>Join our community of owners and earn by sharing your vehicle at premium events.</p>
-            <Link to="/register?role=owner" className="btn btn-primary btn-lg">List Your Car Today</Link>
+            <Link to={ownerCtaHref} className="btn btn-primary btn-lg">List Your Car Today</Link>
           </div>
         </div>
       </section>

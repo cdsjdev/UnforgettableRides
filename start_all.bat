@@ -86,7 +86,7 @@ REM Wait a moment
 timeout /t 2 /nobreak > nul
 
 REM Start Mobile App
-start "Rides App" cmd /k "title Rides App && set EXPO_PUBLIC_BUILD_DATE=%BUILD_DATE% && set EXPO_PUBLIC_GIT_SHA=%GIT_SHA% && cd /d %~dp0rides-app && powershell -NoProfile -ExecutionPolicy Bypass -Command ""$port = 8081; while (Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue) { $port++ }; $env:CI = '1'; Write-Host ('Using Expo port ' + $port); npx expo start --port $port --host lan"""
+start "Rides App" cmd /k "title Rides App && set EXPO_PUBLIC_BUILD_DATE=%BUILD_DATE% && set EXPO_PUBLIC_GIT_SHA=%GIT_SHA% && cd /d %~dp0rides-app && powershell -NoProfile -ExecutionPolicy Bypass -Command ""$port = 8081; while (Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue) { $port++ }; Write-Host ('Using Expo port ' + $port); npx expo start --port $port --host lan"""
 
 echo.
 echo ============================================================

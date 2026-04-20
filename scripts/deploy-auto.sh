@@ -32,6 +32,8 @@ COMPOSE_GPU="docker-compose.production.yml"
 COMPOSE_CPU="docker-compose.production.cpu.yml"
 MIN_AVAILABLE_MB="${MIN_AVAILABLE_MB:-512}"
 FAST_MIN_AVAILABLE_MB="${FAST_MIN_AVAILABLE_MB:-1024}"
+LOW_MEM_AUTO_CONTINUE="${LOW_MEM_AUTO_CONTINUE:-1}"
+LOW_MEM_AUTO_MAX_TOTAL_MB="${LOW_MEM_AUTO_MAX_TOTAL_MB:-1024}"
 
 resource_guard() {
   local min_required_mb="$1"
@@ -44,11 +46,18 @@ resource_guard() {
   fi
   local mem_avail_mb
   local swap_free_mb
+  local mem_total_mb
   mem_avail_mb=$(awk '/MemAvailable:/ { printf("%d", $2/1024) }' /proc/meminfo)
   swap_free_mb=$(awk '/SwapFree:/ { printf("%d", $2/1024) }' /proc/meminfo)
+  mem_total_mb=$(awk '/MemTotal:/ { printf("%d", $2/1024) }' /proc/meminfo)
   local total_avail_mb=$((mem_avail_mb + swap_free_mb))
-  echo "[deploy-auto] resources: mem_available=${mem_avail_mb}MB swap_free=${swap_free_mb}MB total=${total_avail_mb}MB"
+  echo "[deploy-auto] resources: mem_total=${mem_total_mb}MB mem_available=${mem_avail_mb}MB swap_free=${swap_free_mb}MB total=${total_avail_mb}MB"
   if (( total_avail_mb < min_required_mb )); then
+    if [[ "${LOW_MEM_AUTO_CONTINUE}" == "1" ]] && (( mem_total_mb > 0 )) && (( mem_total_mb <= LOW_MEM_AUTO_MAX_TOTAL_MB )); then
+      echo "[deploy-auto] WARN: low memory (${total_avail_mb}MB < ${min_required_mb}MB), but tiny host detected (mem_total=${mem_total_mb}MB <= ${LOW_MEM_AUTO_MAX_TOTAL_MB}MB)."
+      echo "[deploy-auto] WARN: continuing deploy in best-effort mode. To enforce strict guard, set LOW_MEM_AUTO_CONTINUE=0."
+      return 0
+    fi
     echo "[deploy-auto] ERROR: available memory+swap (${total_avail_mb}MB) is below required threshold (${min_required_mb}MB)."
     echo "[deploy-auto] Tip: wait for load to drop, add swap, or temporarily bypass with LOW_MEM_OK=1."
     exit 1

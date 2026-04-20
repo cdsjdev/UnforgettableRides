@@ -118,17 +118,28 @@ if (-not $fastDeploy) {
   Write-Host '[deploy-auto] SAFE mode (default) -> sequential build + rolling up'
   $env:COMPOSE_PARALLEL_LIMIT = '1'
   Resource-Guard -MinRequiredMB $minAvailableMB
-  $services = @('rides-api', 'ml-service', 'rides-admin', 'rides-app-web')
+  $services = @('rides-api', 'rides-admin', 'rides-app-web')
+  if (Test-Path (Join-Path $root 'ml-models')) {
+    $services = @('rides-api', 'ml-service', 'rides-admin', 'rides-app-web')
+  } else {
+    Write-Host '[deploy-auto] ml-models directory not found -> skipping ml-service'
+  }
   foreach ($svc in $services) {
     Resource-Guard -MinRequiredMB $minAvailableMB
     Invoke-Checked -Label "building $svc" -Action { docker compose -f $composeFile build $svc }
     Invoke-Checked -Label "restarting $svc" -Action { docker compose -f $composeFile up -d --no-deps $svc }
   }
-  Invoke-Checked -Label 'bringing all services up' -Action { docker compose -f $composeFile up -d --remove-orphans }
+  Invoke-Checked -Label 'bringing all services up' -Action { docker compose -f $composeFile up -d --remove-orphans @services }
 } else {
   Write-Host '[deploy-auto] FAST_DEPLOY=1 -> parallel build/up'
   Resource-Guard -MinRequiredMB $fastMinAvailableMB
-  Invoke-Checked -Label 'parallel compose up' -Action { docker compose -f $composeFile up -d --build --remove-orphans }
+  $services = @('rides-api', 'rides-admin', 'rides-app-web')
+  if (Test-Path (Join-Path $root 'ml-models')) {
+    $services += 'ml-service'
+  } else {
+    Write-Host '[deploy-auto] ml-models directory not found -> skipping ml-service'
+  }
+  Invoke-Checked -Label 'parallel compose up' -Action { docker compose -f $composeFile up -d --build --remove-orphans @services }
 }
 
 Invoke-Checked -Label 'compose ps' -Action { docker compose -f $composeFile ps }

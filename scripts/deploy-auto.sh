@@ -99,7 +99,12 @@ if [[ "${FAST_DEPLOY:-0}" != "1" ]]; then
   echo "[deploy-auto] SAFE mode (default) -> sequential build + rolling up"
   export COMPOSE_PARALLEL_LIMIT=1
   resource_guard "$MIN_AVAILABLE_MB"
-  services=("rides-api" "ml-service" "rides-admin" "rides-app-web")
+  services=("rides-api" "rides-admin" "rides-app-web")
+  if [[ -d "$ROOT_DIR/ml-models" ]]; then
+    services=("rides-api" "ml-service" "rides-admin" "rides-app-web")
+  else
+    echo "[deploy-auto] ml-models directory not found -> skipping ml-service"
+  fi
   for svc in "${services[@]}"; do
     resource_guard "$MIN_AVAILABLE_MB"
     echo "[deploy-auto] building ${svc}..."
@@ -107,11 +112,17 @@ if [[ "${FAST_DEPLOY:-0}" != "1" ]]; then
     echo "[deploy-auto] restarting ${svc}..."
     docker compose -f "$compose_file" up -d --no-deps "$svc"
   done
-  docker compose -f "$compose_file" up -d --remove-orphans
+  docker compose -f "$compose_file" up -d --remove-orphans "${services[@]}"
 else
   echo "[deploy-auto] FAST_DEPLOY=1 -> parallel build/up"
   resource_guard "$FAST_MIN_AVAILABLE_MB"
-  docker compose -f "$compose_file" up -d --build --remove-orphans "$@"
+  services=("rides-api" "rides-admin" "rides-app-web")
+  if [[ -d "$ROOT_DIR/ml-models" ]]; then
+    services+=("ml-service")
+  else
+    echo "[deploy-auto] ml-models directory not found -> skipping ml-service"
+  fi
+  docker compose -f "$compose_file" up -d --build --remove-orphans "${services[@]}" "$@"
 fi
 
 docker compose -f "$compose_file" ps

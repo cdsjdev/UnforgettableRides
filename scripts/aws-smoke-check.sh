@@ -39,7 +39,14 @@ check_cmd() {
 
 check_cmd "containers running" docker compose -f "${COMPOSE_FILE_PATH}" ps
 
-for svc in rides-api rides-admin rides-app-web ml-service; do
+services=(rides-api rides-admin rides-app-web)
+if [[ -d "$ROOT_DIR/ml-models" ]]; then
+  services+=(ml-service)
+else
+  echo "-> skipping ml-service status check (ml-models directory not found)"
+fi
+
+for svc in "${services[@]}"; do
   check_cmd "service ${svc} status" bash -lc \
     "docker compose -f '${COMPOSE_FILE_PATH}' ps '${svc}' | grep -Eq 'Up|running'"
 done

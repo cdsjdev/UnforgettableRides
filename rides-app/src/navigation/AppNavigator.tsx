@@ -182,6 +182,12 @@ export function AppNavigator() {
       <Tab.Screen
         name="Home"
         component={HomeStackNavigator}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('Home', { screen: 'HomeMain' });
+          },
+        })}
         options={{
           tabBarIcon: ({ focused, size }) => <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={focused ? GOLD : INACTIVE_TAB} />,
           tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} label="Home" />,
@@ -190,6 +196,12 @@ export function AppNavigator() {
       <Tab.Screen
         name="Cars"
         component={CarsStackNavigator}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('Cars', { screen: 'CarsMain' });
+          },
+        })}
         options={{
           tabBarIcon: ({ focused, size }) => <Ionicons name={focused ? 'car-sport' : 'car-sport-outline'} size={size} color={focused ? GOLD : INACTIVE_TAB} />,
           tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} label="Cars" />,
@@ -198,6 +210,12 @@ export function AppNavigator() {
       <Tab.Screen
         name="Messages"
         component={MessagesStackNavigator}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('Messages', { screen: 'MessagesMain' });
+          },
+        })}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <View>
@@ -215,6 +233,12 @@ export function AppNavigator() {
       <Tab.Screen
         name="Profile"
         component={ProfileStackNavigator}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            e.preventDefault();
+            navigation.navigate('Profile', { screen: 'ProfileMain' });
+          },
+        })}
         options={{
           tabBarIcon: ({ focused, size }) => <Ionicons name={focused ? 'person-circle' : 'person-circle-outline'} size={size} color={focused ? GOLD : INACTIVE_TAB} />,
           tabBarLabel: ({ focused }) => <TabBarLabel focused={focused} label="Profile" />,

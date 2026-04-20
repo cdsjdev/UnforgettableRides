@@ -18,6 +18,8 @@ import AboutPage from './pages/AboutPage';
 import OwnerDashboardPage from './pages/OwnerDashboardPage';
 import AddCarPage from './pages/AddCarPage';
 import EditCarPage from './pages/EditCarPage';
+import HelpPage from './pages/HelpPage';
+import SettingsPage from './pages/SettingsPage';
 import { WEB_APP_VERSION, WEB_BUILD_NUMBER, WEB_BUILD_DATE, WEB_BUILD_SHA } from './version';
 
 function NavBar() {
@@ -26,6 +28,8 @@ function NavBar() {
   const [solid, setSolid] = useState(false);
   const isHome = location.pathname === '/';
   const ownerNavLabel = user && (user.role === 'owner' || user.role === 'admin') ? 'My Listings' : 'Become Owner';
+  const ownerNavHref = user && (user.role === 'owner' || user.role === 'admin') ? '/owner/cars/new' : '/owner';
+  const accountTypeLabel = user ? user.role.replace(/_/g, ' ').toUpperCase() : '';
 
   useEffect(() => {
     if (!isHome) { setSolid(true); return; }
@@ -45,10 +49,18 @@ function NavBar() {
         {user ? (
           <>
             <Link to="/bookings">My Bookings</Link>
-            <Link to="/owner">{ownerNavLabel}</Link>
+            <Link to={ownerNavHref}>{ownerNavLabel}</Link>
             <Link to="/messages">Messages</Link>
-            <span className="nav-user">{user.name}</span>
-            <button className="link-btn" onClick={logout}>Sign Out</button>
+            <Link to="/help">Help</Link>
+            <Link to="/settings">Settings</Link>
+            <div className="nav-account" title={user.name}>
+              <span className="nav-account-badge">{user.name.charAt(0).toUpperCase()}</span>
+              <span className="nav-account-text">
+                <span className="nav-user">{user.name}</span>
+                <span className="nav-user-role">{accountTypeLabel}</span>
+              </span>
+            </div>
+            <button className="nav-signout-btn" onClick={logout}>Sign Out</button>
           </>
         ) : (
           <>
@@ -107,6 +119,8 @@ export default function App() {
         <Route path="/owner" element={<OwnerDashboardPage />} />
         <Route path="/owner/cars/new" element={<AddCarPage />} />
         <Route path="/owner/cars/:id/edit" element={<EditCarPage />} />
+        <Route path="/help" element={<HelpPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Footer />

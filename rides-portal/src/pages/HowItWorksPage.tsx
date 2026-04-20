@@ -2,12 +2,10 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function HowItWorksPage() {
-  const { user } = useAuth();
-  const ownerCtaHref = !user
-    ? '/register?role=owner'
-    : (user.role === 'owner' || user.role === 'admin')
-      ? '/owner/cars/new'
-      : '/owner';
+  const { user, token, loading } = useAuth();
+  const ownerCtaHref = user
+    ? ((user.role === 'owner' || user.role === 'admin') ? '/owner/cars/new' : '/owner')
+    : (loading && token ? '/owner' : '/register?role=owner');
 
   return (
     <>

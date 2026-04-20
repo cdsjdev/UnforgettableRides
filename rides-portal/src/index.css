@@ -160,7 +160,53 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .nav-links a:hover { color: var(--text); }
 
-.nav-user { color: var(--text-muted); font-size: 0.85rem; }
+.nav-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-med);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.nav-account-text {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.05;
+}
+
+.nav-account-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-dim);
+  color: var(--gold-bright);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.nav-user {
+  color: var(--text);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-user-role {
+  color: var(--text-muted);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  margin-top: 3px;
+}
 
 .link-btn {
   background: none;
@@ -175,6 +221,24 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .link-btn:hover { color: var(--gold-bright); }
+
+.nav-signout-btn {
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  transition: background var(--t), color var(--t), border-color var(--t);
+}
+
+.nav-signout-btn:hover {
+  background: var(--gold-dim);
+  color: var(--gold-bright);
+  border-color: var(--gold);
+}
 
 .nav-cta {
   background: var(--gold) !important;
@@ -221,12 +285,27 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   }
 
   .nav-links a,
-  .link-btn {
+  .link-btn,
+  .nav-signout-btn {
     font-size: 0.7rem;
   }
 
   .nav-user {
-    display: none;
+    max-width: 86px;
+  }
+
+  .nav-user-role {
+    font-size: 0.56rem;
+  }
+
+  .nav-account {
+    padding: 5px 8px;
+  }
+
+  .nav-account-badge {
+    width: 18px;
+    height: 18px;
+    font-size: 0.64rem;
   }
 }
 

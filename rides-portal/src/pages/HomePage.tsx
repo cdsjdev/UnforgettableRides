@@ -51,16 +51,14 @@ function CarCard({ car }: { car: ClassicCar }) {
 }
 
 export default function HomePage() {
-  const { user } = useAuth();
+  const { user, token, loading } = useAuth();
   const { data: featured = [], isLoading } = useQuery({
     queryKey: ['cars', 'featured'],
     queryFn: () => carsAPI.getFeatured(),
   });
-  const ownerCtaHref = !user
-    ? '/register?role=owner'
-    : (user.role === 'owner' || user.role === 'admin')
-      ? '/owner/cars/new'
-      : '/owner';
+  const ownerCtaHref = user
+    ? ((user.role === 'owner' || user.role === 'admin') ? '/owner/cars/new' : '/owner')
+    : (loading && token ? '/owner' : '/register?role=owner');
 
   return (
     <>

@@ -12,8 +12,10 @@ cd "$ROOT_DIR"
 
 HOST="${HOST:-127.0.0.1}"
 ADMIN_PORT="${ADMIN_PORT:-8080}"
+PORTAL_PORT="${PORTAL_PORT:-8082}"
 DASHBOARD_URL="${DASHBOARD_URL:-http://${HOST}:${ADMIN_PORT}}"
 API_BASE="${API_BASE:-${DASHBOARD_URL}/api/v1}"
+PORTAL_URL="${PORTAL_URL:-http://${HOST}:${PORTAL_PORT}}"
 APP_WEB_URL="${APP_WEB_URL:-http://${HOST}:8081}"
 
 if [[ -n "${COMPOSE_FILE:-}" ]]; then
@@ -40,7 +42,7 @@ check_cmd() {
 
 check_cmd "containers running" docker compose -f "${COMPOSE_FILE_PATH}" ps
 
-services=(rides-api rides-admin rides-app-web)
+services=(rides-api rides-admin rides-portal rides-app-web)
 if [[ -d "$ROOT_DIR/ml-models" ]]; then
   services+=(ml-service)
 else
@@ -54,6 +56,7 @@ done
 
 check_cmd "API health" curl -fsS "${API_BASE}/health"
 check_cmd "dashboard home responds" curl -fsSI "${DASHBOARD_URL}"
+check_cmd "portal home responds" curl -fsSI "${PORTAL_URL}"
 check_cmd "app web responds" curl -fsSI "${APP_WEB_URL}"
 
 echo "==> Smoke check passed"

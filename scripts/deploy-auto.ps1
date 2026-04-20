@@ -118,9 +118,9 @@ if (-not $fastDeploy) {
   Write-Host '[deploy-auto] SAFE mode (default) -> sequential build + rolling up'
   $env:COMPOSE_PARALLEL_LIMIT = '1'
   Resource-Guard -MinRequiredMB $minAvailableMB
-  $services = @('rides-api', 'rides-admin', 'rides-app-web')
+  $services = @('rides-api', 'rides-admin', 'rides-portal', 'rides-app-web')
   if (Test-Path (Join-Path $root 'ml-models')) {
-    $services = @('rides-api', 'ml-service', 'rides-admin', 'rides-app-web')
+    $services = @('rides-api', 'ml-service', 'rides-admin', 'rides-portal', 'rides-app-web')
   } else {
     Write-Host '[deploy-auto] ml-models directory not found -> skipping ml-service'
   }
@@ -133,7 +133,7 @@ if (-not $fastDeploy) {
 } else {
   Write-Host '[deploy-auto] FAST_DEPLOY=1 -> parallel build/up'
   Resource-Guard -MinRequiredMB $fastMinAvailableMB
-  $services = @('rides-api', 'rides-admin', 'rides-app-web')
+  $services = @('rides-api', 'rides-admin', 'rides-portal', 'rides-app-web')
   if (Test-Path (Join-Path $root 'ml-models')) {
     $services += 'ml-service'
   } else {

@@ -49,6 +49,24 @@ services:
     networks:
       - rides-network
 
+  rides-portal:
+    build:
+      context: .
+      dockerfile: rides-portal/Dockerfile
+      args:
+        VITE_API_URL: /api
+        VITE_BUILD_DATE: ${BUILD_DATE:-unknown}
+        VITE_GIT_SHA: ${GIT_SHA:-unknown}
+    container_name: rides-portal
+    restart: unless-stopped
+    ports:
+      - "${PORTAL_PORT:-8082}:80"
+    depends_on:
+      rides-api:
+        condition: service_healthy
+    networks:
+      - rides-network
+
   rides-app-web:
     build:
       context: .

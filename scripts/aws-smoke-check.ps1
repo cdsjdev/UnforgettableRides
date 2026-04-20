@@ -12,8 +12,9 @@ if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
 }
 
 $hostName = if ($env:HOST) { $env:HOST } else { '127.0.0.1' }
-$apiBase = "http://${hostName}/api/v1"
-$dashboardUrl = if ($env:DASHBOARD_URL) { $env:DASHBOARD_URL } else { "http://${hostName}" }
+$dashboardUrl = if ($env:DASHBOARD_URL) { $env:DASHBOARD_URL } else { "http://${hostName}:8080" }
+$apiBase = if ($env:API_BASE) { $env:API_BASE } else { "${dashboardUrl}/api/v1" }
+$portalUrl = if ($env:PORTAL_URL) { $env:PORTAL_URL } else { "http://${hostName}:8082" }
 $appWebUrl = if ($env:APP_WEB_URL) { $env:APP_WEB_URL } else { "http://${hostName}:8081" }
 
 if ($env:COMPOSE_FILE) {
@@ -66,12 +67,13 @@ function Assert-HttpOk {
 }
 
 Invoke-Checked -Label 'containers running' -Action { docker compose -f $composeFilePath ps }
-foreach ($svc in @('rides-api', 'rides-admin', 'rides-app-web', 'ml-service')) {
+foreach ($svc in @('rides-api', 'rides-admin', 'rides-portal', 'rides-app-web', 'ml-service')) {
   Invoke-Checked -Label "service $svc status" -Action { Assert-ServiceRunning -Service $svc }
 }
 
 Invoke-Checked -Label 'API health' -Action { Assert-HttpOk -Url "$apiBase/health" }
 Invoke-Checked -Label 'dashboard home responds' -Action { Assert-HttpOk -Url $dashboardUrl -Head }
+Invoke-Checked -Label 'portal home responds' -Action { Assert-HttpOk -Url $portalUrl -Head }
 Invoke-Checked -Label 'app web responds' -Action { Assert-HttpOk -Url $appWebUrl -Head }
 
 Write-Host '==> Smoke check passed'

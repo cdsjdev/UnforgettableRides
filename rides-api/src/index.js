@@ -59,7 +59,7 @@ const EMAIL_NOTIFICATION_WEBHOOK_URL = process.env.EMAIL_NOTIFICATION_WEBHOOK_UR
 const SMS_NOTIFICATION_WEBHOOK_URL = process.env.SMS_NOTIFICATION_WEBHOOK_URL || '';
 const SMTP_HOST = String(process.env.SMTP_HOST || '').trim();
 const SMTP_USER = String(process.env.SMTP_USER || '').trim();
-const SMTP_PASS = String(process.env.SMTP_PASS || '').trim();
+const SMTP_PASS = String(process.env.SMTP_PASS || '');
 const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
 const SMTP_USE_TLS = String(process.env.SMTP_USE_TLS || 'true').toLowerCase() === 'true';
 const SMTP_USE_SSL = String(process.env.SMTP_USE_SSL || 'false').toLowerCase() === 'true';
@@ -1317,6 +1317,17 @@ function parseBoolSetting(raw, fallback = false) {
   return normalized === '1' || normalized === 'true' || normalized === 'on' || normalized === 'yes';
 }
 
+function normalizeSmtpPassword(rawPassword, smtpHost) {
+  const password = String(rawPassword || '');
+  const host = String(smtpHost || '').trim().toLowerCase();
+  // Gmail/Google app passwords are shown grouped with spaces for readability.
+  // SMTP auth expects the contiguous token without spaces.
+  if (host.includes('gmail.com') || host.includes('googlemail.com')) {
+    return password.replace(/\s+/g, '');
+  }
+  return password.trim();
+}
+
 function getRuntimeEmailConfig() {
   const modeRaw = getSetting('email_delivery_mode', '');
   const mode = String(modeRaw || '').trim().toLowerCase();
@@ -1325,7 +1336,7 @@ function getRuntimeEmailConfig() {
   const smtpPort = Number(getSetting('smtp_port', String(SMTP_PORT)) || SMTP_PORT);
   const smtpUser = String(getSetting('smtp_user', SMTP_USER) || '').trim();
   const smtpPassEnc = String(getSetting('smtp_pass_enc', '') || '').trim();
-  const smtpPass = decryptSettingSecret(smtpPassEnc) || SMTP_PASS;
+  const smtpPass = normalizeSmtpPassword(decryptSettingSecret(smtpPassEnc) || SMTP_PASS, smtpHost);
   const smtpUseTls = parseBoolSetting(getSetting('smtp_use_tls', SMTP_USE_TLS ? '1' : '0'), SMTP_USE_TLS);
   const smtpUseSsl = parseBoolSetting(getSetting('smtp_use_ssl', SMTP_USE_SSL ? '1' : '0'), SMTP_USE_SSL);
   const fromName = String(getSetting('email_from_name', EMAIL_FROM_NAME) || '').trim() || 'UnforgettableRides';

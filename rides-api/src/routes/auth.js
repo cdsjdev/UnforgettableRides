@@ -285,7 +285,13 @@
       const metadata = parseMetadataJson(row.metadata_json);
       const fp = String(metadata?.device_fingerprint || '').trim();
       if (fp !== String(deviceFingerprint || '').trim()) continue;
-      const createdMs = new Date(row.created_at).getTime();
+      const rawCreatedAt = String(row.created_at || '').trim();
+      const normalizedCreatedAt = rawCreatedAt.includes('T')
+        ? rawCreatedAt
+        : rawCreatedAt.replace(' ', 'T');
+      const createdMs = new Date(
+        /(?:Z|[+-]\d{2}:\d{2})$/.test(normalizedCreatedAt) ? normalizedCreatedAt : `${normalizedCreatedAt}Z`
+      ).getTime();
       if (!Number.isFinite(createdMs)) continue;
       const ageSeconds = Math.max(0, (Date.now() - createdMs) / 1000);
       if (ageSeconds <= LOGIN_DEVICE_CHALLENGE_REUSE_WINDOW_SECONDS) {

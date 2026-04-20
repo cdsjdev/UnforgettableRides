@@ -864,6 +864,26 @@ try { db.prepare('ALTER TABLE payments ADD COLUMN provider_payment_id TEXT').run
 try { db.prepare('CREATE INDEX IF NOT EXISTS idx_advisor_knowledge_docs_store_active ON advisor_knowledge_docs(store_id, is_active, updated_at DESC)').run(); } catch (e) { /* exists */ }
 try { db.prepare('CREATE INDEX IF NOT EXISTS idx_payments_provider_payment_id ON payments(provider_payment_id)').run(); } catch (e) { /* exists */ }
 
+function ensureInitialAdminUser() {
+  const existingAdmin = db.prepare("SELECT id, email FROM users WHERE role = 'admin' LIMIT 1").get();
+  if (existingAdmin?.id) return existingAdmin;
+
+  const adminEmail = String(process.env.ADMIN_EMAIL || 'admin@unforgettablerides.com').toLowerCase().trim();
+  const adminPassword = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === 'production' ? null : 'admin123');
+  if (!adminPassword) {
+    console.error('ERROR: No admin exists and ADMIN_PASSWORD not set. Set ADMIN_EMAIL and ADMIN_PASSWORD env vars.');
+    return null;
+  }
+
+  const adminId = uuidv4();
+  const hash = bcrypt.hashSync(adminPassword, 10);
+  db.prepare(
+    'INSERT INTO users (id, email, password_hash, name, role) VALUES (?, ?, ?, ?, ?)'
+  ).run(adminId, adminEmail, hash, 'Admin', 'admin');
+  console.log(`Seeded admin user (${adminEmail})`);
+  return { id: adminId, email: adminEmail };
+}
+
 console.log('Analytics database initialized (SQLite)');
 
 // Seed sample classic cars on first run
@@ -880,7 +900,7 @@ try {
       const insertImage = db.prepare(
         `INSERT INTO car_images (id, car_id, url, is_primary, sort_order, created_at) VALUES (?, ?, ?, 1, 0, datetime('now'))`
       );
-      const adminUser = db.prepare("SELECT id FROM users WHERE role = 'admin' LIMIT 1").get();
+      const adminUser = ensureInitialAdminUser();
       const demoOwnerId = adminUser?.id;
       if (demoOwnerId) {
         const seedTx = db.transaction(() => {
@@ -976,21 +996,7 @@ if (!process.env.JWT_SECRET) {
 
 // Seed initial admin user on startup (only if no admin exists yet)
 // Uses ADMIN_EMAIL / ADMIN_PASSWORD env vars, falls back to defaults in dev only
-const adminCount = db.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'admin'").get();
-if (adminCount.count === 0) {
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@unforgettablerides.com';
-  const adminPassword = process.env.ADMIN_PASSWORD || (process.env.NODE_ENV === 'production' ? null : 'admin123');
-  if (!adminPassword) {
-    console.error('ERROR: No admin exists and ADMIN_PASSWORD not set. Set ADMIN_EMAIL and ADMIN_PASSWORD env vars.');
-  } else {
-    const adminId = uuidv4();
-    const hash = bcrypt.hashSync(adminPassword, 10);
-    db.prepare(
-      'INSERT INTO users (id, email, password_hash, name, role) VALUES (?, ?, ?, ?, ?)'
-    ).run(adminId, adminEmail.toLowerCase().trim(), hash, 'Admin', 'admin');
-    console.log(`Seeded admin user (${adminEmail})`);
-  }
-}
+ensureInitialAdminUser();
 
 // JWT auth middleware — attaches req.user if valid token present
 function authMiddleware(req, res, next) {
@@ -1060,12 +1066,20 @@ function requestedStoreId(req) {
 
 function getAssignedStoreIdsForUser(user) {
   if (!user) return [];
-  const links = db.prepare(`
-    SELECT store_id
-    FROM user_store_links
-    WHERE user_id = ? AND is_active = 1
-    ORDER BY store_id ASC
-  `).all(user.id);
+  let links = [];
+  try {
+    links = db.prepare(`
+      SELECT store_id
+      FROM user_store_links
+      WHERE user_id = ? AND is_active = 1
+      ORDER BY store_id ASC
+    `).all(user.id);
+  } catch (err) {
+    // Migration 0019 removes user_store_links; keep auth working with legacy store_id.
+    if (!String(err?.message || '').includes('no such table: user_store_links')) {
+      throw err;
+    }
+  }
   const ids = links.map(r => normalizeStoreId(r.store_id)).filter(Boolean);
   if (ids.length > 0) return Array.from(new Set(ids));
   const legacy = normalizeStoreId(user.store_id);
@@ -2208,7 +2222,16 @@ function isAuthDeviceChallengeEnabled() {
     GLOBAL_SECURITY_SETTING_DEFAULTS.auth_device_challenge_enabled
   );
   const normalized = String(raw || '').trim().toLowerCase();
-  return normalized === '1' || normalized === 'true' || normalized === 'on';
+  const enabled = normalized === '1' || normalized === 'true' || normalized === 'on';
+  if (!enabled) return false;
+  if (NODE_ENV === 'test') return true;
+  const emailConfig = getRuntimeEmailConfig();
+  const webhookReady = !!String(emailConfig.webhookUrl || '').trim();
+  const smtpReady = !!(String(emailConfig.smtpHost || '').trim() && String(emailConfig.smtpUser || '').trim() && String(emailConfig.smtpPass || '').trim());
+  if (!webhookReady && !smtpReady) {
+    return false;
+  }
+  return true;
 }
 
 function isAuthRequireVerifiedForSensitive() {

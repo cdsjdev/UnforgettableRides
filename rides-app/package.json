@@ -1,6 +1,6 @@
 {
   "name": "rides-app",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",

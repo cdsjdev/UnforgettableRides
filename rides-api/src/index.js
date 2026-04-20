@@ -45,10 +45,15 @@ if (!fs.existsSync(uploadsDir)) {
 }
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const API_BUILD_NUMBER = process.env.BUILD_NUMBER || process.env.RELEASE_NUMBER || process.env.RELEASE_VERSION || API_VERSION;
 const API_BUILD_DATE = process.env.BUILD_DATE || process.env.RELEASE_DATE || 'unknown';
 const rawApiBuildSha = process.env.GIT_SHA || process.env.COMMIT_SHA || 'unknown';
 const API_BUILD_SHA = rawApiBuildSha === 'unknown' ? rawApiBuildSha : rawApiBuildSha.slice(0, 7);
+const formattedApiBuildDate = /^\d{4}-\d{2}-\d{2}$/.test(API_BUILD_DATE) ? API_BUILD_DATE.replace(/-/g, '') : API_BUILD_DATE;
+const computedApiBuildNumberParts = [formattedApiBuildDate, API_BUILD_SHA].filter((value) => value !== 'unknown');
+const API_BUILD_NUMBER = process.env.BUILD_NUMBER
+  || process.env.RELEASE_NUMBER
+  || process.env.RELEASE_VERSION
+  || (computedApiBuildNumberParts.length > 0 ? `${API_VERSION}+${computedApiBuildNumberParts.join('.')}` : API_VERSION);
 
 const EMAIL_NOTIFICATION_WEBHOOK_URL = process.env.EMAIL_NOTIFICATION_WEBHOOK_URL || '';
 const SMS_NOTIFICATION_WEBHOOK_URL = process.env.SMS_NOTIFICATION_WEBHOOK_URL || '';

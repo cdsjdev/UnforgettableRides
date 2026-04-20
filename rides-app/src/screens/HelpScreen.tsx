@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'r
 import { Ionicons } from '@expo/vector-icons';
 import { useWebLayout } from '../utils/webStyles';
 import { healthCheck } from '../services/api';
-import { APP_BUILD_DATE, APP_BUILD_SHA, APP_VERSION } from '../version';
+import { APP_BUILD_DATE, APP_BUILD_SHA, APP_DISPLAY_VERSION } from '../version';
 
 type SectionProps = {
   title: string;
@@ -105,7 +105,7 @@ export default function HelpScreen() {
       </Section>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Version: App v{APP_VERSION} · API v{apiVersion}</Text>
+        <Text style={styles.footerText}>Version: App v{APP_DISPLAY_VERSION} · API v{apiVersion}</Text>
         <Text style={styles.footerText}>Build: {buildDate} ({buildSha})</Text>
         <TouchableOpacity onPress={() => Linking.openURL('mailto:support@unforgettablerides.com')}>
           <Text style={styles.supportLink}>Contact Support</Text>

@@ -1,6 +1,6 @@
 ﻿import { useQuery } from '@tanstack/react-query';
 import { systemAPI } from '../services/api';
-import { WEB_APP_VERSION, WEB_BUILD_NUMBER, WEB_BUILD_DATE, WEB_BUILD_SHA } from '../version';
+import { WEB_APP_VERSION, WEB_BUILD_NUMBER } from '../version';
 
 type Section = {
   title: string;
@@ -18,9 +18,7 @@ export default function HelpPage() {
   const apiBuildDate = health?.build?.date || 'unknown';
   const apiBuildSha = health?.build?.commit || 'unknown';
 
-  const webBuildInfo = WEB_BUILD_NUMBER !== 'unknown' || WEB_BUILD_DATE !== 'unknown' || WEB_BUILD_SHA !== 'unknown'
-    ? ` (build ${WEB_BUILD_NUMBER} ${WEB_BUILD_DATE} ${WEB_BUILD_SHA})`
-    : '';
+  const webBuildInfo = WEB_BUILD_NUMBER !== 'unknown' ? ` (${WEB_BUILD_NUMBER})` : '';
 
   const apiBuildInfo = apiBuildNumber !== 'unknown' || apiBuildDate !== 'unknown' || apiBuildSha !== 'unknown'
     ? ` (build ${apiBuildNumber} ${apiBuildDate} ${apiBuildSha})`

@@ -164,6 +164,20 @@ export const authAPI = {
     const { data } = await api.post<APIResponse<User>>('/auth/role/become-owner');
     return data.data!;
   },
+
+  updateProfile: async (updates: { name?: string; avatar_url?: string | null }): Promise<User> => {
+    const { data } = await api.put<APIResponse<User>>('/auth/profile', updates);
+    return data.data!;
+  },
+
+  uploadProfileImage: async (file: File): Promise<string> => {
+    const form = new FormData();
+    form.append('image', file);
+    const { data } = await api.post<APIResponse<{ url: string }>>('/upload', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data.data?.url || '';
+  },
 };
 
 // ── Cars ───────────────────────────────────────────────────────

@@ -160,52 +160,90 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .nav-links a:hover { color: var(--text); }
 
-.nav-account {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border-med);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.nav-account-text {
-  display: inline-flex;
-  flex-direction: column;
-  min-width: 0;
-  line-height: 1.05;
-}
-
 .nav-account-badge {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--gold-dim);
   color: var(--gold-bright);
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   font-weight: 700;
+  overflow: hidden;
 }
 
-.nav-user {
+.nav-account-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.nav-account-menu-wrap {
+  position: relative;
+}
+
+.nav-avatar-btn {
+  border: 1px solid var(--gold-border);
+  color: var(--gold);
+  border-radius: 999px;
+  height: 44px;
+  padding: 0 12px 0 8px;
+  gap: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  transition: background var(--t), border-color var(--t), box-shadow var(--t);
+}
+
+.nav-avatar-btn:hover,
+.nav-avatar-btn.active {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-account-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 220px;
+  background: var(--bg-surface);
+  border: 1px solid var(--gold-border);
+  border-radius: 999px;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: var(--shadow-lg);
+  z-index: 140;
+}
+
+.nav-avatar-text {
+  display: inline-flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.05;
+  text-align: left;
+}
+
+.nav-avatar-text .nav-user {
   color: var(--text);
-  font-size: 0.8rem;
-  letter-spacing: 0.02em;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
   font-weight: 600;
-  max-width: 140px;
+  max-width: 120px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.nav-user-role {
+.nav-avatar-text .nav-user-role {
   color: var(--text-muted);
   font-size: 0.62rem;
   letter-spacing: 0.08em;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 .link-btn {
@@ -222,22 +260,55 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .link-btn:hover { color: var(--gold-bright); }
 
-.nav-signout-btn {
-  border: 1px solid var(--gold-border);
-  color: var(--gold);
-  border-radius: 999px;
-  padding: 7px 12px;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 700;
-  transition: background var(--t), color var(--t), border-color var(--t);
+.settings-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
 }
 
-.nav-signout-btn:hover {
+.settings-avatar-preview {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-border);
   background: var(--gold-dim);
   color: var(--gold-bright);
-  border-color: var(--gold);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.settings-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-account-menu-link,
+.nav-account-menu-signout {
+  display: block;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+}
+
+.nav-account-menu-link:hover,
+.nav-account-menu-signout:hover {
+  background: var(--gold-dim);
+  color: var(--gold-bright);
+  border-color: var(--gold-border);
 }
 
 .nav-cta {
@@ -285,27 +356,30 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   }
 
   .nav-links a,
-  .link-btn,
-  .nav-signout-btn {
+  .nav-account-menu-link,
+  .nav-account-menu-signout {
     font-size: 0.7rem;
   }
 
-  .nav-user {
-    max-width: 86px;
-  }
-
-  .nav-user-role {
-    font-size: 0.56rem;
-  }
-
-  .nav-account {
-    padding: 5px 8px;
+  .nav-avatar-btn {
+    height: 38px;
+    padding: 0 10px 0 6px;
+    gap: 6px;
   }
 
   .nav-account-badge {
-    width: 18px;
-    height: 18px;
-    font-size: 0.64rem;
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+
+  .nav-avatar-text .nav-user {
+    max-width: 72px;
+    font-size: 0.72rem;
+  }
+
+  .nav-avatar-text .nav-user-role {
+    font-size: 0.52rem;
   }
 }
 

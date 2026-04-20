@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Alert, TextInput, ActivityIndicator,
+  Alert, TextInput, ActivityIndicator, Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { authAPI } from '../services/api';
+import * as ImagePicker from 'expo-image-picker';
+import { authAPI, getFullImageUrl } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
 const GOLD = '#c9a84c';
@@ -24,13 +25,14 @@ function MenuItem({ icon, label, sub, onPress, danger }: { icon: string; label: 
 }
 
 export default function ProfileScreen({ navigation }: any) {
-  const { user, logout, refreshUser } = useAuth();
+  const { user, logout, refreshUser, updateUserProfile } = useAuth();
   const insets = useSafeAreaInsets();
   const [changingPw, setChangingPw] = useState(false);
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
   const [savingPw, setSavingPw] = useState(false);
   const [enablingOwner, setEnablingOwner] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const handleLogout = () => {
     Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
@@ -67,6 +69,34 @@ export default function ProfileScreen({ navigation }: any) {
     }
   };
 
+  const handleChangeAvatar = async () => {
+    try {
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert('Permission needed', 'Please allow photo library access to update your avatar.');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 0.8,
+      });
+
+      if (result.canceled || !result.assets?.[0]?.uri) return;
+
+      setUploadingAvatar(true);
+      const uploadedUrl = await authAPI.uploadProfileImage(result.assets[0].uri);
+      if (!uploadedUrl) throw new Error('Upload failed');
+      await updateUserProfile({ avatar_url: uploadedUrl });
+      Alert.alert('Avatar updated');
+    } catch (e: any) {
+      Alert.alert('Error', e.response?.data?.error?.message || e.message || 'Failed to update avatar');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   if (!user) {
     return (
       <View style={[styles.guestContainer, { paddingTop: Math.max(32, insets.top + 16) }]}>
@@ -91,9 +121,16 @@ export default function ProfileScreen({ navigation }: any) {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={[styles.header, { paddingTop: Math.max(32, insets.top + 16) }]}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{user.name.charAt(0).toUpperCase()}</Text>
-        </View>
+        <TouchableOpacity style={styles.avatar} onPress={handleChangeAvatar} activeOpacity={0.85} disabled={uploadingAvatar}>
+          {user.avatar_url ? (
+            <Image source={{ uri: getFullImageUrl(user.avatar_url) }} style={styles.avatarImage} />
+          ) : (
+            <Text style={styles.avatarText}>{user.name.charAt(0).toUpperCase()}</Text>
+          )}
+          <View style={styles.avatarCameraBadge}>
+            {uploadingAvatar ? <ActivityIndicator size="small" color="#0d0d0d" /> : <Ionicons name="camera" size={14} color="#0d0d0d" />}
+          </View>
+        </TouchableOpacity>
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.email}>{user.email}</Text>
         <View style={styles.roleBadge}>
@@ -167,7 +204,21 @@ const styles = StyleSheet.create({
   ownerLinkText: { color: '#a09070', fontSize: 14 },
   header: { alignItems: 'center', padding: 32, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
   avatar: { width: 72, height: 72, borderRadius: 36, backgroundColor: 'rgba(201,168,76,0.2)', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: GOLD, marginBottom: 12 },
+  avatarImage: { width: '100%', height: '100%', borderRadius: 36 },
   avatarText: { color: GOLD, fontSize: 30, fontWeight: '700' },
+  avatarCameraBadge: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: GOLD,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#0d0d0d',
+  },
   name: { color: '#f0ebe0', fontSize: 20, fontWeight: '700', marginBottom: 4 },
   email: { color: '#a09070', fontSize: 14, marginBottom: 10 },
   roleBadge: { backgroundColor: 'rgba(201,168,76,0.15)', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 4 },

@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import HomePage from './pages/HomePage';
 import CarsPage from './pages/CarsPage';
@@ -14,7 +14,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import HowItWorksPage from './pages/HowItWorksPage';
-import AboutPage from './pages/AboutPage';
 import OwnerDashboardPage from './pages/OwnerDashboardPage';
 import AddCarPage from './pages/AddCarPage';
 import EditCarPage from './pages/EditCarPage';
@@ -26,6 +25,8 @@ function NavBar() {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [solid, setSolid] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const isHome = location.pathname === '/';
   const ownerNavLabel = user && (user.role === 'owner' || user.role === 'admin') ? 'My Listings' : 'Become Owner';
   const ownerNavHref = user && (user.role === 'owner' || user.role === 'admin') ? '/owner/cars/new' : '/owner';
@@ -39,28 +40,66 @@ function NavBar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [isHome]);
 
+  useEffect(() => {
+    setAccountMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const onPointerDown = (e: MouseEvent) => {
+      if (!accountMenuRef.current) return;
+      if (!accountMenuRef.current.contains(e.target as Node)) {
+        setAccountMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, []);
+
   return (
     <nav className={`navbar${solid ? ' solid' : ''}`}>
       <Link to="/" className="nav-brand">UnforgettableRides</Link>
       <div className="nav-links">
         <Link to="/cars" className="nav-hide-mobile">Browse Cars</Link>
         <Link to="/how-it-works" className="nav-hide-mobile">How It Works</Link>
-        <Link to="/about" className="nav-hide-mobile">About</Link>
         {user ? (
           <>
             <Link to="/bookings">My Bookings</Link>
-            <Link to={ownerNavHref}>{ownerNavLabel}</Link>
             <Link to="/messages">Messages</Link>
-            <Link to="/help">Help</Link>
-            <Link to="/settings">Settings</Link>
-            <div className="nav-account" title={user.name}>
-              <span className="nav-account-badge">{user.name.charAt(0).toUpperCase()}</span>
-              <span className="nav-account-text">
-                <span className="nav-user">{user.name}</span>
-                <span className="nav-user-role">{accountTypeLabel}</span>
-              </span>
+            <div className="nav-account-menu-wrap" ref={accountMenuRef}>
+              <button
+                className={`nav-avatar-btn${accountMenuOpen ? ' active' : ''}`}
+                onClick={() => setAccountMenuOpen((v) => !v)}
+                aria-expanded={accountMenuOpen}
+                aria-haspopup="menu"
+                aria-label="Account menu"
+              >
+                <span className="nav-account-badge">
+                  {user.avatar_url
+                    ? <img src={user.avatar_url} alt={user.name} className="nav-account-avatar-img" />
+                    : user.name.charAt(0).toUpperCase()}
+                </span>
+                <span className="nav-avatar-text">
+                  <span className="nav-user">{user.name}</span>
+                  <span className="nav-user-role">{accountTypeLabel}</span>
+                </span>
+              </button>
+              {accountMenuOpen && (
+                <div className="nav-account-menu" role="menu">
+                  <Link to={ownerNavHref} className="nav-account-menu-link">{ownerNavLabel}</Link>
+                  <Link to="/settings" className="nav-account-menu-link">Settings</Link>
+                  <Link to="/help" className="nav-account-menu-link">Help</Link>
+                  <button
+                    className="nav-account-menu-signout"
+                    onClick={() => {
+                      setAccountMenuOpen(false);
+                      logout();
+                    }}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
-            <button className="nav-signout-btn" onClick={logout}>Sign Out</button>
           </>
         ) : (
           <>
@@ -86,7 +125,6 @@ function Footer() {
           <div className="footer-links">
             <Link to="/cars">Browse Cars</Link>
             <Link to="/how-it-works">How It Works</Link>
-            <Link to="/about">About</Link>
             <Link to="/register">List Your Car</Link>
           </div>
         </div>
@@ -115,7 +153,7 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/how-it-works" element={<HowItWorksPage />} />
-        <Route path="/about" element={<AboutPage />} />
+        <Route path="/about" element={<Navigate to="/how-it-works" replace />} />
         <Route path="/owner" element={<OwnerDashboardPage />} />
         <Route path="/owner/cars/new" element={<AddCarPage />} />
         <Route path="/owner/cars/:id/edit" element={<EditCarPage />} />

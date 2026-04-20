@@ -118,6 +118,18 @@ export const authAPI = {
     return response.data.data;
   },
 
+  uploadProfileImage: async (imageUri: string): Promise<string> => {
+    const formData = new FormData();
+    const filename = imageUri.split('/').pop() || 'avatar.jpg';
+    formData.append('image', { uri: imageUri, name: filename, type: 'image/jpeg' } as any);
+    const headers: Record<string, string> = { 'Content-Type': 'multipart/form-data' };
+    if (_authToken) headers.Authorization = `Bearer ${_authToken}`;
+    const response = await fetch(`${API_BASE_URL}/upload`, { method: 'POST', body: formData, headers });
+    if (!response.ok) throw new Error('Avatar upload failed');
+    const payload = await response.json();
+    return String(payload?.data?.url || '');
+  },
+
   deleteAccount: async (currentPassword: string): Promise<void> => {
     await api.delete('/auth/account', { data: { current_password: currentPassword } });
   },

@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function HelpPage() {
+  const { user } = useAuth();
+
   return (
     <>
       <div className="page-header">
@@ -18,7 +21,9 @@ export default function HelpPage() {
             <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', marginBottom: 14 }}>
               Need to check booking status, dates, or request details?
             </p>
-            <Link to="/bookings" className="btn btn-outline" style={{ fontSize: '0.8rem' }}>Open My Bookings</Link>
+            {user
+              ? <Link to="/bookings" className="btn btn-outline" style={{ fontSize: '0.8rem' }}>Open My Bookings</Link>
+              : <Link to="/login" className="btn btn-outline" style={{ fontSize: '0.8rem' }}>Sign In to View</Link>}
           </div>
 
           <div className="stat-card" style={{ textAlign: 'left' }}>
@@ -26,7 +31,9 @@ export default function HelpPage() {
             <p style={{ color: 'var(--text-muted)', fontSize: '0.86rem', marginBottom: 14 }}>
               Contact car owners directly from your message inbox.
             </p>
-            <Link to="/messages" className="btn btn-outline" style={{ fontSize: '0.8rem' }}>Open Messages</Link>
+            {user
+              ? <Link to="/messages" className="btn btn-outline" style={{ fontSize: '0.8rem' }}>Open Messages</Link>
+              : <Link to="/login" className="btn btn-outline" style={{ fontSize: '0.8rem' }}>Sign In to View</Link>}
           </div>
 
           <div className="stat-card" style={{ textAlign: 'left' }}>

@@ -11,6 +11,7 @@ interface AuthState {
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<LoginResponse>;
   register: (name: string, email: string, password: string, role?: string) => Promise<LoginResponse>;
+  updateUserProfile: (updates: { name?: string; avatar_url?: string | null }) => Promise<User>;
   setSession: (token: string, user: User) => void;
   refreshMe: () => Promise<User | null>;
   logout: () => void;
@@ -81,6 +82,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return res;
   }, [setSession]);
 
+  const updateUserProfile = useCallback(async (updates: { name?: string; avatar_url?: string | null }) => {
+    const updated = await authAPI.updateProfile(updates);
+    localStorage.setItem('rides_user', JSON.stringify(updated));
+    setState((s) => ({ ...s, user: updated }));
+    return updated;
+  }, []);
+
   const logout = useCallback(() => {
     localStorage.removeItem('rides_token');
     localStorage.removeItem('rides_user');
@@ -88,7 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, login, register, setSession, refreshMe, logout }}>
+    <AuthContext.Provider value={{ ...state, login, register, updateUserProfile, setSession, refreshMe, logout }}>
       {children}
     </AuthContext.Provider>
   );

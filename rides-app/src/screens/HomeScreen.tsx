@@ -70,7 +70,7 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <ScrollView ref={scrollRef} style={styles.container} contentContainerStyle={styles.content}>
       {/* Hero */}
-      <View style={[styles.hero, { paddingTop: Math.max(52, insets.top + 34) }]}>
+      <View style={[styles.hero, { paddingTop: Math.max(38, insets.top + 22) }]}>
         <View style={styles.accountAccessWrap}>
           <AccountQuickAccess />
         </View>
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0d0d0d' },
   content: { paddingBottom: 40 },
   hero: {
-    minHeight: 300,
+    minHeight: 278,
     backgroundColor: '#1a1a1a',
     alignItems: 'center',
     paddingHorizontal: 32,
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   accountAccessWrap: {
     width: '100%',
     alignItems: 'flex-end',
-    marginBottom: 18,
+    marginBottom: 12,
   },
   heroSub: { color: GOLD, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' },
   heroTitle: { color: '#f0ebe0', fontSize: 34, fontWeight: '700', textAlign: 'center', marginBottom: 24, lineHeight: 42 },

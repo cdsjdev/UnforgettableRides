@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
   accountAccessWrap: {
     width: '100%',
     alignItems: 'flex-end',
+    marginRight: -16,
     marginBottom: 12,
   },
   heroSub: { color: GOLD, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' },

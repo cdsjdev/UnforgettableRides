@@ -70,8 +70,8 @@ export default function HomeScreen({ navigation }: any) {
   return (
     <ScrollView ref={scrollRef} style={styles.container} contentContainerStyle={styles.content}>
       {/* Hero */}
-      <View style={[styles.hero, { paddingTop: Math.max(32, insets.top + 20) }]}>
-        <View style={[styles.accountAccessWrap, { top: Math.max(14, insets.top + 8) }]}>
+      <View style={[styles.hero, { paddingTop: Math.max(52, insets.top + 34) }]}>
+        <View style={styles.accountAccessWrap}>
           <AccountQuickAccess />
         </View>
         <Text style={styles.heroSub}>Premium Classic Car Hire</Text>
@@ -139,22 +139,20 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0d0d0d' },
   content: { paddingBottom: 40 },
   hero: {
-    minHeight: 260,
+    minHeight: 300,
     backgroundColor: '#1a1a1a',
     alignItems: 'center',
-    justifyContent: 'center',
     paddingHorizontal: 32,
     paddingBottom: 32,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(201,168,76,0.2)',
   },
   accountAccessWrap: {
-    position: 'absolute',
-    top: 14,
-    right: 16,
-    zIndex: 2,
+    width: '100%',
+    alignItems: 'flex-end',
+    marginBottom: 18,
   },
-  heroSub: { color: GOLD, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 },
+  heroSub: { color: GOLD, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, textAlign: 'center' },
   heroTitle: { color: '#f0ebe0', fontSize: 34, fontWeight: '700', textAlign: 'center', marginBottom: 24, lineHeight: 42 },
   heroBtn: { backgroundColor: GOLD, paddingHorizontal: 32, paddingVertical: 14, borderRadius: 8 },
   heroBtnText: { color: '#0d0d0d', fontWeight: '700', fontSize: 16 },

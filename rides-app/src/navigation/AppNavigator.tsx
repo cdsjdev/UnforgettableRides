@@ -23,6 +23,7 @@ import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import HelpScreen from '../screens/HelpScreen';
 import FeedbackScreen from '../screens/FeedbackScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
+import AccountQuickAccess from '../components/AccountQuickAccess';
 
 const GOLD = '#c9a84c';
 const BG = '#0d0d0d';
@@ -86,11 +87,16 @@ const screenOptions = {
   animation: 'slide_from_right' as const,
 };
 
+const screenOptionsWithAccountHeader = {
+  ...screenOptions,
+  headerRight: () => <AccountQuickAccess compact />,
+};
+
 // ---- Stacks ----
 
 function HomeStackNavigator() {
   return (
-    <HomeStack.Navigator screenOptions={screenOptions}>
+    <HomeStack.Navigator screenOptions={screenOptionsWithAccountHeader}>
       <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'UnforgettableRides', headerShown: false }} />
       <HomeStack.Screen name="CarDetail" component={CarDetailScreen} options={{ title: 'Car Details' }} />
       <HomeStack.Screen name="BookCar" component={BookingScreen} options={{ title: 'Request Booking' }} />
@@ -100,7 +106,7 @@ function HomeStackNavigator() {
 
 function CarsStackNavigator() {
   return (
-    <CarsStack.Navigator screenOptions={screenOptions}>
+    <CarsStack.Navigator screenOptions={screenOptionsWithAccountHeader}>
       <CarsStack.Screen name="CarsMain" component={CarListScreen} options={{ title: 'Browse Cars' }} />
       <CarsStack.Screen name="CarDetail" component={CarDetailScreen} options={{ title: 'Car Details' }} />
       <CarsStack.Screen name="BookCar" component={BookingScreen} options={{ title: 'Request Booking' }} />
@@ -110,7 +116,7 @@ function CarsStackNavigator() {
 
 function MessagesStackNavigator() {
   return (
-    <MessagesStack.Navigator screenOptions={screenOptions}>
+    <MessagesStack.Navigator screenOptions={screenOptionsWithAccountHeader}>
       <MessagesStack.Screen name="MessagesMain" component={MessagesScreen} options={{ title: 'Messages' }} />
       <MessagesStack.Screen name="MessageThread" component={MessageThreadScreen} options={({ route }) => ({ title: (route.params as any)?.displayName || 'Message' })} />
     </MessagesStack.Navigator>

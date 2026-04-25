@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { carsAPI, getFullImageUrl } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import type { ClassicCar } from '../../../shared/types';
+import AccountQuickAccess from '../components/AccountQuickAccess';
 
 const GOLD = '#c9a84c';
 const TAGS = ['wedding', 'photoshoot', 'event', 'other'] as const;
@@ -70,6 +71,9 @@ export default function HomeScreen({ navigation }: any) {
     <ScrollView ref={scrollRef} style={styles.container} contentContainerStyle={styles.content}>
       {/* Hero */}
       <View style={[styles.hero, { paddingTop: Math.max(32, insets.top + 20) }]}>
+        <View style={[styles.accountAccessWrap, { top: Math.max(14, insets.top + 8) }]}>
+          <AccountQuickAccess />
+        </View>
         <Text style={styles.heroSub}>Premium Classic Car Hire</Text>
         <Text style={styles.heroTitle}>Arrive in{'\n'}Timeless Style</Text>
         <TouchableOpacity style={styles.heroBtn} onPress={() => navigation.navigate('Cars')}>
@@ -143,6 +147,12 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(201,168,76,0.2)',
+  },
+  accountAccessWrap: {
+    position: 'absolute',
+    top: 14,
+    right: 16,
+    zIndex: 2,
   },
   heroSub: { color: GOLD, fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 },
   heroTitle: { color: '#f0ebe0', fontSize: 34, fontWeight: '700', textAlign: 'center', marginBottom: 24, lineHeight: 42 },

@@ -21,6 +21,7 @@ export default function LoginPage() {
   const [challengeId, setChallengeId] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,15 +81,39 @@ export default function LoginPage() {
             </div>
             <div className="form-group" style={{ marginTop: 14 }}>
               <label>Password</label>
-              <input
-                className="form-control"
-                type="password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                required
-                minLength={6}
-                autoComplete="current-password"
-              />
+              <div className="password-field">
+                <input
+                  className="form-control"
+                  type={showPassword ? 'text' : 'password'}
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  required
+                  minLength={6}
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  className="password-visibility-toggle"
+                  onClick={() => setShowPassword((value) => !value)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                  disabled={loading}
+                >
+                  {showPassword ? (
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M3 3l18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      <path d="M9.9 5.1A10.2 10.2 0 0 1 12 4c5 0 9.3 3.1 11 8a12.2 12.2 0 0 1-4.3 5.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M6.6 6.6A12.5 12.5 0 0 0 1 12c1.7 4.9 6 8 11 8a10.5 10.5 0 0 0 5.4-1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  ) : (
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M1 12c1.7-4.9 6-8 11-8s9.3 3.1 11 8c-1.7 4.9-6 8-11 8s-9.3-3.1-11-8Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
 
             <div style={{ marginTop: 10 }}>

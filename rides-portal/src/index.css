@@ -983,6 +983,49 @@ select.filter-input {
 
 textarea.form-control { resize: vertical; min-height: 100px; }
 
+.password-field {
+  position: relative;
+}
+
+.password-field .form-control {
+  padding-right: 52px;
+}
+
+.password-visibility-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: background var(--t), color var(--t);
+}
+
+.password-visibility-toggle:hover,
+.password-visibility-toggle:focus-visible {
+  background: var(--gold-dim);
+  color: var(--gold);
+}
+
+.password-visibility-toggle:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.password-visibility-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 select.form-control {
   cursor: pointer;
   appearance: none;

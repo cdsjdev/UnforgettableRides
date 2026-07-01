@@ -26,6 +26,7 @@ function NavBar() {
   const location = useLocation();
   const [solid, setSolid] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const isHome = location.pathname === '/';
   const ownerNavLabel = user && (user.role === 'owner' || user.role === 'admin') ? 'My Listings' : 'Become Owner';
@@ -42,6 +43,7 @@ function NavBar() {
 
   useEffect(() => {
     setAccountMenuOpen(false);
+    setMobileMenuOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -56,11 +58,22 @@ function NavBar() {
   }, []);
 
   return (
-    <nav className={`navbar${solid ? ' solid' : ''}`}>
+    <nav className={`navbar${solid ? ' solid' : ''}${mobileMenuOpen ? ' menu-open' : ''}`}>
       <Link to="/" className="nav-brand">UnforgettableRides</Link>
-      <div className="nav-links">
-        <Link to="/cars" className="nav-hide-mobile">Browse Cars</Link>
-        <Link to="/how-it-works" className="nav-hide-mobile">How It Works</Link>
+      <button
+        className={`nav-hamburger${mobileMenuOpen ? ' active' : ''}`}
+        onClick={() => setMobileMenuOpen((v) => !v)}
+        aria-expanded={mobileMenuOpen}
+        aria-controls="nav-links"
+        aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+      >
+        <span className="nav-hamburger-bar" />
+        <span className="nav-hamburger-bar" />
+        <span className="nav-hamburger-bar" />
+      </button>
+      <div className="nav-links" id="nav-links">
+        <Link to="/cars">Browse Cars</Link>
+        <Link to="/how-it-works">How It Works</Link>
         {user ? (
           <>
             <Link to="/bookings">My Bookings</Link>

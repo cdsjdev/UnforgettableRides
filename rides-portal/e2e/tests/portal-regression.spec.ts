@@ -6,13 +6,18 @@ test.describe('Portal regression', () => {
     await page.goto('/');
 
     const nav = page.getByRole('navigation');
+    const openMenu = async () => {
+      const toggle = nav.getByRole('button', { name: 'Open menu' });
+      if (await toggle.isVisible()) await toggle.click();
+    };
+
+    await openMenu();
     const browseCars = nav.getByRole('link', { name: 'Browse Cars' });
-    await browseCars.scrollIntoViewIfNeeded();
     await browseCars.click();
     await expect(page).toHaveURL(/\/cars$/);
 
+    await openMenu();
     const howItWorks = nav.getByRole('link', { name: 'How It Works' });
-    await howItWorks.scrollIntoViewIfNeeded();
     await howItWorks.click();
     await expect(page).toHaveURL(/\/how-it-works$/);
 

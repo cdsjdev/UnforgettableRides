@@ -1,24 +1,25 @@
 ﻿# UnforgettableRides — Operations Playbook
 
-*Last updated: 2026-04-20*
+*Last updated: 2026-07-01*
 
 ---
 
 ## Server Access (Canonical)
 
 Use this host for UnforgettableRides operations:
-- Public IP: `44.245.183.72`
-- Expected hostname after login: `ip-172-26-14-6`
+- Public IP: `34.223.228.177`
+- Expected hostname after login: `ip-172-26-12-235`
 - Expected app path: `~/UnforgettableRides`
+- SSH key: `~/.ssh/34.223.228.177-unforgettablerides-lightsonamerica.pem`
 
 Windows/PowerShell example:
 ```powershell
-ssh -i "$HOME/.ssh/LightsailDefaultKey-us-west-2 cdsjdev.pem" ubuntu@44.245.183.72
+ssh -i "$HOME/.ssh/34.223.228.177-unforgettablerides-lightsonamerica.pem" ubuntu@34.223.228.177
 ```
 
 macOS/Linux example:
 ```bash
-ssh -i ~/.ssh/LightsailDefaultKey-us-west-2\ cdsjdev.pem ubuntu@44.245.183.72
+ssh -i ~/.ssh/34.223.228.177-unforgettablerides-lightsonamerica.pem ubuntu@34.223.228.177
 ```
 
 After login, verify:
@@ -29,7 +30,8 @@ ls -la ~/UnforgettableRides
 ```
 
 Important:
-- `34.211.20.239` is a different server and should not be used for UnforgettableRides deploy/update work.
+- `44.245.183.72` and `34.211.20.239` are different/retired servers and should not be used for UnforgettableRides deploy/update work.
+- The server working tree carries local production modifications (e.g. `.env.production`, compose files) and its `origin` remote is HTTPS without stored credentials, so `git pull` does not run non-interactively there. To ship a targeted fix, `scp` the changed files to the server and rebuild only the affected service (see Canonical AWS Deploy).
 
 ---
 

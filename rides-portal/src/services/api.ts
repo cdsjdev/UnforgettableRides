@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { User, LoginResponse, APIResponse, SocialThread, SocialMessage, SocialPage } from '@shared/types';
+import { mockAdapter } from './mockAdapter';
 
 export interface ClassicCar {
   id: string;
@@ -92,6 +93,14 @@ const api = axios.create({
   baseURL: '/api/v1',
   timeout: 12000,
 });
+
+// STATIC DEMO: when built with VITE_STATIC_DEMO=true (GitHub Pages show-and-tell
+// build, no backend), swap axios's transport for a mock adapter that returns
+// canned data. Set synchronously at module load so the very first request is
+// already mocked. Never active on the real backend build (flag defaults unset).
+if (import.meta.env.VITE_STATIC_DEMO === 'true') {
+  api.defaults.adapter = mockAdapter;
+}
 
 const TOKEN_KEY = 'rides_token';
 
